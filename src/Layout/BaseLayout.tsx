@@ -26,10 +26,10 @@ const Wrapper = styled.div(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  backgroundColor: theme.colors.scale.gray100,
+  backgroundColor: theme.colors.gray100,
 }));
 
-const FixedHeader = styled.div<{ maxWidth: number }>(({ maxWidth, theme }) => ({
+const FixedHeader = styled.div<{ maxWidth: number }>(({ maxWidth }) => ({
   position: 'fixed',
   top: 0,
   left: 0,
@@ -37,7 +37,6 @@ const FixedHeader = styled.div<{ maxWidth: number }>(({ maxWidth, theme }) => ({
   margin: '0 auto',
   maxWidth: `${maxWidth}px`,
   width: '100%',
-  backgroundColor: theme.colors.semantic.background.default,
   zIndex: 1000,
 }));
 
@@ -45,11 +44,11 @@ type ContainerProps = {
   maxWidth?: number;
   hasHeader?: boolean;
 };
-const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
+const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader }) => ({
   maxWidth: `${maxWidth}px`,
   width: '100%',
   minHeight: '100vh',
   height: '100%',
-  backgroundColor: theme.colors.semantic.background.default,
+  backgroundColor: 'white',
   paddingTop: hasHeader ? '2.75rem' : '0',
 }));
