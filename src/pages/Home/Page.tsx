@@ -1,5 +1,7 @@
+import SearchFieldSection from './components/SearchFieldSection';
+
 const HomePage = () => {
-  return <h1>Home</h1>;
+  return <SearchFieldSection />;
 };
 
 export default HomePage;
