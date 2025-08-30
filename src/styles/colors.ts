@@ -26,4 +26,7 @@ export const colors = {
   info: '#2196f3',
   infoLight: '#bbdefb',
   infoDark: '#1976d2',
+
+  white: '#ffffff',
+  black: '#000000',
 };

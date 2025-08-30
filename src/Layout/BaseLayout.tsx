@@ -44,11 +44,11 @@ type ContainerProps = {
   maxWidth?: number;
   hasHeader?: boolean;
 };
-const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader }) => ({
+const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
   maxWidth: `${maxWidth}px`,
   width: '100%',
   minHeight: '100vh',
   height: '100%',
-  backgroundColor: 'white',
+  backgroundColor: theme.colors.white,
   paddingTop: hasHeader ? '2.75rem' : '0',
 }));
