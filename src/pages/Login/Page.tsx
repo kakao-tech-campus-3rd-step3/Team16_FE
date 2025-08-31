@@ -1,4 +1,4 @@
-import kakaoLoginBtn from '@/assets/kakao_login_button.png';
+import kakaoLoginBtn from '@/assets/kakao_login_button.svg';
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
@@ -59,7 +59,7 @@ const LoginPage = () => {
     <>
       <Wrapper>
         <Button onClick={handleLogin}>
-          <img src={kakaoLoginBtn} alt="카카오 로그인" />
+          <KakaoImg src={kakaoLoginBtn} alt="카카오 로그인" />
         </Button>
       </Wrapper>
     </>
@@ -67,9 +67,16 @@ const LoginPage = () => {
 };
 
 const Button = styled.button`
+  width: 80%;
   padding: 0;
   border: none;
   background: none;
+`;
+
+const KakaoImg = styled.img`
+  width: 100%;
+  height: auto;
+  display: block;
 `;
 
 const Wrapper = styled.main`
