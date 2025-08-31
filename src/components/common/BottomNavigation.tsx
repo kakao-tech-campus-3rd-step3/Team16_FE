@@ -28,9 +28,9 @@ export default BottomNavigation;
 const BottomNavigationContainer = styled.nav`
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
   height: 60px;
+  max-width: 720px;
   flex-direction: row;
   display: flex;
   background-color: ${({ theme }) => theme.colors.white};
