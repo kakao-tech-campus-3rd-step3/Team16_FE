@@ -33,7 +33,8 @@ const BottomNavigationContainer = styled.nav`
   height: 60px;
   flex-direction: row;
   display: flex;
-  margin: 8px 0px;
+  background-color: ${({ theme }) => theme.colors.white};
+  z-index: 9999;
 `;
 
 const NavItem = styled.div<{ isActive: boolean }>`
