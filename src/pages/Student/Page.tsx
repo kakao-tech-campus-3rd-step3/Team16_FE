@@ -3,14 +3,26 @@ import { theme } from '@/styles/theme';
 import useAuthStore from '@/stores/authStore';
 import { useState, useRef } from 'react';
 import studentCard from '@/assets/studentCard.svg';
+import { useImageUpload } from '@/hooks/useImageUpload';
 
 const StudentPage = () => {
   const { verificationStatus } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  function Submit() {
-    // 제출 로직
+  const { uploadImage, isUploading } = useImageUpload({
+    uploadUrl: '/api/auth/s3-image-url',
+    completionUrl: '/api/auth/submit-verification',
+  });
+
+  async function handleSubmit() {
+    if (!selectedFile) {
+      alert('사진을 선택해주세요.');
+      return;
+    }
+
+    await uploadImage(selectedFile);
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -18,6 +30,7 @@ const StudentPage = () => {
     if (file) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+      setSelectedFile(file);
     }
   }
 
@@ -43,7 +56,9 @@ const StudentPage = () => {
           ? '승인 여부 심사 중입니다.'
           : '24시간 내에 관리자가 승인 여부 심사합니다.'}
       </Notice>
-      <SubmitButton onClick={Submit}>증명서류 제출하기</SubmitButton>
+      <SubmitButton onClick={handleSubmit} disabled={isUploading}>
+        {isUploading ? '업로드 중...' : '증명서류 제출하기'}
+      </SubmitButton>
     </Wrapper>
   );
 };
