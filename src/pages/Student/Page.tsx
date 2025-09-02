@@ -1,21 +1,43 @@
 import styled from '@emotion/styled';
 import { theme } from '@/styles/theme';
 import useAuthStore from '@/stores/authStore';
+import { useState, useRef } from 'react';
+import studentCard from '@/assets/studentCard.svg';
 
 const StudentPage = () => {
   const { verificationStatus } = useAuthStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
 
-  function Submit(){
+  function Submit() {
     // 제출 로직
   }
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  }
+
+  const handleImageBoxClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <Wrapper>
       <Description>학생증, 재학증명서, 입학증명서를 아래 예시처럼 제출해주세요.</Description>
-      <ImageBox>
-        <ImageIcon>신분증, 증명서 예시 이미지</ImageIcon>
+      <ImageBox onClick={handleImageBoxClick}>
+        <PreviewImage src={previewUrl} alt="" />
       </ImageBox>
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+      />
       <Notice>
         {verificationStatus === 'pending'
           ? '승인 여부 심사 중입니다.'
@@ -54,10 +76,13 @@ const ImageBox = styled.div`
   color: ${theme.colors.gray400};
   font-size: 14px;
   margin-top: 15vh;
+  cursor: pointer;
 `;
 
-const ImageIcon = styled.div`
-  text-align: center;
+const PreviewImage = styled.img`
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
 `;
 
 const Notice = styled.div`
