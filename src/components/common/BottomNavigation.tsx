@@ -1,22 +1,31 @@
 import { GoHome, GoSearch, GoPerson } from 'react-icons/go';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router';
 
 const navItems = [
-  { icon: GoHome, label: '홈' },
-  { icon: GoSearch, label: '피드' },
-  { icon: GoPerson, label: '마이페이지' },
+  { icon: GoHome, label: '홈', path: '/' },
+  { icon: GoSearch, label: '피드', path: '/' },
+  { icon: GoPerson, label: '마이페이지', path: '/mypage' },
 ];
 
 const BottomNavigation = () => {
-  const [activeTab, setActiveTab] = useState('홈');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <BottomNavigationContainer>
-      {navItems.map(({ icon: Icon, label }) => (
-        <NavItem key={label} isActive={activeTab === label} onClick={() => setActiveTab(label)}>
+      {navItems.map(({ icon: Icon, label, path }) => (
+        <NavItem
+          key={label}
+          isActive={location.pathname === path && label !== '피드'}
+          onClick={() => handleNavigation(path)}
+        >
           <Icon size={20} />
-          <NavText isActive={activeTab === label}>{label}</NavText>
+          <NavText isActive={location.pathname === path && label !== '피드'}>{label}</NavText>
         </NavItem>
       ))}
     </BottomNavigationContainer>
