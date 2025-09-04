@@ -13,7 +13,7 @@ export const Routes = () => {
       <Route path={'/'} element={<HomePage />} />
       <Route path={'/nickname'} element={<NicknamePage />} />
       <Route path={'/student'} element={<StudentPage />} />
-      <Route path={'/group'} element={<GroupPage />} />
+      <Route path={'/group/:groupId'} element={<GroupPage />} />
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
     </RouterRoutes>
