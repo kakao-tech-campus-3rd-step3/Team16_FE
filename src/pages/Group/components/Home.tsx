@@ -4,36 +4,48 @@ import { CiCalendarDate } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
 import {colors} from "@/styles/colors";
 import { typography } from "@/styles/typography";
-
-
+import {useQuery} from "@tanstack/react-query";
+import {fetchGroupHome} from "@/api/groupApi";
+import { useParams } from "react-router-dom";
 
 const Home = () => {
+    
+    const { groupId } = useParams();
+
+    const {data , isLoading}=useQuery({
+        queryKey:["groupHome"],
+        queryFn:()=>fetchGroupHome(Number(groupId))
+    })
+
+    if (isLoading) return <div>로딩중...</div>;
+    if(!data) return <div>데이터가 없습니다</div>;
+      
     return (
         <Wrapper>
             <ImgWrapper>
-                <Img src="https://cdn.crowdpic.net/detail-thumb/thumb_d_69636B02CD65FFFAFF201750D165A09E.png"/>
+                <Img src={data.groupImg}/>
             </ImgWrapper>
             <BodyWrapper>
                 <GroupInfo> 
                     <GroupHeader>
-                        <GroupName>그룹 이름</GroupName>
-                        <TagBadge tag={"위험"}/>
+                        <GroupName>{data.name}</GroupName>
+                        <TagBadge tag={data.safetyTag}/>
                     </GroupHeader>
                     <Desc>
                         <CiCalendarDate/>
-                        <GroupCreatedDay>2023-10-10일 개설됨</GroupCreatedDay>
+                        <GroupCreatedDay>{data.createdAt} 개설됨</GroupCreatedDay>
                     </Desc> 
                     <Desc>
                         <IoPeopleOutline/>
-                        <MemberCount>7명</MemberCount>
+                        <MemberCount>{data.capacity}</MemberCount>
                     </Desc>
                 </GroupInfo>  
                 <GroupDesc>
-                    안녕하세요! 저희는 함께 공부하고 성장하는 것을 목표로 하는 그룹입니다. 다양한 주제에 대해 토론하고, 서로의 경험을 공유하며, 함께 프로젝트를 진행합니다. 새로운 아이디어와 도전을 환영하며, 모든 멤버가 적극적으로 참여할 수 있는 환경을 만들고자 합니다. 함께 성장하고 발전하는 여정에 동참해 주세요!
+                    {data.intro}
                 </GroupDesc>
                 <ReviewHeader>이 모임이 받은 리뷰</ReviewHeader>
-                {Array.from({ length: 10 }).map((_, idx) => (
-                    <Review key={idx}> 동아리의 분위기가 이상해요 </Review>
+                {data.reviews.map((review, idx) => (
+                    <ReviewItem key={idx}> {review.content} </ReviewItem>
                 ))}
             </BodyWrapper>
         </Wrapper>
@@ -104,7 +116,7 @@ const Home = () => {
     marginBottom:"5px"
   })
 
-  const Review=styled.div({
+  const ReviewItem=styled.div({
     ...typography.body,
     borderRadius:"8px",
     padding:"15px",
