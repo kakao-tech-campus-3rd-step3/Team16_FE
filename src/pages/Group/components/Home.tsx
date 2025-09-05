@@ -92,12 +92,13 @@ const Desc = styled.div({
   gap: '10px',
 });
 
-const GroupCreatedDay = styled.div({
+const smallMuted = styled.div({
   ...typography.small,
   color: colors.gray700,
 });
 
-const MemberCount = GroupCreatedDay;
+const GroupCreatedDay = smallMuted;
+const MemberCount = smallMuted;
 
 const GroupDesc = styled.div({
   ...typography.body,
