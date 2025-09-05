@@ -24,7 +24,7 @@ const Badge = styled.span<{ tag: string }>(({ tag, theme }) => {
     border: colors.gray300,
   };
   return {
-    ...theme.typography.body,
+    ...theme.typography.small,
     borderRadius: '16px',
     padding: '4px 6px',
     backgroundColor: color.bg,
