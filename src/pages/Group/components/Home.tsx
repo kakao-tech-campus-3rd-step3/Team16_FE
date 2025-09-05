@@ -82,8 +82,7 @@ const GroupInfo = styled.div({
 });
 
 const GroupName = styled.div({
-  fontSize: '20px',
-  fontWeight: 'bold',
+  ...typography.h1,
 });
 
 const Desc = styled.div({
@@ -108,7 +107,7 @@ const GroupDesc = styled.div({
 });
 
 const ReviewHeader = styled.h1({
-  ...typography.h1,
+  ...typography.h2,
   marginTop: '20px',
   marginBottom: '5px',
 });
