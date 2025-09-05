@@ -1,7 +1,7 @@
-import Home from './components/Home';
+import GroupHome from './components/GroupHome';
 
 const GroupPage = () => {
-  return <Home />;
+  return <GroupHome />;
 };
 
 export default GroupPage;

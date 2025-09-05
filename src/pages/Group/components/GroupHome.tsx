@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchGroupHome } from '@/api/groupApi';
 import { useParams } from 'react-router-dom';
 
-const Home = () => {
+const GroupHome = () => {
   const { groupId } = useParams();
 
   const { data, isLoading } = useQuery({
@@ -119,4 +119,4 @@ const ReviewItem = styled.div({
   background: colors.gray100,
 });
 
-export default Home;
+export default GroupHome;
