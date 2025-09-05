@@ -1,7 +1,7 @@
 import kakaoLoginBtn from '@/assets/kakao_login_button.svg';
 import styled from '@emotion/styled';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
 
