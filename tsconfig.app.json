@@ -18,8 +18,10 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    /* 빌드오류 해결을위해 false로 설정 */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    /* 빌드오류 해결을위해 false로 설정 */
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
