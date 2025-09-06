@@ -16,7 +16,7 @@ export interface GroupHomeResponse {
   groupImg: string;
 }
 
-export const fetchGroupHome = async (groupId: number): Promise<GroupHomeResponse> => {
+export const fetchGroupHome = async (_groupId: number): Promise<GroupHomeResponse> => {
   // 목데이터를 axios로 불러오기
   const response = await axios.get('/data/mockData.json');
   return response.data;
