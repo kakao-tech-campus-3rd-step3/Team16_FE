@@ -1,19 +1,19 @@
 import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
+import { Header } from '@/components/common/Header';
 
 type Props = {
   maxWidth?: number;
-  header?: ReactNode;
   children: ReactNode;
 };
 
-export const BaseLayout = ({ maxWidth = 720, header, children }: Props) => {
+export const BaseLayout = ({ maxWidth = 720, children }: Props) => {
   return (
     <Wrapper>
-      {header && <FixedHeader maxWidth={maxWidth}>{header}</FixedHeader>}
-      <Container maxWidth={maxWidth} hasHeader={!!header}>
-        {children}
-      </Container>
+      <FixedHeader maxWidth={maxWidth}>
+        <Header />
+      </FixedHeader>
+      <Container maxWidth={maxWidth}>{children}</Container>
     </Wrapper>
   );
 };
@@ -30,7 +30,6 @@ const Wrapper = styled.div(({ theme }) => ({
 }));
 
 const FixedHeader = styled.div<{ maxWidth: number }>(({ maxWidth }) => ({
-  position: 'fixed',
   top: 0,
   left: 0,
   right: 0,
