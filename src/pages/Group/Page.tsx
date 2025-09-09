@@ -1,12 +1,50 @@
-import GroupHome from './components/GroupHome';
-import GroupBoard from './components/GroupBoard';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import GroupHome from './GroupHomePage';
+import GroupBoard from './GroupBoardPage';
+import Nav from './components/Navigator';
+import { useGroupMembership } from '@/hooks/useGroupMembership';
+import styled from '@emotion/styled';
 
 const GroupPage = () => {
+  const { groupId } = useParams();
+  const { isMember, isLoading } = useGroupMembership(groupId);
+  const [activeTab, setActiveTab] = useState('');
+
+  // 멤버십 상태에 따라 초기 탭 설정
+  useEffect(() => {
+    if (!isLoading) {
+      setActiveTab(isMember ? '대시보드' : '홈');
+    }
+  }, [isMember, isLoading]);
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case '대시보드':
+        return <div>대시보드 컴포넌트 (구현 예정)</div>;
+      case '홈':
+        return <GroupHome />;
+      case '게시판':
+        return <GroupBoard />;
+      case '채팅':
+        return <div>채팅 컴포넌트 (구현 예정)</div>;
+    }
+  };
+
+  if (isLoading || !activeTab) {
+    return <div>로딩 중...</div>;
+  }
+
   return (
-    <>
-      <GroupBoard />
-    </>
+    <Wrapper>
+      <Nav activeTab={activeTab} onTabChange={setActiveTab} />
+      {renderContent()}
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div({
+  marginTop: '2.75rem',
+});
 
 export default GroupPage;
