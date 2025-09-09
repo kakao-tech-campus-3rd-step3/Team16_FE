@@ -25,3 +25,8 @@ export const fetchGroupHome = async (_groupId: number): Promise<GroupHomeRespons
   // const response = await axios.get(`/api/groups/${groupId}`);
   // return response.data;
 };
+
+export const fetchGroupPosts = async (_groupId: number) => {
+  const response = await axios.get('/data/groupPosts.json');
+  return response.data;
+};
