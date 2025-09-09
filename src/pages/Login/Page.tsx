@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
 
-const Rest_api_key = import.meta.env.VITE_REST_API_KEY;
-const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
+const REST_API_KEY = import.meta.env.VITE_REST_API_KEY;
+const VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const LoginPage = () => {
   };
 
   // oauth 요청 URL
-  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+  const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&VITE_REDIRECT_URI=${VITE_REDIRECT_URI}&response_type=code`;
   const handleLogin = () => {
     window.location.href = kakaoURL;
   };
