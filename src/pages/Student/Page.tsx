@@ -13,7 +13,7 @@ const StudentPage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { uploadImage, isUploading, uploadProgress } = useImageUpload({
-    uploadUrl: '/api/auth/s3-image-url', // 테스트용 URL
+    uploadUrl: '/api/auth/s3-image-url',
     completionUrl: '/api/auth/s3-image-url',
   });
 
@@ -28,11 +28,17 @@ const StudentPage = () => {
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setSelectedFile(file);
+
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('파일 크기는 5MB를 초과할 수 없습니다.');
+      return;
     }
+
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    setSelectedFile(file);
   }
 
   const handleImageBoxClick = () => {
