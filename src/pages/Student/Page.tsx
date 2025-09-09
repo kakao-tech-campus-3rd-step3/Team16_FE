@@ -4,6 +4,7 @@ import useAuthStore from '@/stores/authStore';
 import { useState, useRef } from 'react';
 import studentCard from '@/assets/studentCard.svg';
 import { useImageUpload } from '@/hooks/useImageUpload';
+import CircularProgress from './components/CircularProgress';
 
 const StudentPage = () => {
   const { verificationStatus } = useAuthStore();
@@ -11,9 +12,9 @@ const StudentPage = () => {
   const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const { uploadImage, isUploading } = useImageUpload({
+  const { uploadImage, isUploading, uploadProgress } = useImageUpload({
     uploadUrl: '/api/auth/s3-image-url',
-    completionUrl: '/api/auth/submit-verification',
+    completionUrl: '/api/auth/s3-image-url',
   });
 
   async function handleSubmit() {
@@ -27,11 +28,17 @@ const StudentPage = () => {
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setSelectedFile(file);
+
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('파일 크기는 5MB를 초과할 수 없습니다.');
+      return;
     }
+
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    setSelectedFile(file);
   }
 
   const handleImageBoxClick = () => {
@@ -41,8 +48,13 @@ const StudentPage = () => {
   return (
     <Wrapper>
       <Description>학생증, 재학증명서, 입학증명서를 아래 예시처럼 제출해주세요.</Description>
-      <ImageBox onClick={handleImageBoxClick}>
+      <ImageBox onClick={handleImageBoxClick} disabled={isUploading}>
         <PreviewImage src={previewUrl} alt="" />
+        {isUploading && (
+          <ProgressOverlay>
+            <CircularProgress progress={uploadProgress} size={80} strokeWidth={6} />
+          </ProgressOverlay>
+        )}
       </ImageBox>
       <input
         type="file"
@@ -50,7 +62,9 @@ const StudentPage = () => {
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
+        disabled={isUploading}
       />
+
       <Notice>
         {verificationStatus === 'pending'
           ? '승인 여부 심사 중입니다.'
@@ -80,7 +94,7 @@ const Description = styled.p`
   text-align: center;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.div<{ disabled: boolean }>`
   width: 90%;
   height: 30vh;
   background: #f5f5f5;
@@ -92,6 +106,8 @@ const ImageBox = styled.div`
   font-size: 14px;
   margin-top: 15vh;
   cursor: pointer;
+  disable: ${({ disabled }) => (disabled ? 'true' : 'false')};
+  position: relative;
 `;
 
 const PreviewImage = styled.img`
@@ -122,6 +138,17 @@ const SubmitButton = styled.button`
   border-radius: 10px;
   padding: 14px 0;
   margin-top: 12vh;
+`;
+
+const ProgressOverlay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
 `;
 
 export default StudentPage;
