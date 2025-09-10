@@ -14,12 +14,12 @@ const ApplicationItem = () => {
         <Message>신청이유</Message>
       </UserInfo>
       <ButtonWrapper>
-        <DisapproveButton>
+        <RejectButton>
           <HiOutlineX />
-        </DisapproveButton>
-        <ApproveButton>
+        </RejectButton>
+        <AcceptButton>
           <HiCheck />
-        </ApproveButton>
+        </AcceptButton>
       </ButtonWrapper>
     </ItemWrapper>
   );
@@ -70,7 +70,7 @@ const ButtonWrapper = styled.div({
   gap: spacing.spacing2,
 });
 
-const ApproveButton = styled.button({
+const AcceptButton = styled.button({
   color: colors.white,
   backgroundColor: colors.primary,
   border: 'none',
@@ -84,7 +84,7 @@ const ApproveButton = styled.button({
   fontSize: '1.25rem',
 });
 
-const DisapproveButton = styled.button({
+const RejectButton = styled.button({
   color: colors.error,
   backgroundColor: colors.errorLight,
   border: 'none',
