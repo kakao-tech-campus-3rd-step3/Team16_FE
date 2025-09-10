@@ -1,15 +1,22 @@
 import { typography } from '@/styles/typography';
 import styled from '@emotion/styled';
 import useHeaderStore from '@/stores/useHeaderStore';
+import { HiOutlineChevronLeft } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
   const { left, center, right } = useHeaderStore();
+  const navigate = useNavigate();
+
+  const defaultLeft = (
+    <HiOutlineChevronLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
+  );
 
   if (!left && !center && !right) return null;
 
   return (
     <Wrapper>
-      <Section>{left}</Section>
+      <Section>{left ?? defaultLeft}</Section>
       <CenterSection>{center}</CenterSection>
       <Section>{right}</Section>
     </Wrapper>
