@@ -14,9 +14,11 @@ export const Header = () => {
 
   if (!left && !center && !right) return null;
 
+  const leftNode = left === null ? null : (left ?? defaultLeft);
+
   return (
     <Wrapper>
-      <Section>{left ?? defaultLeft}</Section>
+      <Section>{leftNode}</Section>
       <CenterSection>{center}</CenterSection>
       <Section>{right}</Section>
     </Wrapper>
