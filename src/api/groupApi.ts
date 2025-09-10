@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-export interface Review {
+interface Review {
   id: number;
   content: string;
 }
 
-export interface GroupHomeResponse {
+interface GroupHomeResponse {
   id: number;
   name: string;
   intro: string;
@@ -23,5 +23,26 @@ export const fetchGroupHome = async (_groupId: number): Promise<GroupHomeRespons
 
   // 실제 API 호출 (백엔드 준비되면 위 코드 삭제하고 아래 주석 해제)
   // const response = await axios.get(`/api/groups/${groupId}`);
+  // return response.data;
+};
+
+export const fetchGroupPosts = async (_groupId: number) => {
+  const response = await axios.get('/data/groupPosts.json');
+  return response.data;
+};
+
+interface GroupMembershipResponse {
+  isMember: boolean;
+}
+
+export const checkGroupMembership = async (_groupId: number): Promise<GroupMembershipResponse> => {
+  const isMember = false;
+
+  return {
+    isMember,
+  };
+
+  // 실제 API 호출 (백엔드 준비되면 위 코드 삭제하고 아래 주석 해제)
+  // const response = await axios.get(`/api/groups/${groupId}/membership`);
   // return response.data;
 };
