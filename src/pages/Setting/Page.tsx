@@ -3,10 +3,22 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
+const editProfile = () => {
+  //프로필 수정 페이지로 이동
+};
+
+const logout = () => {
+  //로그아웃 처리
+};
+
+const deleteAccount = () => {
+  //회원탈퇴 처리
+};
+
 const options = [
-  { label: '프로필 수정', action: 'editProfile' },
-  { label: '로그아웃', action: 'logout' },
-  { label: '회원탈퇴', action: 'deleteAccount' },
+  { label: '프로필 수정', action: editProfile },
+  { label: '로그아웃', action: logout },
+  { label: '회원탈퇴', action: deleteAccount },
 ];
 
 const SettingPage = () => {
