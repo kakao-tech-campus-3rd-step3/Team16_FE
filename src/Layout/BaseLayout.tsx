@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import type { ReactNode } from 'react';
 import { Header } from '@/components/common/Header';
+import useHeaderStore from '@/stores/useHeaderStore';
 
 type Props = {
   maxWidth?: number;
@@ -8,12 +9,19 @@ type Props = {
 };
 
 export const BaseLayout = ({ maxWidth = 720, children }: Props) => {
+  const { left, center, right } = useHeaderStore();
+  const hasHeader = !!(left || center || right);
+
   return (
     <Wrapper>
-      <FixedHeader maxWidth={maxWidth}>
-        <Header />
-      </FixedHeader>
-      <Container maxWidth={maxWidth}>{children}</Container>
+      {hasHeader && (
+        <FixedHeader maxWidth={maxWidth}>
+          <Header />
+        </FixedHeader>
+      )}
+      <Container maxWidth={maxWidth} hasHeader={hasHeader}>
+        {children}
+      </Container>
     </Wrapper>
   );
 };
@@ -37,6 +45,7 @@ const FixedHeader = styled.div<{ maxWidth: number }>(({ maxWidth }) => ({
   maxWidth: `${maxWidth}px`,
   width: '100%',
   zIndex: 1000,
+  position: 'fixed',
 }));
 
 type ContainerProps = {
