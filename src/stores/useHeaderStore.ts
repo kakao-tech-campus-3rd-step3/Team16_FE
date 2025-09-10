@@ -8,7 +8,7 @@ interface IHeaderState {
 }
 
 interface IHeaderActions {
-  setHeader: (content: Partial<IHeaderState>) => void;
+  setHeader: (content: IHeaderState) => void;
   resetHeader: () => void;
 }
 
@@ -16,7 +16,7 @@ type IHeaderStore = IHeaderState & IHeaderActions;
 
 const useHeaderStore = create<IHeaderStore>((set) => {
   const resetHeader = () => set({ left: null, center: null, right: null });
-  const setHeader = (content: Partial<IHeaderState>) => set((state) => ({ ...state, ...content }));
+  const setHeader = (content: IHeaderState) => set(content);
 
   return {
     left: null,
