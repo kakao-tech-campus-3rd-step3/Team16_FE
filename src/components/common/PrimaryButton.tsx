@@ -20,18 +20,15 @@ export default PrimaryButton;
 
 const ButtonSection = styled.section({
   display: 'flex',
-  flexDirection: 'column',
-  gap: spacing.spacing2,
-  margin: `${spacing.spacing4}px ${spacing.spacing4}px`,
   position: 'fixed',
+  width: '100%',
+  maxWidth: '720px',
   bottom: 0,
-  left: 0,
-  right: 0,
 });
 
 const Button = styled.button({
-  width: '100%',
-  padding: `${spacing.spacing4}px ${spacing.spacing4}px`,
+  padding: `${spacing.spacing4}px`,
+  margin: `${spacing.spacing4}px`,
   border: 'none',
   borderRadius: '8px',
   backgroundColor: colors.primary,
@@ -39,8 +36,11 @@ const Button = styled.button({
   ...typography.h3,
   cursor: 'pointer',
   transition: 'background-color 0.2s ease',
-
   '&:hover': {
     backgroundColor: colors.primaryDark,
   },
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%',
 });
