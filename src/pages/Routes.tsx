@@ -6,6 +6,7 @@ import StudentPage from './Student/Page';
 import Mypage from './Mypage/Page';
 import GroupPage from './Group/Page';
 import SettingPage from './Setting/Page';
+import LeavePage from './Leave/Page';
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
 export const Routes = () => {
@@ -18,6 +19,7 @@ export const Routes = () => {
       <Route path={'/mypage'} element={<Mypage />} />
       <Route path={'/setting'} element={<SettingPage />} />
       <Route path={'/group/:groupId'} element={<GroupPage />} />
+      <Route path={'/leave'} element={<LeavePage />} />
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
     </RouterRoutes>
