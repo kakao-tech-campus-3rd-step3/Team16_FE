@@ -15,11 +15,11 @@ const LeavePage = () => {
   const handleSubmit = async () => {
     try {
       // 1) 리뷰 먼저 저장
-      // await submitGroupReview(review);
-      await axios.post('/api/groups/review', { review });
+      // await postGroupReview(review);
+      await axios.post('/api/groups/review', { content: review });
 
       // 2) 리뷰 저장 성공 시 탈퇴 처리
-      // await leaveGroup();
+      // await postLeaveGroup();
       await axios.post('/api/groups/alarm/leave');
 
       alert('리뷰가 제출되고 모임에서 탈퇴되었습니다.');
