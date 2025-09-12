@@ -5,11 +5,15 @@ import GroupBoard from './GroupBoardPage';
 import Nav from './components/Navigator';
 import { useGroupMembership } from '@/hooks/useGroupMembership';
 import styled from '@emotion/styled';
+import { useHeader } from '@/hooks/useHeader';
+import { DashBoard } from './GroupDashBoardPage';
 
 const GroupPage = () => {
   const { groupId } = useParams();
   const { isMember, isLoading } = useGroupMembership(groupId);
   const [activeTab, setActiveTab] = useState('');
+
+  useHeader({ center: '스터디 그룹' });
 
   // 멤버십 상태에 따라 초기 탭 설정
   useEffect(() => {
@@ -21,7 +25,7 @@ const GroupPage = () => {
   const renderContent = () => {
     switch (activeTab) {
       case '대시보드':
-        return <div>대시보드 컴포넌트 (구현 예정)</div>;
+        return <DashBoard />;
       case '홈':
         return <GroupHome />;
       case '게시판':
@@ -43,8 +47,6 @@ const GroupPage = () => {
   );
 };
 
-const Wrapper = styled.div({
-  marginTop: '2.75rem',
-});
+const Wrapper = styled.div({});
 
 export default GroupPage;
