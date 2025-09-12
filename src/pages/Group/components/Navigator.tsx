@@ -49,13 +49,12 @@ const Navigator = ({ activeTab, onTabChange }: NavigatorProps) => {
 
 const Nav = styled.nav({
   position: 'sticky',
-  top: '2.75rem',
-  left: 0,
-  right: 0,
-  backgroundColor: '#fff',
-  zIndex: 9000,
+  top: '45px',
+  width: '100%',
+  height: '2.75rem',
   display: 'flex',
   flexDirection: 'row',
+  backgroundColor: 'white',
 });
 
 const Item = styled.div<{ isActive?: boolean }>(({ isActive }) => ({
