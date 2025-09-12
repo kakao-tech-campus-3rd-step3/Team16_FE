@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "type": "schedule_created",
+    "message": "새로운 모임 일정이 등록되었습니다.",
+    "groupId": 101,
+    "groupName": "주말 등산 모임",
+    "createdAt": "2025-09-12T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "type": "member_left",
+    "message": "김철수님이 모임을 탈퇴했습니다.",
+    "groupId": 101,
+    "groupName": "주말 등산 모임",
+    "createdAt": "2025-09-12T09:30:00Z",
+    "action": {
+      "label": "모임원 리뷰하기",
+      "url": "/groups/101/review"
+    }
+  }
+]
