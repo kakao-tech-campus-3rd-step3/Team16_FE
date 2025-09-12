@@ -85,6 +85,7 @@ const InputBox = styled.textarea({
   margin: `${spacing.spacing4}px`,
   border: 'none',
   outline: 'none',
+  resize: 'none',
   ...typography.body,
   color: colors.black,
   fontFamily: 'inherit',
