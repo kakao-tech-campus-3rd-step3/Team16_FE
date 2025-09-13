@@ -3,38 +3,60 @@ import { colors } from '@/styles/colors';
 import { Map, MapMarker, Circle, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import useKakaoLoader from '@/hooks/useKakaoLoader';
 import { RiMapPinUserLine } from 'react-icons/ri';
-import { FaMapMarkerAlt } from 'react-icons/fa';
 import mapMarker from '@/assets/MapMarker.svg';
+import { useState, useEffect } from 'react';
+import haversine from 'haversine-distance';
 
 const MapSection = () => {
   useKakaoLoader();
 
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const MeetingLocation = { lat: 35.17898169622223, lng: 126.90961034009142 }; //만남장소위치
+
+  //사용자 위치
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setUserLocation(null);
+      return;
+    }
+
+    const handleSuccess = (position: GeolocationPosition) => {
+      setUserLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    };
+
+    const handleError = () => {
+      console.log('위치 정보를 가져올 수 없습니다:');
+    };
+
+    // 위치를 지속적으로 감지
+    const watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    });
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, []);
+
   return (
-    <StyledMap
-      center={{
-        lat: 35.17898169622223,
-        lng: 126.90961034009142,
-      }}
-      level={2}
-    >
+    <StyledMap center={MeetingLocation} level={2}>
       <MapMarker
-        position={{
-          lat: 35.17898169622223,
-          lng: 126.90961034009142,
-        }}
+        position={MeetingLocation}
         image={{
           src: mapMarker,
           size: { width: 24, height: 35 },
         }}
       />
-      <CustomOverlayMap
-        position={{
-          lat: 35.17898169622223,
-          lng: 126.90911034009142,
-        }}
-      >
-        <UserLocationMarker />
-      </CustomOverlayMap>
+      {userLocation && (
+        <CustomOverlayMap position={userLocation}>
+          <UserLocationMarker />
+        </CustomOverlayMap>
+      )}
 
       <Circle
         center={{
@@ -62,11 +84,6 @@ const StyledMap = styled(Map)({
 const UserLocationMarker = styled(RiMapPinUserLine)({
   fontSize: '36px',
   color: colors.primaryDark,
-});
-
-const MeetingLocationMarker = styled(FaMapMarkerAlt)({
-  fontSize: '36px',
-  color: colors.primary,
 });
 
 export default MapSection;
