@@ -7,11 +7,18 @@ import mapMarker from '@/assets/MapMarker.svg';
 import { useState, useEffect } from 'react';
 import haversine from 'haversine-distance';
 
-const MapSection = () => {
+const ATTENDANCE_RADIUS = 50; // 출석인정 거리
+
+interface MapSectionProps {
+  isAttendanceValid: boolean;
+  setIsAttendanceValid: (value: boolean) => void;
+}
+
+const MapSection = ({ isAttendanceValid, setIsAttendanceValid }: MapSectionProps) => {
   useKakaoLoader();
 
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const MeetingLocation = { lat: 35.17898169622223, lng: 126.90961034009142 }; //만남장소위치
+  const MeetingLocation = { lat: 35.17898169622223, lng: 126.90961034009142 };
 
   //사용자 위치
   useEffect(() => {
@@ -43,6 +50,16 @@ const MapSection = () => {
     };
   }, []);
 
+  // 반경 50미터 이내인지 확인
+  useEffect(() => {
+    if (userLocation) {
+      const distance = haversine(userLocation, MeetingLocation);
+      if (distance <= ATTENDANCE_RADIUS) {
+        setIsAttendanceValid(true);
+      }
+    }
+  }, [userLocation]);
+
   return (
     <StyledMap center={MeetingLocation} level={2}>
       <MapMarker
@@ -68,7 +85,7 @@ const MapSection = () => {
         strokeColor={colors.primary}
         strokeOpacity={1}
         fillColor={colors.primary}
-        fillOpacity={0.1}
+        fillOpacity={isAttendanceValid ? 0.5 : 0.1}
       />
     </StyledMap>
   );

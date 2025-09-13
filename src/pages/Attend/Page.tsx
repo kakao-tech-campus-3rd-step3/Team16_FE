@@ -5,15 +5,24 @@ import InfoSection from './components/InfoSection';
 import { useHeader } from '@/hooks/useHeader';
 import MapSection from './components/MapSection';
 import AttendeeSection from './components/AttendeeSection';
+import { useState } from 'react';
 
 const AttendPage = () => {
   useHeader({ center: '출석' });
+  const [isAttendanceValid, setIsAttendanceValid] = useState<boolean>(false);
+
   return (
     <Wrapper>
       <InfoSection />
-      <MapSection />
+      <MapSection
+        isAttendanceValid={isAttendanceValid}
+        setIsAttendanceValid={setIsAttendanceValid}
+      />
       <AttendeeSection />
-      <PrimaryButton text="출석하기" />
+      <PrimaryButton
+        text={isAttendanceValid ? '출석하기' : '출석 인정 범위 밖입니다'}
+        disabled={!isAttendanceValid}
+      />
     </Wrapper>
   );
 };
