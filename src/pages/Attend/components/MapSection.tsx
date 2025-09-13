@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 import { Map, MapMarker, Circle, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import useKakaoLoader from '@/hooks/useKakaoLoader';
 import { RiMapPinUserLine } from 'react-icons/ri';
-import mapMarker from '@/assets/MapMarker.svg';
+import mapMarker from '@/assets/mapMarker.svg';
 import { useState, useEffect } from 'react';
 import haversine from 'haversine-distance';
 
