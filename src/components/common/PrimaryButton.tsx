@@ -6,12 +6,15 @@ import { typography } from '@/styles/typography';
 type PrimaryButtonProps = {
   text: string;
   onClick?: () => void;
+  disabled?: boolean;
 };
 
-const PrimaryButton = ({ text, onClick }: PrimaryButtonProps) => {
+const PrimaryButton = ({ text, onClick, disabled = false }: PrimaryButtonProps) => {
   return (
     <ButtonSection>
-      <Button onClick={onClick}>{text}</Button>
+      <Button onClick={onClick} disabled={disabled}>
+        {text}
+      </Button>
     </ButtonSection>
   );
 };
@@ -40,6 +43,9 @@ const Button = styled.button({
   transition: 'background-color 0.2s ease',
   '&:hover': {
     backgroundColor: colors.primaryDark,
+  },
+  '&:disabled': {
+    backgroundColor: colors.primaryMidLight,
   },
   display: 'flex',
   justifyContent: 'center',
