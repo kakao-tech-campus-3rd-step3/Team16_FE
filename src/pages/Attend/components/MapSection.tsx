@@ -3,6 +3,8 @@ import { colors } from '@/styles/colors';
 import { Map, MapMarker, Circle, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import useKakaoLoader from '@/hooks/useKakaoLoader';
 import { RiMapPinUserLine } from 'react-icons/ri';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import mapMarker from '@/assets/MapMarker.svg';
 
 const MapSection = () => {
   useKakaoLoader();
@@ -19,6 +21,10 @@ const MapSection = () => {
         position={{
           lat: 35.17898169622223,
           lng: 126.90961034009142,
+        }}
+        image={{
+          src: mapMarker,
+          size: { width: 24, height: 35 },
         }}
       />
       <CustomOverlayMap
@@ -56,6 +62,11 @@ const StyledMap = styled(Map)({
 const UserLocationMarker = styled(RiMapPinUserLine)({
   fontSize: '36px',
   color: colors.primaryDark,
+});
+
+const MeetingLocationMarker = styled(FaMapMarkerAlt)({
+  fontSize: '36px',
+  color: colors.primary,
 });
 
 export default MapSection;
