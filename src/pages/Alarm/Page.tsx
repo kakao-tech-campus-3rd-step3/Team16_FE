@@ -1,4 +1,3 @@
-import BottomNavigation from '@/components/common/BottomNavigation';
 import { useHeader } from '@/hooks/useHeader';
 import AlarmList from './components/AlarmList';
 import styled from '@emotion/styled';
@@ -10,7 +9,6 @@ const AlarmPage = () => {
       <ListContainer>
         <AlarmList />
       </ListContainer>
-      <BottomNavigation />
     </PageContainer>
   );
 };
