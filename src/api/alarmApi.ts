@@ -13,7 +13,7 @@ export type Alarm = {
 };
 
 export const getMockAlarms = async () => {
-  const res = await axios.get<Alarm[]>('/public/data/notifications.json');
+  const res = await axios.get<Alarm[]>('/data/notifications.json');
   return res.data;
 };
 
