@@ -8,7 +8,7 @@ import AttendeeSection from './components/AttendeeSection';
 import { useState } from 'react';
 
 const AttendPage = () => {
-  useHeader({ center: '출석' });
+  useHeader({ centerContent: '출석' });
   const [isAttendanceValid, setIsAttendanceValid] = useState<boolean>(false);
 
   return (

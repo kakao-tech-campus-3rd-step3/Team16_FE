@@ -2,16 +2,16 @@ import { create } from 'zustand';
 import type { ReactNode } from 'react';
 
 interface IHeaderState {
-  left: ReactNode | null | undefined;
-  center: string | null | undefined;
-  right: ReactNode | null | undefined;
+  leftContent: ReactNode | null | undefined;
+  centerContent: string | null | undefined;
+  rightContent: ReactNode | null | undefined;
 }
 
 interface IHeaderActions {
   setHeader: (content: {
-    left?: ReactNode | null;
-    center?: string | null;
-    right?: ReactNode | null;
+    leftContent?: ReactNode | null;
+    centerContent?: string | null;
+    rightContent?: ReactNode | null;
   }) => void;
   resetHeader: () => void;
 }
@@ -19,13 +19,14 @@ interface IHeaderActions {
 type IHeaderStore = IHeaderState & IHeaderActions;
 
 const useHeaderStore = create<IHeaderStore>((set) => ({
-  left: undefined,
-  center: undefined,
-  right: undefined,
+  leftContent: undefined,
+  centerContent: undefined,
+  rightContent: undefined,
 
   setHeader: (content) => set(content),
 
-  resetHeader: () => set({ left: undefined, center: undefined, right: undefined }),
+  resetHeader: () =>
+    set({ leftContent: undefined, centerContent: undefined, rightContent: undefined }),
 }));
 
 export default useHeaderStore;
