@@ -8,6 +8,7 @@ import GroupPage from './Group/Page';
 import SettingPage from './Setting/Page';
 import LeavePage from './Leave/Page';
 import PendingApplicationPage from './PendingApplicationPage/Page';
+import AlarmPage from './Alarm/Page';
 import AttendPage from './Attend/Page';
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
@@ -23,6 +24,7 @@ export const Routes = () => {
       <Route path={'/group/:groupId'} element={<GroupPage />} />
       <Route path={'/leave'} element={<LeavePage />} />
       <Route path={'/pending-application'} element={<PendingApplicationPage />} />
+      <Route path={'/alarm'} element={<AlarmPage />} />
       <Route path={'/group/:groupId/attend'} element={<AttendPage />} />
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
