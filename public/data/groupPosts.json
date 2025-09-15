@@ -1,0 +1,97 @@
+{
+  "items": [
+    {
+      "id": "1234",
+      "groupId": "g_1",
+      "author": {
+        "id": "u_9",
+        "nickname": "Eden",
+        "avatarUrl": null
+      },
+      "title": "첫 글",
+      "content": "안녕하세요, 첫 번째 게시글입니다!",
+      "images": [
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+      ],
+      "likeCount": 3,
+      "commentCount": 1,
+      "isLikedByMe": false,
+      "createdAt": "2025-09-01",
+      "updatedAt": "2025-09-01"
+    },
+    {
+      "id": "1235",
+      "groupId": "g_1",
+      "author": {
+        "id": "u_10",
+        "nickname": "포토그래퍼",
+        "avatarUrl": null
+      },
+      "title": "2025년 2차 정기 출사",
+      "content": "4월의 화창한 날씨와 2025년도 두 번째 출사를 다녀왔습니다. 정말 좋은 사진들을 많이 찍을 수 있었어요!",
+      "images": [
+        "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1471919743851-c4df8b6ee133?w=400&h=300&fit=crop"
+      ],
+      "likeCount": 12,
+      "commentCount": 5,
+      "isLikedByMe": true,
+      "createdAt": "2025-08-15",
+      "updatedAt": "2025-08-15"
+    },
+    {
+      "id": "1236",
+      "groupId": "g_1",
+      "author": {
+        "id": "u_11",
+        "nickname": "자연러버",
+        "avatarUrl": null
+      },
+      "title": "새벽 일출 촬영 후기",
+      "content": "새벽 5시에 일어나서 일출을 찍으러 갔습니다. 힘들었지만 정말 아름다운 순간을 담을 수 있었어요.",
+      "images": [
+        "https://images.unsplash.com/photo-1464822759844-d150ad6cc890?w=400&h=300&fit=crop"
+      ],
+      "likeCount": 8,
+      "commentCount": 3,
+      "isLikedByMe": false,
+      "createdAt": "2025-07-20",
+      "updatedAt": "2025-07-20"
+    },
+    {
+      "id": "1237",
+      "groupId": "g_1",
+      "author": {
+        "id": "u_12",
+        "nickname": "렌즈마니아",
+        "avatarUrl": null
+      },
+      "title": "새로 산 렌즈 리뷰",
+      "content": "70-200mm 렌즈를 새로 구입했는데, 망원 촬영이 정말 재미있네요! 다음 출사때 가져와서 같이 사용해봐요.",
+      "images": [],
+      "likeCount": 6,
+      "commentCount": 7,
+      "isLikedByMe": false,
+      "createdAt": "2025-06-10",
+      "updatedAt": "2025-06-10"
+    },
+    {
+      "id": "1238",
+      "groupId": "g_1",
+      "author": {
+        "id": "u_13",
+        "nickname": "야경사냥꾼",
+        "avatarUrl": null
+      },
+      "title": "도심 야경 촬영 팁",
+      "content": "어제 한강에서 야경을 찍었는데, 삼각대 필수입니다! 몇 가지 팁을 공유해드릴게요.",
+      "images": ["https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400&h=300&fit=crop"],
+      "likeCount": 15,
+      "commentCount": 9,
+      "isLikedByMe": true,
+      "createdAt": "2025-05-25",
+      "updatedAt": "2025-05-25"
+    }
+  ],
+  "nextCursor": null
+}
