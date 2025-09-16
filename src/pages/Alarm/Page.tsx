@@ -3,7 +3,7 @@ import AlarmList from './components/AlarmList';
 import styled from '@emotion/styled';
 
 const AlarmPage = () => {
-  useHeader({ center: '알림' });
+  useHeader({ centerContent: '알림' });
   return (
     <PageContainer>
       <ListContainer>
