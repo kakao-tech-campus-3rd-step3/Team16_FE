@@ -9,8 +9,8 @@ type Props = {
 };
 
 export const BaseLayout = ({ maxWidth = 720, children }: Props) => {
-  const { left, center, right } = useHeaderStore();
-  const hasHeader = !!(left || center || right);
+  const { leftContent, centerContent, rightContent } = useHeaderStore();
+  const hasHeader = !!(leftContent || centerContent || rightContent);
 
   return (
     <Wrapper>

@@ -5,22 +5,22 @@ import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
-  const { left, center, right } = useHeaderStore();
+  const { leftContent, centerContent, rightContent } = useHeaderStore();
   const navigate = useNavigate();
 
   const defaultLeft = (
     <HiOutlineChevronLeft size={20} style={{ cursor: 'pointer' }} onClick={() => navigate(-1)} />
   );
 
-  if (!left && !center && !right) return null;
+  if (!leftContent && !centerContent && !rightContent) return null;
 
-  const leftNode = left === null ? null : (left ?? defaultLeft);
+  const leftNode = leftContent === null ? null : (leftContent ?? defaultLeft);
 
   return (
     <Wrapper>
       <Section>{leftNode}</Section>
-      <CenterSection>{center}</CenterSection>
-      <Section>{right}</Section>
+      <CenterSection>{centerContent}</CenterSection>
+      <Section>{rightContent}</Section>
     </Wrapper>
   );
 };

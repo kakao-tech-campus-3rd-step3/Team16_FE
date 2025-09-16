@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useState } from 'react';
 
 const LeavePage = () => {
-  useHeader({ left: null, center: '탈퇴하기' });
+  useHeader({ leftContent: null, centerContent: '탈퇴하기' });
   const navigate = useNavigate();
   const [review, setReview] = useState('');
 
