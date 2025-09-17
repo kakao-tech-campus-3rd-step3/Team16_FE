@@ -35,6 +35,8 @@ const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
 
 const Wrapper = styled.div({
   gap: spacing.spacing2,
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const Title = styled.h2({
