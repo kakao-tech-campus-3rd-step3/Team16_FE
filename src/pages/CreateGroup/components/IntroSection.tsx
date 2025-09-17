@@ -27,7 +27,9 @@ const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
         placeholder="모임에 대한 소개를 입력해주세요"
       />
       <Bottom>
-        {errors.groupIntro && <ErrorMessage>{String(errors.groupIntro.message)}</ErrorMessage>}
+        {errors.groupIntro?.message && (
+          <ErrorMessage>{String(errors.groupIntro.message)}</ErrorMessage>
+        )}
         <TextLengthValidator currentLength={groupIntro.length} maxLength={MAX_LENGTH} />
       </Bottom>
     </Wrapper>

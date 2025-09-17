@@ -27,7 +27,9 @@ const NameSection = ({ register, errors, groupName }: NameSectionProps) => {
         placeholder="모임명을 입력해주세요"
       />
       <Bottom>
-        {errors.groupName && <ErrorMessage>{String(errors.groupName.message)}</ErrorMessage>}
+        {errors.groupName?.message && (
+          <ErrorMessage>{String(errors.groupName.message)}</ErrorMessage>
+        )}
         <TextLength currentLength={groupName.length} maxLength={MAX_LENGTH} />
       </Bottom>
     </Wrapper>
