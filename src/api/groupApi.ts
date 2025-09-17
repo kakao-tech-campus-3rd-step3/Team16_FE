@@ -57,3 +57,13 @@ export const fetchGroupSchedule = async (_groupId: number) => {
   const response = await axios.get('/data/groupSchedule.json');
   return response.data;
 };
+
+interface CreateGroupFormData {
+  groupName: string;
+  groupIntro: string;
+}
+
+export async function createGroupApi(data: CreateGroupFormData) {
+  const response = await axios.post('/data/createGroup.json', data);
+  return response.data;
+}
