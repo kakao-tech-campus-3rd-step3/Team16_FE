@@ -24,7 +24,6 @@ const NameSection = ({ register, errors, groupName }: NameSectionProps) => {
           },
         })}
         placeholder="모임명을 입력해주세요"
-        hasError={!!errors.groupName}
       />
       <Bottom>
         {errors.groupName && <ErrorMessage>{String(errors.groupName.message)}</ErrorMessage>}
@@ -45,16 +44,16 @@ const Title = styled.h2({
   marginLeft: spacing.spacing1,
 });
 
-const GroupNameInput = styled.input<{ hasError?: boolean }>(({ hasError }) => ({
+const GroupNameInput = styled.input({
   width: '100%',
   padding: '12px 16px',
-  backgroundColor: hasError ? colors.errorLight : colors.gray100,
-  border: hasError ? `1px solid ${colors.error}` : '1px solid #ccc',
+  backgroundColor: colors.gray100,
+  border: '1px solid #ccc',
   borderRadius: '8px',
   boxSizing: 'border-box',
   outline: 'none',
   ...typography.body,
-}));
+});
 
 const ErrorMessage = styled.span({
   ...typography.caption,

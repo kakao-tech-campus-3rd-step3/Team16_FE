@@ -24,7 +24,6 @@ const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
           },
         })}
         placeholder="모임에 대한 소개를 입력해주세요"
-        hasError={!!errors.groupIntro}
       />
       <Bottom>
         {errors.groupIntro && <ErrorMessage>{String(errors.groupIntro.message)}</ErrorMessage>}
@@ -43,19 +42,19 @@ const Title = styled.h2({
   marginLeft: spacing.spacing1,
 });
 
-const GroupIntroInput = styled.textarea<{ hasError?: boolean }>(({ hasError }) => ({
+const GroupIntroInput = styled.textarea({
   width: '100%',
   height: '200px',
   padding: '12px 16px',
-  backgroundColor: hasError ? colors.errorLight : colors.gray100,
-  border: hasError ? `1px solid ${colors.error}` : '1px solid #ccc',
+  backgroundColor: colors.gray100,
+  border: '1px solid #ccc',
   borderRadius: '8px',
   boxSizing: 'border-box',
   outline: 'none',
   resize: 'none',
   ...typography.body,
   fontFamily: typography.fontFamily,
-}));
+});
 
 const ErrorMessage = styled.span({
   ...typography.caption,
