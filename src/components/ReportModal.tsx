@@ -42,7 +42,11 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
     formState: { errors },
   } = useForm<ReportForm>({
     defaultValues: { reason: '', detail: '' },
+    mode: 'onChange',
+    reValidateMode: 'onChange',
   });
+
+  const errorMessage = errors.reason?.message || errors.detail?.message || '';
 
   useEffect(() => {
     if (!isOpen) {
@@ -101,7 +105,7 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
             },
           })}
         />
-        {errors.reason && <ErrorMessage>{errors.reason.message}</ErrorMessage>}
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 
         <Bottom>
           <TextLength currentLength={detail.length} maxLength={MAX_LENGTH} />
