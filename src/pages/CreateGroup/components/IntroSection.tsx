@@ -6,6 +6,7 @@ import TextLengthValidator from '@/components/common/TextLength';
 import type { IntroSectionProps } from '../type';
 
 const MAX_LENGTH = 200;
+const MIN_LENGTH = 8;
 
 const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
   return (
@@ -15,8 +16,8 @@ const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
         {...register('groupIntro', {
           required: '모임 소개를 입력해주세요.',
           minLength: {
-            value: 8,
-            message: '최소 8자 이상 입력해주세요.',
+            value: MIN_LENGTH,
+            message: `최소 ${MIN_LENGTH}자 이상 입력해주세요.`,
           },
           maxLength: {
             value: MAX_LENGTH,
@@ -27,7 +28,7 @@ const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
       />
       <Bottom>
         {errors.groupIntro && <ErrorMessage>{String(errors.groupIntro.message)}</ErrorMessage>}
-        <TextLengthValidator currentLength={groupIntro.length} maxLength={200} />
+        <TextLengthValidator currentLength={groupIntro.length} maxLength={MAX_LENGTH} />
       </Bottom>
     </Wrapper>
   );

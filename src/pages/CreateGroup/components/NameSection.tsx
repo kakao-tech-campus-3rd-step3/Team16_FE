@@ -6,6 +6,7 @@ import TextLength from '@/components/common/TextLength';
 import type { NameSectionProps } from '../type';
 
 const MAX_LENGTH = 10;
+const MIN_LENGTH = 2;
 
 const NameSection = ({ register, errors, groupName }: NameSectionProps) => {
   return (
@@ -15,8 +16,8 @@ const NameSection = ({ register, errors, groupName }: NameSectionProps) => {
         {...register('groupName', {
           required: '모임명을 입력해주세요.',
           minLength: {
-            value: 2,
-            message: '최소 2자 이상 입력해주세요.',
+            value: MIN_LENGTH,
+            message: `최소 ${MIN_LENGTH}자 이상 입력해주세요.`,
           },
           maxLength: {
             value: MAX_LENGTH,
