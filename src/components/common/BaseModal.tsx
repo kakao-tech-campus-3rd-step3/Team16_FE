@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
-import { spacing } from '@/styles/spacing';
+// import { spacing } from '@/styles/spacing';
 import { colors } from '@/styles/colors';
 import { keyframes } from '@emotion/react';
 
@@ -26,7 +26,8 @@ const BaseModal = ({
   return (
     <Overlay onClick={onClose}>
       <Content variant={variant} maxWidth={maxWidth} onClick={(e) => e.stopPropagation()}>
-        <Inner>{children}</Inner>
+        {/* <Inner>{children}</Inner> */}
+        {children}
       </Content>
     </Overlay>
   );
@@ -47,6 +48,8 @@ const fadeIn = keyframes({
 const Overlay = styled.div({
   position: 'absolute',
   inset: 0,
+  width: '100%',
+  height: '100%',
   background: 'rgba(0,0,0,0.4)',
   display: 'flex',
   justifyContent: 'center',
@@ -74,8 +77,8 @@ const Content = styled.div<{ variant: ModalVariant; maxWidth: number }>(
   })
 );
 
-const Inner = styled.div({
-  padding: spacing.spacing4,
-  boxSizing: 'border-box',
-  width: '100%',
-});
+// const Inner = styled.div({
+//   padding: spacing.spacing4,
+//   boxSizing: 'border-box',
+//   width: '100%',
+// });

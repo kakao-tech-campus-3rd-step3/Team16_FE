@@ -71,55 +71,63 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} variant="center" maxWidth={320}>
-      <Title>신고하기</Title>
+      <Wrapper>
+        <Title>신고하기</Title>
 
-      <form onSubmit={handleSubmit(submitHandler)}>
-        <ReasonList>
-          {REPORT_REASONS.map(({ code, label }) => (
-            <ReasonItem key={code}>
-              <Controller
-                name="reason"
-                control={control}
-                rules={{ required: '신고 사유를 선택해주세요.' }}
-                render={({ field }) => (
-                  <CustomCheckbox
-                    type="checkbox"
-                    checked={field.value === code}
-                    onChange={() => field.onChange(field.value === code ? '' : code)}
-                  />
-                )}
-              />
-              <span>{label}</span>
-            </ReasonItem>
-          ))}
-        </ReasonList>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <ReasonList>
+            {REPORT_REASONS.map(({ code, label }) => (
+              <ReasonItem key={code}>
+                <Controller
+                  name="reason"
+                  control={control}
+                  rules={{ required: '신고 사유를 선택해주세요.' }}
+                  render={({ field }) => (
+                    <CustomCheckbox
+                      type="checkbox"
+                      checked={field.value === code}
+                      onChange={() => field.onChange(field.value === code ? '' : code)}
+                    />
+                  )}
+                />
+                <span>{label}</span>
+              </ReasonItem>
+            ))}
+          </ReasonList>
 
-        <DetailTextarea
-          placeholder="신고사유를 적어주세요."
-          {...register('detail', {
-            maxLength: {
-              value: MAX_LENGTH,
-              message: `최대 ${MAX_LENGTH}자까지 입력 가능합니다.`,
-            },
-          })}
-        />
-        <Bottom>
-          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-          <TextLength currentLength={detail.length} maxLength={MAX_LENGTH} />
-        </Bottom>
+          <DetailTextarea
+            placeholder="신고사유를 적어주세요."
+            {...register('detail', {
+              maxLength: {
+                value: MAX_LENGTH,
+                message: `최대 ${MAX_LENGTH}자까지 입력 가능합니다.`,
+              },
+            })}
+          />
+          <Bottom>
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+            <TextLength currentLength={detail.length} maxLength={MAX_LENGTH} />
+          </Bottom>
 
-        <ButtonGroup>
-          <CancelButton type="button" onClick={onClose}>
-            취소하기
-          </CancelButton>
-          <SubmitButton type="submit">신고하기</SubmitButton>
-        </ButtonGroup>
-      </form>
+          <ButtonGroup>
+            <CancelButton type="button" onClick={onClose}>
+              취소하기
+            </CancelButton>
+            <SubmitButton type="submit">신고하기</SubmitButton>
+          </ButtonGroup>
+        </form>
+      </Wrapper>
     </BaseModal>
   );
 };
 
 export default ReportModal;
+
+const Wrapper = styled.div({
+  padding: spacing.spacing4,
+  boxSizing: 'border-box',
+  width: '100%',
+});
 
 const Title = styled.h2({
   ...typography.h2,
