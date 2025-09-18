@@ -25,6 +25,7 @@ export const DashBoard = () => {
         <Header>
           <LuCalendarCheck size={24} strokeWidth={1.5} />
           <Title>다가오는 우리 모임의 일정</Title>
+          <IoIosArrowForward size={20} />
         </Header>
         <Body>
           <Text>{groupSchedule.date}</Text>
@@ -111,6 +112,7 @@ const Body = styled.div({
 
 const Title = styled.h2({
   ...typography.h2,
+  flex: 1,
 });
 
 const Text = styled.p({
