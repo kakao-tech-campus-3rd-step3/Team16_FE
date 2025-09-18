@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 import styled from '@emotion/styled';
-// import { spacing } from '@/styles/spacing';
-import { colors } from '@/styles/colors';
 import { keyframes } from '@emotion/react';
 
 type ModalVariant = 'center' | 'bottom';
@@ -46,7 +44,7 @@ const fadeIn = keyframes({
 });
 
 const Overlay = styled.div({
-  position: 'absolute',
+  position: 'fixed',
   inset: 0,
   width: '100%',
   height: '100%',
@@ -59,15 +57,15 @@ const Overlay = styled.div({
 
 const Content = styled.div<{ variant: ModalVariant; maxWidth: number }>(
   ({ variant, maxWidth }) => ({
-    background: colors.white,
+    ...(variant === 'center' && { background: 'rgba(0,0,0,0.4)' }),
     borderRadius: variant === 'bottom' ? '12px 12px 0 0' : '8px',
     width: '100%',
     maxWidth: variant === 'bottom' ? '720px' : `${maxWidth}px`,
     animation: variant === 'bottom' ? `${slideUp} 0.3s ease` : `${fadeIn} 0.2s ease`,
     ...(variant === 'bottom'
       ? {
-          position: 'absolute',
-          bottom: 0,
+          position: 'fixed',
+          bottom: 20,
           left: '50%',
           transform: 'translateX(-50%)',
         }
