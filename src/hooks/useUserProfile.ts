@@ -1,14 +1,16 @@
-import { fetchProfileImage, fetchNickname } from '../api/userApi';
+import { fetchProfileImageUrl, fetchNickname } from '@/api/userApi';
 import { useQuery } from '@tanstack/react-query';
 
 export const useUserProfile = () => {
-  const { data: profileImg } = useQuery({
-    queryKey: ['profileImage'],
-    queryFn: fetchProfileImage,
+  const { data: profileImg, isLoading: isLoadingProfileImg } = useQuery({
+    queryKey: ['profileImg'],
+    queryFn: fetchProfileImageUrl,
+    staleTime: Infinity,
   });
-  const { data: nickname } = useQuery({
+  const { data: nickname, isLoading: isLoadingNickname } = useQuery({
     queryKey: ['nickname'],
     queryFn: fetchNickname,
+    staleTime: Infinity,
   });
-  return { profileImg, nickname, isLoading: !profileImg || !nickname };
+  return { profileImg, nickname, isLoading: isLoadingProfileImg || isLoadingNickname };
 };
