@@ -12,7 +12,7 @@ import type { CreateGroupFormData } from './type';
 
 const CreateGroupPage = () => {
   const navigate = useNavigate();
-  useHeader({ center: '모임 만들기' });
+  useHeader({ centerContent: '모임 만들기' });
 
   const {
     handleSubmit,
