@@ -62,6 +62,7 @@ interface GroupHomeResponse {
   capacity: number;
   reviews: Review[];
   groupImg: string;
+}
 
 interface CreateGroupFormData {
   groupName: string;
