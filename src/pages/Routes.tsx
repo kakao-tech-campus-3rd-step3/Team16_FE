@@ -12,6 +12,8 @@ import AlarmPage from './Alarm/Page';
 import AttendPage from './Attend/Page';
 import CreateGroupPage from './CreateGroup/Page';
 import PastSchedulePage from './PastSchedule.tsx/Page';
+import DemoPage from './DemoPage';
+
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
 export const Routes = () => {
@@ -30,6 +32,7 @@ export const Routes = () => {
       <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
       <Route path={'/create-group'} element={<CreateGroupPage />} />
       <Route path={'/group/:groupId/past-schedule'} element={<PastSchedulePage />} />
+      <Route path={'/demo'} element={<DemoPage />} />
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
     </RouterRoutes>
