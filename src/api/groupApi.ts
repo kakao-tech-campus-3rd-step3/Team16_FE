@@ -62,4 +62,13 @@ interface GroupHomeResponse {
   capacity: number;
   reviews: Review[];
   groupImg: string;
+
+interface CreateGroupFormData {
+  groupName: string;
+  groupIntro: string;
+}
+
+export async function createGroupApi(data: CreateGroupFormData) {
+  const response = await axios.post('/data/createGroup.json', data);
+  return response.data;
 }
