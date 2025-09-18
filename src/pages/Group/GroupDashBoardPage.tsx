@@ -3,16 +3,30 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { LuCalendarCheck } from 'react-icons/lu';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import { IoCheckmarkDoneSharp } from 'react-icons/io5';
 import { CiShare2 } from 'react-icons/ci';
 import { IoIosArrowForward } from 'react-icons/io';
+import { IoIosArrowDown } from 'react-icons/io';
 import { useGroupDashboardData } from '@/hooks/useGroupDashboardData';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaHistory } from 'react-icons/fa';
+import DateDiff from './components/DateDiff';
 
 export const DashBoard = () => {
   const { groundRules, groupSchedule, isDashBoardLoading } = useGroupDashboardData('1');
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   if (isDashBoardLoading) {
     return <div>로딩중...</div>;
+  }
+
+  const upcomingSchedules = Array.isArray(groupSchedule)
+    ? groupSchedule.filter((sch: ScheduleType) => isUpcoming(sch.endTime))
+    : [];
+
+  if (!open) {
+    upcomingSchedules.splice(1);
   }
 
   return (
@@ -22,17 +36,26 @@ export const DashBoard = () => {
         <IoIosArrowForward size={20} />
       </GroupPromotion>
       <Schedule>
-        <Header>
+        <Header style={{ cursor: 'pointer' }} onClick={() => setOpen((prev) => !prev)}>
           <LuCalendarCheck size={24} strokeWidth={1.5} />
-          <Title>다가오는 우리 모임의 일정</Title>
-          <IoIosArrowForward size={20} />
+          <Title>우리 모임의 일정</Title>
+          <AccordionArrow size={20} open={open} />
         </Header>
         <Body>
-          <Text>{groupSchedule.date}</Text>
-          <Text>
-            시간: {groupSchedule.startTime} ~ {groupSchedule.endTime}
-          </Text>
-          <Text>참여인원: {groupSchedule.participants}명</Text>
+          {upcomingSchedules.map((sch: ScheduleType) => (
+            <AccordionItem
+              key={sch.id}
+              onClick={() => navigate(`/group/1/attend/${sch.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
+              <Info>
+                <Text>시작: {formatDateToKorean(sch.startTime)}</Text>
+                <Text>종료: {formatDateToKorean(sch.endTime)}</Text>
+                <Text>참여인원: {sch.capacity}명</Text>
+              </Info>
+              <DateDiff date={sch.startTime} />
+            </AccordionItem>
+          ))}
         </Body>
       </Schedule>
       <GroundRule>
@@ -41,33 +64,37 @@ export const DashBoard = () => {
           <Title>모임 규칙</Title>
         </Header>
         <Body>
-          <Text>{groundRules.content}</Text>
+          {groundRules.map((rule: Ruletype) => (
+            <Text key={rule.ruleId}>{rule.content}</Text>
+          ))}
         </Body>
       </GroundRule>
       <CardSection>
-        <Card>
-          <IoCheckmarkDoneSharp size={24} color={colors.primary} />
-          <Attend>출석관리</Attend>
+        <Card onClick={() => navigate('/group/1/past-schedule')}>
+          <FaHistory size={24} color={colors.primary} />
+          <Attend>지난 일정</Attend>
         </Card>
         <Card>
           <CiShare2 size={24} color={colors.primary} strokeWidth={1} />
           <TimePicker>공유 시간 플래너</TimePicker>
         </Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
-        <Card>우리 모임의 카드</Card>
       </CardSection>
     </Wrapper>
   );
+};
+
+//현재시간보다 종료시간이 이후면 다가오는 일정으로 구분하는함수
+const isUpcoming = (endTime: string) => {
+  const now = new Date();
+  const scheduleTime = new Date(endTime);
+  return scheduleTime > now;
+};
+
+const formatDateToKorean = (isoString: string): string => {
+  const date = new Date(isoString);
+  const hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${hours}:${minutes}`;
 };
 
 const Wrapper = styled.div({
@@ -154,5 +181,42 @@ const PromotionHeader = styled.div({
   alignItems: 'center',
   gap: '10px',
 });
+
+const AccordionArrow = styled(IoIosArrowDown)<{ open: boolean }>(({ open }) => ({
+  transition: 'transform 0.2s',
+  transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+}));
+
+const AccordionItem = styled.div({
+  padding: '8px 0',
+  borderBottom: `1px solid ${colors.gray200}`,
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+});
+
+const Info = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+interface Ruletype {
+  ruleId: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ScheduleType {
+  id: number;
+  title: string;
+  description: string;
+  capacity: number;
+  startTime: string;
+  endTime: string;
+}
 
 export default DashBoard;
