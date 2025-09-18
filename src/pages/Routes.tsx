@@ -26,7 +26,7 @@ export const Routes = () => {
       <Route path={'/leave'} element={<LeavePage />} />
       <Route path={'/pending-application'} element={<PendingApplicationPage />} />
       <Route path={'/alarm'} element={<AlarmPage />} />
-      <Route path={'/group/:groupId/attend'} element={<AttendPage />} />
+      <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
       <Route path={'/create-group'} element={<CreateGroupPage />} />
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
