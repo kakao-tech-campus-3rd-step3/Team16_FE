@@ -48,10 +48,11 @@ const Navigator = ({ activeTab, onTabChange }: NavigatorProps) => {
 };
 
 const Nav = styled.nav({
-  position: 'sticky',
+  position: 'fixed',
   top: '45px',
   width: '100%',
   height: '2.75rem',
+  maxWidth: '720px',
   display: 'flex',
   flexDirection: 'row',
   backgroundColor: 'white',
