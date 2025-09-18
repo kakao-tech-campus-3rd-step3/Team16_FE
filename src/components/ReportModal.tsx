@@ -42,8 +42,6 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
     formState: { errors },
   } = useForm<ReportForm>({
     defaultValues: { reason: '', detail: '' },
-    mode: 'onChange',
-    reValidateMode: 'onChange',
   });
 
   const errorMessage = errors.reason?.message || errors.detail?.message || '';
@@ -105,9 +103,8 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
             },
           })}
         />
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-
         <Bottom>
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <TextLength currentLength={detail.length} maxLength={MAX_LENGTH} />
         </Bottom>
 
