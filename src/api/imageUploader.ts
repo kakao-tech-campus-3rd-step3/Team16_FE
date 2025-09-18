@@ -27,6 +27,9 @@ export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
   if (completionUrl) {
     await apiClient.put(completionUrl, { fileName, type });
   }
+
+  const imageUrl = presignedUrl.split('?')[0];
+  return imageUrl;
 };
 
 interface UploadApiOptions {
