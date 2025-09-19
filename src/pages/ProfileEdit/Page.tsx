@@ -47,8 +47,7 @@ const ProfileEditPage = () => {
     },
 
     onSuccess: (result) => {
-      queryClient.setQueryData(['profileImg'], result.newProfileImg);
-      queryClient.setQueryData(['nickname'], result.newNickname);
+      queryClient.setQueryData(['userProfile'], [result.newProfileImg, result.newNickname]);
       navigate('/setting');
     },
     onError: () => {
