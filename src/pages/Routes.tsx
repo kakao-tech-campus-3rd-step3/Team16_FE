@@ -1,7 +1,7 @@
 import { Route, Routes as RouterRoutes } from 'react-router';
 import HomePage from './Home/Page';
 import LoginPage from './Login/Page';
-import NicknamePage from './Nickname/Page';
+import ProfileEditPage from './ProfileEdit/Page';
 import StudentPage from './Student/Page';
 import Mypage from './Mypage/Page';
 import GroupPage from './Group/Page';
@@ -21,7 +21,7 @@ export const Routes = () => {
     <RouterRoutes>
       {/* <Route element={<PrivateRoute />}> */}
       <Route path={'/'} element={<HomePage />} />
-      <Route path={'/nickname'} element={<NicknamePage />} />
+      <Route path={'/profile-edit'} element={<ProfileEditPage />} />
       <Route path={'/student'} element={<StudentPage />} />
       <Route path={'/mypage'} element={<Mypage />} />
       <Route path={'/setting'} element={<SettingPage />} />

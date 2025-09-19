@@ -22,7 +22,7 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
   const { type, completionUrl } = options;
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
-  const { mutate, isPending } = useMutation<void, Error, File>({
+  const { mutate, isPending } = useMutation<string, Error, File>({
     mutationFn: (file: File) =>
       uploadImageApi(file, {
         type,
