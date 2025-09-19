@@ -30,8 +30,8 @@ const PastSchedulePage = () => {
       {pastSchedules.length === 0 ? (
         <EmptyText>지난 일정이 없습니다.</EmptyText>
       ) : (
-        pastSchedules.map((sch: any, idx: number) => (
-          <ScheduleItem key={idx} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
+        pastSchedules.map((sch: any) => (
+          <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
             <Header>
               {sch.startTime.split('T')[0]}
               <IoIosArrowForward />
