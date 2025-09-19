@@ -47,6 +47,8 @@ const GroupPage = () => {
   );
 };
 
-const Wrapper = styled.div({});
+const Wrapper = styled.div({
+  paddingTop: '2.5rem',
+});
 
 export default GroupPage;
