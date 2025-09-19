@@ -5,6 +5,8 @@ import { useState, useRef } from 'react';
 import { colors } from '@/styles/colors';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 interface ImgSectionProps {
   setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
   profileImgUrl: string | null;
@@ -24,7 +26,7 @@ const ImgSection = ({ setSelectedFile, profileImgUrl }: ImgSectionProps) => {
 
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE) {
       alert('파일 크기는 5MB를 초과할 수 없습니다.');
       return;
     }
