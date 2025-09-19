@@ -26,7 +26,7 @@ interface GroupMembershipResponse {
 }
 
 export const checkGroupMembership = async (_groupId: number): Promise<GroupMembershipResponse> => {
-  const isMember = false;
+  const isMember = true;
 
   return {
     isMember,
@@ -38,14 +38,20 @@ export const checkGroupMembership = async (_groupId: number): Promise<GroupMembe
 };
 
 //대시보드 페이지 api
-export const fetchGroundRules = async (groupId: number) => {
-  const response = await apiClient.get(`/groups/${groupId}/rule`);
+export const fetchGroundRules = async (_groupId: number) => {
+  const response = await axios.get('/data/groundRules.json');
   return response.data;
+  // 실제 API 호출 (백엔드 준비되면 위 코드 삭제하고 아래 주석 해제)
+  // const response = await apiClient.get(`/groups/${groupId}/rule`);
+  // return response.data;
 };
 
 export const fetchGroupSchedule = async (_groupId: number) => {
   const response = await axios.get('/data/groupSchedule.json');
   return response.data;
+  // 실제 API 호출 (백엔드 준비되면 위 코드 삭제하고 아래 주석 해제)
+  // const response = await apiClient.get(`/groups/${groupId}/rule`);
+  // return response.data;
 };
 
 interface Review {
