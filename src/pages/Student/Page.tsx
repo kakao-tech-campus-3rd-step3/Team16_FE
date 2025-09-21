@@ -5,6 +5,7 @@ import { useState, useRef } from 'react';
 import studentCard from '@/assets/studentCard.svg';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import CircularProgress from './components/CircularProgress';
+import { IoCamera } from 'react-icons/io5';
 
 const StudentPage = () => {
   const { verificationStatus } = useAuthStore();
@@ -13,8 +14,8 @@ const StudentPage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { uploadImage, isUploading, uploadProgress } = useImageUpload({
-    uploadUrl: '/api/auth/s3-image-url',
-    completionUrl: '/api/auth/s3-image-url',
+    type: 'VERIFICATION',
+    completionUrl: '/auth/student-verification',
   });
 
   async function handleSubmit() {
@@ -49,6 +50,12 @@ const StudentPage = () => {
     <Wrapper>
       <Description>학생증, 재학증명서, 입학증명서를 아래 예시처럼 제출해주세요.</Description>
       <ImageBox onClick={handleImageBoxClick} disabled={isUploading}>
+        {!selectedFile && !isUploading && (
+          <UploadGuide>
+            <IoCamera size={32} />
+            <span>클릭하여 사진 업로드</span>
+          </UploadGuide>
+        )}
         <PreviewImage src={previewUrl} alt="" />
         {isUploading && (
           <ProgressOverlay>
@@ -105,9 +112,25 @@ const ImageBox = styled.div<{ disabled: boolean }>`
   color: ${theme.colors.gray400};
   font-size: 14px;
   margin-top: 15vh;
-  cursor: pointer;
-  disable: ${({ disabled }) => (disabled ? 'true' : 'false')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   position: relative;
+`;
+
+const UploadGuide = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 16px;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 2;
 `;
 
 const PreviewImage = styled.img`
