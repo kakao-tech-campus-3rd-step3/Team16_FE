@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 import { GoBellFill } from 'react-icons/go';
+import { useNavigate } from 'react-router-dom';
 
 const SearchFieldSection = () => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <SearchField></SearchField>
-      <GoBellFill size={32} />
+      <BellIcon onClick={() => navigate('/alarm')} />
     </Wrapper>
   );
 };
@@ -30,4 +32,10 @@ const SearchField = styled.input(({ theme }) => ({
     outline: 'none',
   },
   padding: '0 16px',
+}));
+
+const BellIcon = styled(GoBellFill)(({ theme }) => ({
+  color: theme.colors.black,
+  cursor: 'pointer',
+  fontSize: '32px',
 }));

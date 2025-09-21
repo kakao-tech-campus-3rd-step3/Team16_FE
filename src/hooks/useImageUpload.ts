@@ -3,8 +3,8 @@ import { uploadImageApi } from '@/api/imageUploader';
 import { useState } from 'react';
 
 interface UseImageUploadOptions {
-  uploadUrl: string; // 이미지 업로드용 URL
-  completionUrl: string; // 이미지 제출 완료 알림용 URL
+  type: string;
+  completionUrl: string;
 }
 
 function handleUploadError(error: any) {
@@ -19,13 +19,13 @@ function handleUploadError(error: any) {
 }
 
 export const useImageUpload = (options: UseImageUploadOptions) => {
-  const { uploadUrl, completionUrl } = options;
+  const { type, completionUrl } = options;
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const { mutate, isPending } = useMutation<string, Error, File>({
     mutationFn: (file: File) =>
       uploadImageApi(file, {
-        uploadUrl,
+        type,
         completionUrl,
         onProgress: (progress) => setUploadProgress(progress),
       }),

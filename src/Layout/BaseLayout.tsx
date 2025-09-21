@@ -9,8 +9,8 @@ type Props = {
 };
 
 export const BaseLayout = ({ maxWidth = 720, children }: Props) => {
-  const { left, center, right } = useHeaderStore();
-  const hasHeader = !!(left || center || right);
+  const { leftContent, centerContent, rightContent } = useHeaderStore();
+  const hasHeader = !!(leftContent || centerContent || rightContent);
 
   return (
     <Wrapper>
@@ -52,11 +52,12 @@ type ContainerProps = {
   maxWidth?: number;
   hasHeader?: boolean;
 };
-const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
+const Container = styled.main<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
   maxWidth: `${maxWidth}px`,
   width: '100%',
   minHeight: '100vh',
-  height: '100%',
   backgroundColor: theme.colors.white,
-  paddingTop: hasHeader ? '2.75rem' : '0',
+  paddingTop: hasHeader ? '3rem' : '0',
+  position: 'relative',
+  margin: '0 auto',
 }));

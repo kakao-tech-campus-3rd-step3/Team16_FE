@@ -1,13 +1,19 @@
 import { Route, Routes as RouterRoutes } from 'react-router';
 import HomePage from './Home/Page';
 import LoginPage from './Login/Page';
-import NicknamePage from './Nickname/Page';
+import ProfileEditPage from './ProfileEdit/Page';
 import StudentPage from './Student/Page';
 import Mypage from './Mypage/Page';
 import GroupPage from './Group/Page';
 import SettingPage from './Setting/Page';
 import LeavePage from './Leave/Page';
 import PendingApplicationPage from './PendingApplicationPage/Page';
+import AlarmPage from './Alarm/Page';
+import AttendPage from './Attend/Page';
+import CreateGroupPage from './CreateGroup/Page';
+import PastSchedulePage from './PastSchedule.tsx/Page';
+import DemoPage from './DemoPage';
+
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
 export const Routes = () => {
@@ -15,13 +21,18 @@ export const Routes = () => {
     <RouterRoutes>
       {/* <Route element={<PrivateRoute />}> */}
       <Route path={'/'} element={<HomePage />} />
-      <Route path={'/nickname'} element={<NicknamePage />} />
+      <Route path={'/profile-edit'} element={<ProfileEditPage />} />
       <Route path={'/student'} element={<StudentPage />} />
       <Route path={'/mypage'} element={<Mypage />} />
       <Route path={'/setting'} element={<SettingPage />} />
       <Route path={'/group/:groupId'} element={<GroupPage />} />
       <Route path={'/leave'} element={<LeavePage />} />
       <Route path={'/pending-application'} element={<PendingApplicationPage />} />
+      <Route path={'/alarm'} element={<AlarmPage />} />
+      <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
+      <Route path={'/create-group'} element={<CreateGroupPage />} />
+      <Route path={'/group/:groupId/past-schedule'} element={<PastSchedulePage />} />
+      <Route path={'/demo'} element={<DemoPage />} />
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
     </RouterRoutes>
