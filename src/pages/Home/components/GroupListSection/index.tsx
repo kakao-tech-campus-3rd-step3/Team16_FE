@@ -14,7 +14,7 @@ const GroupListSection = () => {
                 <GroupName>지식 한줌</GroupName>
                 <TagBadge tag="안전" />
               </GroupHeader>
-              <GroupDesc>서로 한 줌의 지식을 나누는 사람들</GroupDesc>
+              <GroupDesc>서로 한 줌의 지식을 나누는 사람</GroupDesc>
               <GroupTag>#스터디</GroupTag>
             </GroupInfo>
           </GroupListItem>
