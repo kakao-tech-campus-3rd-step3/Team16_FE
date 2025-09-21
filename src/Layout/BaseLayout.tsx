@@ -9,13 +9,8 @@ type Props = {
 };
 
 export const BaseLayout = ({ maxWidth = 720, children }: Props) => {
-<<<<<<< HEAD
   const { left, center, right } = useHeaderStore();
   const hasHeader = !!(left || center || right);
-=======
-  const { leftContent, centerContent, rightContent } = useHeaderStore();
-  const hasHeader = !!(leftContent || centerContent || rightContent);
->>>>>>> develop
 
   return (
     <Wrapper>
@@ -57,7 +52,6 @@ type ContainerProps = {
   maxWidth?: number;
   hasHeader?: boolean;
 };
-<<<<<<< HEAD
 const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
   maxWidth: `${maxWidth}px`,
   width: '100%',
@@ -65,14 +59,4 @@ const Container = styled.div<ContainerProps>(({ maxWidth, hasHeader, theme }) =>
   height: '100%',
   backgroundColor: theme.colors.white,
   paddingTop: hasHeader ? '2.75rem' : '0',
-=======
-const Container = styled.main<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
-  maxWidth: `${maxWidth}px`,
-  width: '100%',
-  minHeight: '100vh',
-  backgroundColor: theme.colors.white,
-  paddingTop: hasHeader ? '3rem' : '0',
-  position: 'relative',
-  margin: '0 auto',
->>>>>>> develop
 }));

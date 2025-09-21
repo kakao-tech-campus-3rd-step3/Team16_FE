@@ -3,18 +3,18 @@ import useHeaderStore from '@/stores/useHeaderStore';
 import type { ReactNode } from 'react';
 
 type HeaderContent = {
-  leftContent?: ReactNode | null;
-  centerContent?: string | null;
-  rightContent?: ReactNode | null;
+  left?: ReactNode | null;
+  center?: string | null;
+  right?: ReactNode | null;
 };
 
-export const useHeader = ({ leftContent, centerContent, rightContent }: HeaderContent) => {
+export const useHeader = ({ left, center, right }: HeaderContent) => {
   const { setHeader, resetHeader } = useHeaderStore.getState();
   useEffect(() => {
-    setHeader({ leftContent, centerContent, rightContent });
+    setHeader({ left, center, right });
 
     return () => {
       resetHeader();
     };
-  }, [leftContent, centerContent, rightContent, setHeader, resetHeader]);
+  }, [left, center, right, setHeader, resetHeader]);
 };

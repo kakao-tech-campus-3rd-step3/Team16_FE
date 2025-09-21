@@ -1,5 +1,4 @@
 import axios from 'axios';
-<<<<<<< HEAD
 
 interface UploadApiOptions {
   uploadUrl: string;
@@ -20,19 +19,6 @@ export const uploadImageApi = async (file: File, options: UploadApiOptions): Pro
   } = await axios.post<PresignedUrlResponse>(uploadUrl, {
     imageFileName: file.name,
     imageFileType: file.type,
-=======
-import { apiClient } from '@/api/apiClient';
-
-export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
-  const { type, completionUrl, onProgress } = options;
-
-  // 1. Presigned URL 요청
-  const {
-    data: { url: presignedUrl, fileName },
-  } = await apiClient.post<PresignedUrlResponse>('/image/presigned', {
-    fileExtension: file.name.split('.').pop()?.toUpperCase(),
-    type: type,
->>>>>>> develop
   });
 
   // 2. S3로 업로드
@@ -46,7 +32,6 @@ export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
     },
   });
 
-<<<<<<< HEAD
   const imageUrl = presignedUrl.split('?')[0];
 
   // 3. 업로드 완료 알림
@@ -57,24 +42,3 @@ export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
   // 4. 최종 URL 반환
   return imageUrl;
 };
-=======
-  // 3. 업로드 완료 알림
-  if (completionUrl) {
-    await apiClient.put(completionUrl, { fileName, type });
-  }
-
-  const imageUrl = presignedUrl.split('?')[0];
-  return imageUrl;
-};
-
-interface UploadApiOptions {
-  type: string;
-  completionUrl?: string;
-  onProgress?: (progress: number) => void;
-}
-
-interface PresignedUrlResponse {
-  url: string;
-  fileName: string;
-}
->>>>>>> develop

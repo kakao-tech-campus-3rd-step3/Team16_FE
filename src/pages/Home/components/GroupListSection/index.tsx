@@ -1,49 +1,26 @@
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import TagBadge from '@/components/common/TagBadge';
-import { useQuery } from '@tanstack/react-query';
-import { fetchGroups } from '@/api/groupApi';
-import { useNavigate } from 'react-router-dom';
 
 const GroupListSection = () => {
-  const navigate = useNavigate();
-
-  const {
-    data: groups,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['groups'],
-    queryFn: fetchGroups,
-  });
-
-  if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>에러가 발생했습니다.</div>;
-
   return (
-    <GroupListContainer>
-      {groups &&
-        groups.map((group: any) => (
-          <GroupListItem
-            key={group.groupId}
-            onClick={() => {
-              navigate(`/group/${group.groupId}`);
-            }}
-          >
-            <GroupImg>
-              <Img src={group.coverImageUrl} alt="" />
-            </GroupImg>
+    <>
+      <GroupListContainer>
+        {Array.from({ length: 10 }).map((_, idx) => (
+          <GroupListItem key={idx}>
+            <GroupImg />
             <GroupInfo>
               <GroupHeader>
-                <GroupName>{group.name}</GroupName>
-                <TagBadge tag={group.safetyTag} />
+                <GroupName>지식 한줌</GroupName>
+                <TagBadge tag="안전" />
               </GroupHeader>
-              <GroupDesc>{group.intro}</GroupDesc>
-              <GroupTag />
+              <GroupDesc>서로 한 줌의 지식을 나누는 사람들</GroupDesc>
+              <GroupTag>#스터디</GroupTag>
             </GroupInfo>
           </GroupListItem>
         ))}
-    </GroupListContainer>
+      </GroupListContainer>
+    </>
   );
 };
 
@@ -71,14 +48,6 @@ const GroupImg = styled.div`
   border-radius: 8px;
   background-color: #ddd; /* 임시 배경 */
   flex-shrink: 0;
-  overflow: hidden;
-`;
-
-const Img = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
 `;
 
 const GroupInfo = styled.div`

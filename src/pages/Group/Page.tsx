@@ -13,11 +13,7 @@ const GroupPage = () => {
   const { isMember, isLoading } = useGroupMembership(groupId);
   const [activeTab, setActiveTab] = useState('');
 
-<<<<<<< HEAD
   useHeader({ center: '스터디 그룹' });
-=======
-  useHeader({ centerContent: '스터디 그룹' });
->>>>>>> develop
 
   // 멤버십 상태에 따라 초기 탭 설정
   useEffect(() => {
@@ -51,12 +47,6 @@ const GroupPage = () => {
   );
 };
 
-<<<<<<< HEAD
 const Wrapper = styled.div({});
-=======
-const Wrapper = styled.div({
-  paddingTop: '2.5rem',
-});
->>>>>>> develop
 
 export default GroupPage;

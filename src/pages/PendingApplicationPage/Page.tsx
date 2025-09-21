@@ -5,7 +5,7 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import { useHeader } from '@/hooks/useHeader';
 
 const PendingApplicationPage = () => {
-  useHeader({ centerContent: '참가신청 대기' });
+  useHeader({ center: '참가신청 대기' });
   return (
     <Wrapper>
       <ApplicationItem />

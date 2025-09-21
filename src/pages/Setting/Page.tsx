@@ -2,30 +2,27 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { useNavigate } from 'react-router-dom';
-import defaultUserImg from '@/assets/defaultUserImg.svg';
+
+const editProfile = () => {
+  //프로필 수정 페이지로 이동
+};
+
+const logout = () => {
+  //로그아웃 처리
+};
+
+const deleteAccount = () => {
+  //회원탈퇴 처리
+};
+
+const options = [
+  { label: '프로필 수정', action: editProfile },
+  { label: '로그아웃', action: logout },
+  { label: '회원탈퇴', action: deleteAccount },
+];
 
 const SettingPage = () => {
   const { profileImg, nickname, isLoading } = useUserProfile();
-  const navigate = useNavigate();
-
-  const editProfile = () => {
-    navigate('/profile-edit');
-  };
-
-  const logout = () => {
-    //로그아웃 처리
-  };
-
-  const deleteAccount = () => {
-    //회원탈퇴 처리
-  };
-
-  const options = [
-    { label: '프로필 수정', action: editProfile },
-    { label: '로그아웃', action: logout },
-    { label: '회원탈퇴', action: deleteAccount },
-  ];
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -34,12 +31,12 @@ const SettingPage = () => {
   return (
     <Wrapper>
       <ProfileSection>
-        <ProfileImg src={profileImg ?? defaultUserImg} />
+        <ProfileImg src={profileImg} />
         <Nickname>{nickname}</Nickname>
       </ProfileSection>
 
       {options.map((option) => (
-        <Option key={option.label} onClick={option.action}>
+        <Option key={option.label}>
           <span style={{ paddingLeft: '15px' }}>{option.label}</span>
         </Option>
       ))}
