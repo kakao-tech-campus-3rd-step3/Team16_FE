@@ -1,4 +1,4 @@
-import { Route, Routes as RouterRoutes } from 'react-router';
+import { Route, Routes as RouterRoutes, Outlet } from 'react-router';
 import HomePage from './Home/Page';
 import LoginPage from './Login/Page';
 import ProfileEditPage from './ProfileEdit/Page';
@@ -13,6 +13,9 @@ import AttendPage from './Attend/Page';
 import CreateGroupPage from './CreateGroup/Page';
 import PastSchedulePage from './PastSchedule.tsx/Page';
 import DemoPage from './DemoPage';
+import CreateSchedulePage from './CreateSchedule/Page';
+import LocationPage from './LocationInput/Page';
+import CreateScheduleProvider from './CreateSchedule/CreateScheduleProvider';
 
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
@@ -33,6 +36,18 @@ export const Routes = () => {
       <Route path={'/create-group'} element={<CreateGroupPage />} />
       <Route path={'/group/:groupId/past-schedule'} element={<PastSchedulePage />} />
       <Route path={'/demo'} element={<DemoPage />} />
+      <Route
+        element={
+          <CreateScheduleProvider>
+            <Outlet />
+          </CreateScheduleProvider>
+        }
+      >
+        <Route path={'/create-schedule/:groupId'} element={<CreateSchedulePage />} />
+        <Route path={'/create-schedule/:groupId/:planId'} element={<CreateSchedulePage />} />
+        <Route path={'/location-input/:groupId'} element={<LocationPage />} />
+        <Route path={'/location-input/:groupId/:planId'} element={<LocationPage />} />
+      </Route>
       {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
     </RouterRoutes>
