@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
-import { useGroupDashboardData } from '@/hooks/useGroupDashboardData';
+import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useHeader } from '@/hooks/useHeader';
 import { IoIosArrowForward } from 'react-icons/io';
@@ -13,13 +13,15 @@ const isPast = (dateStr: string) => {
   return date < now;
 };
 
-const PastSchedulePage = () => {
+const AllSchedulePage = () => {
   const { groupId } = useParams();
-  useHeader({ centerContent: '지난 일정' });
+  useHeader({ centerContent: '모든 일정' });
   const navigate = useNavigate();
-  const { groupSchedule, isDashBoardLoading } = useGroupDashboardData(String(groupId));
+  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule(
+    String(groupId)
+  );
 
-  if (isDashBoardLoading) return <div>로딩중...</div>;
+  if (isGroupScheduleLoading) return <div>로딩중...</div>;
 
   const pastSchedules = Array.isArray(groupSchedule)
     ? groupSchedule.filter((sch: any) => isPast(sch.startTime)).reverse()
@@ -28,7 +30,7 @@ const PastSchedulePage = () => {
   return (
     <Wrapper>
       {pastSchedules.length === 0 ? (
-        <EmptyText>지난 일정이 없습니다.</EmptyText>
+        <EmptyText>일정이 없습니다.</EmptyText>
       ) : (
         pastSchedules.map((sch: any) => (
           <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
@@ -44,7 +46,7 @@ const PastSchedulePage = () => {
   );
 };
 
-export default PastSchedulePage;
+export default AllSchedulePage;
 
 const Wrapper = styled.div({
   margin: '0 auto',
