@@ -123,9 +123,7 @@ const LocationInputPage = () => {
         </Map>
       </MapContainer>
 
-      <ButtonContainer>
-        <PrimaryButton text="완료" onClick={handleComplete} disabled={!selectedLocation} />
-      </ButtonContainer>
+      <PrimaryButton text="완료" onClick={handleComplete} disabled={!selectedLocation} />
     </PageContainer>
   );
 };
@@ -133,7 +131,7 @@ const LocationInputPage = () => {
 const PageContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  height: '100vh',
+  height: '85vh',
   backgroundColor: colors.white,
 });
 
@@ -175,11 +173,6 @@ const SearchButton = styled.button({
 const MapContainer = styled.div({
   flex: 1,
   zIndex: 0,
-});
-
-const ButtonContainer = styled.div({
-  padding: '16px 20px',
-  borderTop: `1px solid ${colors.gray200}`,
 });
 
 export default LocationInputPage;
