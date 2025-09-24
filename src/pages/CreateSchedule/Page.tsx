@@ -28,10 +28,9 @@ const CreateEventPage = () => {
   const [activeEditor, setActiveEditor] = useState(null);
   const formValues = watch();
   const { formState } = useFormContext();
-
   useEffect(() => {
     if (!formState.isDirty && scheduleData) {
-      reset(toFormDefaultValues(scheduleData));
+      reset(scheduleData);
     }
   }, [scheduleData]);
 
@@ -88,20 +87,6 @@ const CreateEventPage = () => {
     </PageContainer>
   );
 };
-
-export function toFormDefaultValues(scheduleData: any) {
-  return {
-    date: new Date(scheduleData.startTime),
-    title: scheduleData.title,
-    time: scheduleData.startTime.slice(11, 16), // 'HH:MM'
-    location: {
-      name: scheduleData.location.name,
-      latitude: scheduleData.location.latitude,
-      longitude: scheduleData.location.longitude,
-    },
-    capacity: scheduleData.capacity,
-  };
-}
 
 const PageContainer = styled.div({
   padding: 24,
