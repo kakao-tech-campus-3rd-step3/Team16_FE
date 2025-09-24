@@ -9,10 +9,9 @@ const MAX_LENGTH = 200;
 
 interface DescriptionProps {
   control: any;
-  description: string;
 }
 
-const Description = ({ control, description }: DescriptionProps) => {
+const Description = ({ control }: DescriptionProps) => {
   return (
     <Wrapper>
       <Controller
@@ -33,7 +32,7 @@ const Description = ({ control, description }: DescriptionProps) => {
             />
             <Bottom>
               {error?.message && <ErrorMessage>{String(error.message)}</ErrorMessage>}
-              <TextLengthValidator currentLength={description.length} maxLength={MAX_LENGTH} />
+              <TextLengthValidator currentLength={field.value.length} maxLength={MAX_LENGTH} />
             </Bottom>
           </>
         )}

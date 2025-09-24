@@ -82,10 +82,19 @@ const CreateEventPage = () => {
           <Value>{formValues.capacity}명</Value>
         </SummaryItem>
         {activeEditor === 'memberCount' && <MemberCountEditor control={control} />}
+
+        {/* 모임 소개 */}
+        <SummaryItem onClick={() => openEditor('description')}>
+          <Label>설명</Label>
+          <Value>
+            {formValues.description.length > 8
+              ? formValues.description.slice(0, 8) + '...'
+              : formValues.description}
+          </Value>
+        </SummaryItem>
+        {activeEditor === 'description' && <Description control={control} />}
       </SummaryList>
 
-      {/* 모임 소개 */}
-      <Description control={control} description={formValues.description} />
       <PrimaryButton text={pagePurpose} onClick={handleSubmit(onSubmit)} disabled={!isFormValid} />
     </PageContainer>
   );
@@ -105,6 +114,7 @@ const Title = styled.input({
 const SummaryList = styled.div({
   display: 'flex',
   flexDirection: 'column',
+  marginBottom: 32,
 });
 
 const SummaryItem = styled.div({
