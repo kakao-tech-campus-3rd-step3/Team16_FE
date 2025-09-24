@@ -6,6 +6,7 @@ type FormValues = {
   startTime: Date;
   location: { name: string; latitude: number; longitude: number };
   capacity: number;
+  description: string;
 };
 
 type Props = {
@@ -27,6 +28,7 @@ export const CreateScheduleProvider: React.FC<Props> = ({ children }) => {
         longitude: 126.90613446497647,
       },
       capacity: 4,
+      description: '',
     },
   });
 

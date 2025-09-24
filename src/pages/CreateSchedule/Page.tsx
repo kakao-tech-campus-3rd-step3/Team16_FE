@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import MemberCountEditor from './components/MemberCountEditor';
 import TimePicker from './components/TimePicker';
 import { useGroupPlan } from '@/hooks/useGroupPlan';
+import Description from './components/Description';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -83,6 +84,8 @@ const CreateEventPage = () => {
         {activeEditor === 'memberCount' && <MemberCountEditor control={control} />}
       </SummaryList>
 
+      {/* 모임 소개 */}
+      <Description control={control} description={formValues.description} />
       <PrimaryButton text={pagePurpose} onClick={handleSubmit(onSubmit)} disabled={!isFormValid} />
     </PageContainer>
   );
