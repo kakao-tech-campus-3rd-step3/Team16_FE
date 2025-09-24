@@ -53,7 +53,6 @@ const TimePicker = ({ control }: { control: any }) => {
               const newDate = new Date(value);
               newDate.setMinutes(Number(newMinute));
               onChange(newDate);
-              console.log(newDate);
             }
           }
         };
