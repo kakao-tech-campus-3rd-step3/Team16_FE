@@ -33,7 +33,7 @@ const CreateEventPage = () => {
     if (!formState.isDirty && scheduleData) {
       reset(toFormDefaultValues(scheduleData));
     }
-  }, [scheduleData, formState.isDirty, reset]);
+  }, [scheduleData]);
 
   const onSubmit = (data: any) => {
     alert(JSON.stringify(data, null, 2));
@@ -61,11 +61,11 @@ const CreateEventPage = () => {
         {/* 날짜 및 시간 */}
         <SummaryItem onClick={() => openEditor('dateTime')}>
           <Label>날짜 및 시간</Label>
-          <Value>{`${format(formValues.date, 'MM월 dd일')} ${formValues.time}`}</Value>
+          <Value>{`${format(formValues.startTime, 'MM월 dd일')} ${format(formValues.startTime, 'HH:mm')}`}</Value>
         </SummaryItem>
         {activeEditor === 'dateTime' && (
           <>
-            <DatePicker control={control} date={formValues.date} />
+            <DatePicker control={control} startTime={formValues.startTime} />
             <TimePicker control={control} />
           </>
         )}

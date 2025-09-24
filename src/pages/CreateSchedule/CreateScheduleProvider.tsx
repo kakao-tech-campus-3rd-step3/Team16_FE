@@ -3,8 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 type FormValues = {
   title: string;
-  date: Date;
-  time: string;
+  startTime: Date;
   location: { name: string; latitude: number; longitude: number };
   memberCount: number;
 };
@@ -17,8 +16,7 @@ export const CreateScheduleProvider: React.FC<Props> = ({ children }) => {
   const methods = useForm<FormValues>({
     defaultValues: {
       title: '',
-      date: new Date(),
-      time: '14:00',
+      startTime: new Date(),
       location: {
         name: '전남대학교 용봉탑',
         latitude: 35.17529475708064,

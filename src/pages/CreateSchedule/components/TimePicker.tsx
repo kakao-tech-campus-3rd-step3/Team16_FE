@@ -13,10 +13,11 @@ const TimePicker = ({ control }: { control: any }) => {
 
   return (
     <Controller
-      name="time"
+      name="startTime"
       control={control}
       render={({ field: { onChange, value } }) => {
-        const [selectedHour, selectedMinute] = value.split(':');
+        const selectedHour = String(value.getHours()).padStart(2, '0');
+        const selectedMinute = String(value.getMinutes()).padStart(2, '0');
 
         // 컴포넌트가 처음 렌더링될 때 현재 시간으로 스크롤을 이동
         useEffect(() => {
@@ -42,12 +43,17 @@ const TimePicker = ({ control }: { control: any }) => {
           if (type === 'hour') {
             const newHour = hours[index];
             if (newHour !== selectedHour) {
-              onChange(`${newHour}:${selectedMinute}`);
+              const newDate = new Date(value);
+              newDate.setHours(Number(newHour));
+              onChange(newDate);
             }
           } else {
             const newMinute = minutes[index];
             if (newMinute !== selectedMinute) {
-              onChange(`${selectedHour}:${newMinute}`);
+              const newDate = new Date(value);
+              newDate.setMinutes(Number(newMinute));
+              onChange(newDate);
+              console.log(newDate);
             }
           }
         };

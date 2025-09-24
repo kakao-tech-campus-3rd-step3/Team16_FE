@@ -5,8 +5,8 @@ import { colors } from '@/styles/colors';
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-const DateTimePicker = ({ control, date }: { control: any; date: Date }) => {
-  const [selectedDate, setSelectedDate] = useState(date);
+const DateTimePicker = ({ control, startTime }: { control: any; startTime: Date }) => {
+  const [selectedDate, setSelectedDate] = useState(startTime);
 
   const today = new Date();
   const currentYear = selectedDate.getFullYear();
@@ -101,7 +101,7 @@ const DateTimePicker = ({ control, date }: { control: any; date: Date }) => {
           {days.map((day, index) => (
             <Controller
               key={index}
-              name="date"
+              name="startTime"
               control={control}
               render={({ field }) => {
                 return (
