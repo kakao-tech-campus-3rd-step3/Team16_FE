@@ -5,9 +5,8 @@ import { colors } from '@/styles/colors';
 
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-const DateTimePicker = ({ control, startTime }: { control: any; startTime: Date }) => {
+const DatePicker = ({ control, startTime }: { control: any; startTime: Date }) => {
   const [selectedDate, setSelectedDate] = useState(startTime);
-
   const today = new Date();
   const currentYear = selectedDate.getFullYear();
   const currentMonth = selectedDate.getMonth();
@@ -197,4 +196,4 @@ const CalendarDay = styled.div<CalendarDayProps>(({ $isSelected, $isToday, $isPr
   color: $isPrevDay ? colors.gray400 : colors.black,
 }));
 
-export default DateTimePicker;
+export default DatePicker;
