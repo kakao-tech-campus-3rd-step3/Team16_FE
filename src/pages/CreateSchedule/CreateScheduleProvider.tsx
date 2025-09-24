@@ -16,7 +16,11 @@ export const CreateScheduleProvider: React.FC<Props> = ({ children }) => {
   const methods = useForm<FormValues>({
     defaultValues: {
       title: '',
-      startTime: new Date(),
+      startTime: (() => {
+        const d = new Date();
+        d.setHours(d.getHours() + 1, 0, 0, 0);
+        return d;
+      })(),
       location: {
         name: '전남대학교 용봉탑',
         latitude: 35.17529475708064,
