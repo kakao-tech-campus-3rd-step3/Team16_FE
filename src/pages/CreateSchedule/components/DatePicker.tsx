@@ -109,9 +109,21 @@ const DatePicker = ({ control, startTime }: { control: any; startTime: Date }) =
                     $isPrevDay={isPrevDay(day)}
                     $isToday={isToday(day)}
                     onClick={() => {
-                      if (day && new Date(currentYear, currentMonth, day) >= today) {
-                        setSelectedDate(new Date(currentYear, currentMonth, day));
-                        field.onChange(new Date(currentYear, currentMonth, day));
+                      if (
+                        day &&
+                        new Date(currentYear, currentMonth, day) >=
+                          new Date(today.setHours(0, 0, 0, 0))
+                      ) {
+                        const baseDate = field.value;
+                        const newDate = new Date(
+                          currentYear,
+                          currentMonth,
+                          day,
+                          baseDate.getHours(),
+                          baseDate.getMinutes()
+                        );
+                        setSelectedDate(newDate);
+                        field.onChange(newDate);
                       }
                     }}
                   >
