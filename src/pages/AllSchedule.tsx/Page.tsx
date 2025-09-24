@@ -27,21 +27,45 @@ const AllSchedulePage = () => {
     ? groupSchedule.filter((sch: any) => isPast(sch.startTime)).reverse()
     : [];
 
+  const upcomingSchedules = Array.isArray(groupSchedule)
+    ? groupSchedule.filter((sch: any) => !isPast(sch.startTime)).reverse()
+    : [];
+
+  if (pastSchedules.length === 0) {
+    return (
+      <Wrapper>
+        <EmptyText>일정이 없습니다.</EmptyText>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
-      {pastSchedules.length === 0 ? (
-        <EmptyText>일정이 없습니다.</EmptyText>
-      ) : (
-        pastSchedules.map((sch: any) => (
-          <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
-            <Header>
-              {sch.startTime.split('T')[0]}
-              <IoIosArrowForward />
-            </Header>
-            <InfoText> {sch.title}</InfoText>
-          </ScheduleItem>
-        ))
-      )}
+      <Title>다가오는 일정</Title>
+      {upcomingSchedules.map((sch: any) => (
+        //편집 페이지로 이동
+        <ScheduleItem
+          key={sch.id}
+          onClick={() => navigate(`/create-schedule/${groupId}/${sch.id}`)}
+        >
+          <Header>
+            {sch.startTime.split('T')[0]}
+            <IoIosArrowForward />
+          </Header>
+          <InfoText> {sch.title}</InfoText>
+        </ScheduleItem>
+      ))}
+      <Title>지난 일정</Title>
+      {pastSchedules.map((sch: any) => (
+        //출석관리 페이지로 이동
+        <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
+          <Header>
+            {sch.startTime.split('T')[0]}
+            <IoIosArrowForward />
+          </Header>
+          <InfoText> {sch.title}</InfoText>
+        </ScheduleItem>
+      ))}
     </Wrapper>
   );
 };
@@ -78,4 +102,9 @@ const Header = styled.div({
 const InfoText = styled.div({
   ...typography.body,
   marginBottom: 4,
+});
+
+const Title = styled.div({
+  ...typography.h2,
+  margin: '24px 0 16px 0',
 });
