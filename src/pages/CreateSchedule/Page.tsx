@@ -79,7 +79,7 @@ const CreateEventPage = () => {
         {/* 인원 */}
         <SummaryItem onClick={() => openEditor('memberCount')}>
           <Label>인원</Label>
-          <Value>{formValues.memberCount}명</Value>
+          <Value>{formValues.capacity}명</Value>
         </SummaryItem>
         {activeEditor === 'memberCount' && <MemberCountEditor control={control} />}
       </SummaryList>
@@ -99,7 +99,7 @@ export function toFormDefaultValues(scheduleData: any) {
       latitude: scheduleData.location.latitude,
       longitude: scheduleData.location.longitude,
     },
-    memberCount: scheduleData.capacity,
+    capacity: scheduleData.capacity,
   };
 }
 

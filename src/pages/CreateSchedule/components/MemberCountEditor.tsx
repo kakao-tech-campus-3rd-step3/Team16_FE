@@ -5,7 +5,7 @@ import { colors } from '@/styles/colors';
 const MemberCountEditor = ({ control }: { control: any }) => (
   <EditorContainer>
     <Controller
-      name="memberCount"
+      name="capacity"
       control={control}
       render={({ field: { value, onChange } }) => (
         <MemberCountContainer>
