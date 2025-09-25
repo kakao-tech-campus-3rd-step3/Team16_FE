@@ -34,9 +34,8 @@ export const Routes = () => {
       <Route path={'/alarm'} element={<AlarmPage />} />
       <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
       <Route path={'/create-group'} element={<CreateGroupPage />} />
-      <Route path={'/group/:groupId/past-schedule'} element={<PastSchedulePage />} />
-      <Route path={'/member-review'} element={<MemberReview />} />
       <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
+      <Route path={'/member-review'} element={<MemberReview />} />
       <Route path={'/demo'} element={<DemoPage />} />
       <Route
         element={
