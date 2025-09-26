@@ -23,10 +23,9 @@ const CreateEventPage = () => {
   const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId), {
     enabled: isEdit,
   });
-  const { control, handleSubmit, watch, reset } = useFormContext();
+  const { control, formState, handleSubmit, watch, reset } = useFormContext();
   const [activeEditor, setActiveEditor] = useState(null);
   const formValues = watch();
-  const { formState } = useFormContext();
   useEffect(() => {
     if (!formState.isDirty && scheduleData) {
       reset(scheduleData);
