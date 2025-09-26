@@ -20,11 +20,9 @@ const CreateEventPage = () => {
   const pagePurpose = isEdit ? '일정 수정' : '일정 생성';
   useHeader({ centerContent: pagePurpose });
 
-  const groupPlanQuery = isEdit
-    ? useGroupPlan(Number(groupId), Number(planId))
-    : { data: null, isLoading: false };
-
-  const { data: scheduleData, isLoading } = groupPlanQuery;
+  const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId), {
+    enabled: isEdit,
+  });
   const { control, handleSubmit, watch, reset } = useFormContext();
   const [activeEditor, setActiveEditor] = useState(null);
   const formValues = watch();
