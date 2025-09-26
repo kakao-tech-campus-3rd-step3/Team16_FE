@@ -6,16 +6,19 @@ import { IoDocumentTextOutline } from 'react-icons/io5';
 import { CiShare2 } from 'react-icons/ci';
 import { IoIosArrowForward } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
-import { useGroupDashboardData } from '@/hooks/useGroupDashboardData';
+import { useGroundRules } from '@/hooks/useGroundRules';
+import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHistory } from 'react-icons/fa';
 import DateDiff from './components/DateDiff';
+import { FaCalendarAlt } from 'react-icons/fa';
 
 export const DashBoard = () => {
-  const { groundRules, groupSchedule, isDashBoardLoading } = useGroupDashboardData('1');
+  const { data: groundRules, isLoading: isGroundRulesLoading } = useGroundRules('1');
+  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule('1');
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const isDashBoardLoading = isGroundRulesLoading || isGroupScheduleLoading;
 
   if (isDashBoardLoading) {
     return <div>로딩중...</div>;
@@ -64,15 +67,15 @@ export const DashBoard = () => {
           <Title>모임 규칙</Title>
         </Header>
         <Body>
-          {groundRules.map((rule: Ruletype) => (
+          {(groundRules ?? []).map((rule: Ruletype) => (
             <Text key={rule.ruleId}>{rule.content}</Text>
           ))}
         </Body>
       </GroundRule>
       <CardSection>
-        <Card onClick={() => navigate('/group/1/past-schedule')}>
-          <FaHistory size={24} color={colors.primary} />
-          <Attend>지난 일정</Attend>
+        <Card onClick={() => navigate('/group/1/schedule')}>
+          <FaCalendarAlt size={24} color={colors.primary} />
+          <Attend>일정</Attend>
         </Card>
         <Card>
           <CiShare2 size={24} color={colors.primary} strokeWidth={1} />

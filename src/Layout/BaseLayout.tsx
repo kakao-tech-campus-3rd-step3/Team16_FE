@@ -55,7 +55,7 @@ type ContainerProps = {
 const Container = styled.main<ContainerProps>(({ maxWidth, hasHeader, theme }) => ({
   maxWidth: `${maxWidth}px`,
   width: '100%',
-  minHeight: '100vh',
+  minHeight: hasHeader ? 'calc(100vh - 3rem)' : '100vh',
   backgroundColor: theme.colors.white,
   paddingTop: hasHeader ? '3rem' : '0',
   position: 'relative',
