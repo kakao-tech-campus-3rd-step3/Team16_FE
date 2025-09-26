@@ -13,10 +13,10 @@ import AttendPage from './Attend/Page';
 import CreateGroupPage from './CreateGroup/Page';
 import AllSchedulePage from './AllSchedule.tsx/Page';
 import DemoPage from './DemoPage';
+import MemberReview from './MemberReview/Page';
 import CreateSchedulePage from './CreateSchedule/Page';
 import LocationPage from './LocationInput/Page';
 import CreateScheduleProvider from './CreateSchedule/CreateScheduleProvider';
-
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
 export const Routes = () => {
@@ -35,6 +35,7 @@ export const Routes = () => {
       <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
       <Route path={'/create-group'} element={<CreateGroupPage />} />
       <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
+      <Route path={'/member-review'} element={<MemberReview />} />
       <Route path={'/demo'} element={<DemoPage />} />
       <Route
         element={
