@@ -63,7 +63,7 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
   }, [progresses, totalFiles]);
 
   return {
-    uploadImage: mutate, // 기존 이름(콜백형)
+    uploadImages: mutate, // 기존 이름(콜백형)
     uploadImagesAsync: mutateAsync, // await 가능한 형태
     isUploading: isPending,
     uploadProgress: totalProgress, // 전체 진행률 반환
