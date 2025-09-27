@@ -13,7 +13,7 @@ const StudentPage = () => {
   const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
   const [selectedFile, setSelectedFile] = useState<File[] | null>(null);
 
-  const { uploadImage, isUploading, uploadProgress } = useImageUpload({
+  const { uploadImagesAsync, isUploading, uploadProgress } = useImageUpload({
     type: 'VERIFICATION',
     completionUrl: '/auth/student-verification',
     request_url: '/image/presigned',
@@ -25,7 +25,7 @@ const StudentPage = () => {
       return;
     }
 
-    await uploadImage(selectedFile);
+    await uploadImagesAsync(selectedFile);
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
