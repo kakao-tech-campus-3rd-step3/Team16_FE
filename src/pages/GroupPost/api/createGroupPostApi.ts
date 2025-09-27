@@ -7,14 +7,6 @@ export interface CreateGroupPostRequest {
   imageUrls?: string[];
 }
 
-export interface CreateGroupPostResponse {
-  postId: string;
-}
-
 export const createGroupPostApi = async (data: CreateGroupPostRequest) => {
-  console.log(data);
-
-  const response = await apiClient.post(`/groups/posts`, data);
-  console.log(response.data);
-  return response.data;
+  await apiClient.post(`/groups/posts`, data);
 };
