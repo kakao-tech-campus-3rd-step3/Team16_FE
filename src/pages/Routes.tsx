@@ -17,6 +17,7 @@ import MemberReview from './MemberReview/Page';
 import CreateSchedulePage from './CreateSchedule/Page';
 import LocationPage from './LocationInput/Page';
 import CreateScheduleProvider from './CreateSchedule/CreateScheduleProvider';
+import CreateGroundRule from './CreateGroundRule.tsx/Page';
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
 export const Routes = () => {
@@ -37,6 +38,7 @@ export const Routes = () => {
       <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
       <Route path={'/member-review'} element={<MemberReview />} />
       <Route path={'/demo'} element={<DemoPage />} />
+      <Route path={'/create-ground-rule/:groupId'} element={<CreateGroundRule />} />
       <Route
         element={
           <CreateScheduleProvider>
