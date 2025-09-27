@@ -15,6 +15,7 @@ export const useCreateGroupPost = (groupId: number) => {
 
   return {
     createGroupPost: mutateAsync,
+    isPosting: mutation.isPending,
   };
 };
 
