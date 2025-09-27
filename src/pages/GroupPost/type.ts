@@ -4,7 +4,6 @@ interface GroupPostFormData {
   title: string;
   content: string;
   imageUrls?: string[];
-  imageFiles?: File[];
 }
 
 interface ContentSectionProps {
