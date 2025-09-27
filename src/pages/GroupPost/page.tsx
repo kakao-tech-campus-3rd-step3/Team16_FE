@@ -47,7 +47,7 @@ const GroupPostPage = () => {
   const formValues = watch();
   const { title, content } = formValues;
 
-  const { createGroupPost } = useCreateGroupPost(Number(groupId));
+  const { createGroupPost, isPosting } = useCreateGroupPost(Number(groupId));
 
   const requestUrl = `/image/presigned`;
   const { uploadImagesAsync, isUploading } = useImageUpload({
@@ -56,20 +56,18 @@ const GroupPostPage = () => {
   });
   const onSubmit = async (data: GroupPostFormData) => {
     try {
-      let uploadedImageUrls = data.imageUrls;
-
       if (imageFiles && imageFiles.length > 0) {
-        uploadedImageUrls = await uploadImagesAsync(imageFiles);
+        data.imageUrls = await uploadImagesAsync(imageFiles);
       }
       await createGroupPost(data);
+      alert('게시글 작성이 완료되었습니다!');
+      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } });
     } catch (error) {
-      alert('이미지 업로드 또는 게시글 작성 중 오류가 발생했습니다.');
+      alert('게시글 작성 중 오류가 발생했습니다.');
     }
-    alert('게시글 작성이 완료되었습니다!');
-    navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } });
   };
 
-  if (isUploading) {
+  if (isUploading || isPosting) {
     return <LoadingSpinner />;
   }
 
