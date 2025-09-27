@@ -7,6 +7,8 @@ import { FaRegComment } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGroupPosts } from '@/api/groupApi';
 import { useParams } from 'react-router-dom';
+import { FaPencilAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 interface Author {
   id: string;
@@ -35,7 +37,7 @@ interface GroupPostsResponse {
 
 const GroupBoard = () => {
   const { groupId } = useParams();
-
+  const navigate = useNavigate();
   const { data } = useQuery<GroupPostsResponse>({
     queryKey: ['groupPosts', groupId],
     queryFn: () => fetchGroupPosts(Number(groupId)),
@@ -65,6 +67,16 @@ const GroupBoard = () => {
           </PostActions>
         </PostContent>
       ))}
+      <EditButtonWrapper>
+        <EditButton
+          onClick={() => {
+            console.log(`create-post/${groupId}`);
+            navigate(`/create-post/${groupId}`);
+          }}
+        >
+          <EditIcon />
+        </EditButton>
+      </EditButtonWrapper>
     </Wrapper>
   );
 };
@@ -120,6 +132,33 @@ const ActionButton = styled.button({
   cursor: 'pointer',
   padding: spacing.spacing3,
   flex: 1,
+});
+
+const EditButtonWrapper = styled.div({
+  position: 'fixed',
+  left: '50%',
+  width: '100%',
+  transform: 'translateX(-10%)',
+  maxWidth: '720px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  bottom: 30,
+});
+
+const EditButton = styled.button({
+  backgroundColor: colors.primary,
+  width: 56,
+  height: 56,
+  borderRadius: '50%',
+  border: 'none',
+  zIndex: 1000,
+});
+
+const EditIcon = styled(FaPencilAlt)({
+  color: colors.white,
+  width: 20,
+  height: 20,
 });
 
 export default GroupBoard;

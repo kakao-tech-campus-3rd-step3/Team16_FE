@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import GroupHome from './GroupHomePage';
 import GroupBoard from './GroupBoardPage';
 import Nav from './components/Navigator';
@@ -11,6 +11,7 @@ import { DashBoard } from './GroupDashBoardPage';
 const GroupPage = () => {
   const { groupId } = useParams();
   const { isMember, isLoading } = useGroupMembership(groupId);
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('');
 
   useHeader({ centerContent: '스터디 그룹' });
@@ -18,7 +19,13 @@ const GroupPage = () => {
   // 멤버십 상태에 따라 초기 탭 설정
   useEffect(() => {
     if (!isLoading) {
-      setActiveTab(isMember ? '대시보드' : '홈');
+      // 우선순위: location.state.activeTab > 기존 멤버십 초기값
+      const stateTab = location.state?.activeTab;
+      if (stateTab) {
+        setActiveTab(stateTab);
+      } else {
+        setActiveTab(isMember ? '대시보드' : '홈');
+      }
     }
   }, [isMember, isLoading]);
 

@@ -11,11 +11,12 @@ const StudentPage = () => {
   const { verificationStatus } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File[] | null>(null);
 
-  const { uploadImage, isUploading, uploadProgress } = useImageUpload({
+  const { uploadImagesAsync, isUploading, uploadProgress } = useImageUpload({
     type: 'VERIFICATION',
     completionUrl: '/auth/student-verification',
+    request_url: '/image/presigned',
   });
 
   async function handleSubmit() {
@@ -24,7 +25,7 @@ const StudentPage = () => {
       return;
     }
 
-    await uploadImage(selectedFile);
+    await uploadImagesAsync(selectedFile);
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -39,7 +40,7 @@ const StudentPage = () => {
 
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
-    setSelectedFile(file);
+    setSelectedFile([file]);
   }
 
   const handleImageBoxClick = () => {
