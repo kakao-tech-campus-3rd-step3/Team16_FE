@@ -65,6 +65,7 @@ const GroupPostPage = () => {
     } catch (error) {
       alert('이미지 업로드 또는 게시글 작성 중 오류가 발생했습니다.');
     }
+    alert('게시글 작성이 완료되었습니다!');
     navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } });
   };
 
