@@ -7,16 +7,13 @@ import { useHeader } from '@/hooks/useHeader';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getRules, createRule, updateRule, deleteRule } from '@/api/rulesApi';
-import type { Rule } from '@/api/rulesApi';
+import { useQuery } from '@tanstack/react-query';
+import { getRules } from '@/api/rulesApi';
+import { useRuleMutations } from '@/hooks/useRuleMutation';
 
 export default function GroundRulePage() {
   useHeader({ centerContent: '그라운드룰 생성' });
   const { groupId } = useParams();
-  const queryClient = useQueryClient();
-
   const numericGroupId = Number(groupId);
 
   const { data: rules = [] } = useQuery({
@@ -25,34 +22,7 @@ export default function GroundRulePage() {
     enabled: !!numericGroupId,
   });
 
-  const createMutation = useMutation({
-    mutationFn: (text: string) => createRule(numericGroupId, text),
-    onSuccess: (newRule) => {
-      queryClient.setQueryData<Rule[]>(['rules', numericGroupId], (oldRules = []) => [
-        ...oldRules,
-        newRule,
-      ]);
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ ruleId, text }: { ruleId: number; text: string }) =>
-      updateRule(numericGroupId, ruleId, text),
-    onSuccess: (updatedRule) => {
-      queryClient.setQueryData<Rule[]>(['rules', numericGroupId], (oldRules = []) =>
-        oldRules.map((r) => (r.id === updatedRule.id ? updatedRule : r))
-      );
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (ruleId: number) => deleteRule(numericGroupId, ruleId),
-    onSuccess: (_, ruleId) => {
-      queryClient.setQueryData<Rule[]>(['rules', numericGroupId], (oldRules = []) =>
-        oldRules.filter((r) => r.id !== ruleId)
-      );
-    },
-  });
+  const { createMutation, updateMutation, deleteMutation } = useRuleMutations(numericGroupId);
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [tempText, setTempText] = useState('');
