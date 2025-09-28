@@ -6,18 +6,29 @@ import { IoDocumentTextOutline } from 'react-icons/io5';
 import { CiShare2 } from 'react-icons/ci';
 import { IoIosArrowForward } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
-import { useGroundRules } from '@/hooks/useGroundRules';
 import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DateDiff from './components/DateDiff';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { useQuery } from '@tanstack/react-query';
+import { getRules } from '@/api/rulesApi';
+import type { Rule } from '@/api/rulesApi';
 
 export const DashBoard = () => {
-  const { data: groundRules, isLoading: isGroundRulesLoading } = useGroundRules('1');
   const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule('1');
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { groupId } = useParams();
+  const numericGroupId = Number(groupId);
+
+  const { data: groundRules = [], isLoading: isGroundRulesLoading } = useQuery({
+    queryKey: ['rules', numericGroupId],
+    queryFn: () => getRules(numericGroupId),
+    enabled: !!numericGroupId,
+  });
+
   const isDashBoardLoading = isGroundRulesLoading || isGroupScheduleLoading;
 
   if (isDashBoardLoading) {
@@ -67,9 +78,13 @@ export const DashBoard = () => {
           <Title>모임 규칙</Title>
         </Header>
         <Body>
-          {(groundRules ?? []).map((rule: Ruletype) => (
-            <Text key={rule.ruleId}>{rule.content}</Text>
-          ))}
+          {isGroundRulesLoading ? (
+            <Text>불러오는 중...</Text>
+          ) : groundRules.length > 0 ? (
+            groundRules.map((rule: Rule) => <Text key={rule.id}>{rule.text ?? '내용 없음'}</Text>)
+          ) : (
+            <Text>등록된 규칙이 없습니다.</Text>
+          )}
         </Body>
       </GroundRule>
       <CardSection>
@@ -205,13 +220,6 @@ const Info = styled.div({
   display: 'flex',
   flexDirection: 'column',
 });
-
-interface Ruletype {
-  ruleId: number;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface ScheduleType {
   id: number;
