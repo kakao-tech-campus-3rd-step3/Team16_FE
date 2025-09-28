@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
@@ -19,6 +19,16 @@ const BaseModal = ({
   variant = 'center',
   maxWidth = 480,
 }: BaseModalProps) => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // 스크롤 잠금
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -65,7 +75,7 @@ const Content = styled.div<{ variant: ModalVariant; maxWidth: number }>(
     ...(variant === 'bottom'
       ? {
           position: 'fixed',
-          bottom: 20,
+          bottom: 0,
           left: '50%',
           transform: 'translateX(-50%)',
         }
