@@ -5,11 +5,11 @@ import { spacing } from '@/styles/spacing';
 import { typography } from '@/styles/typography';
 import { useHeader } from '@/hooks/useHeader';
 import PrimaryButton from '@/components/common/PrimaryButton';
-import { FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getRules } from '@/api/rulesApi';
 import { useRuleMutations } from '@/hooks/useRuleMutation';
+import { RuleItem } from './components/RuleItem';
 
 export default function GroundRulePage() {
   useHeader({ centerContent: '그라운드룰 생성' });
@@ -43,10 +43,6 @@ export default function GroundRulePage() {
     setTempText('');
   };
 
-  const handleDeleteRule = (id: number) => {
-    deleteMutation.mutate(id);
-  };
-
   return (
     <Wrapper>
       {rules.length === 0 && editingId === null && (
@@ -59,79 +55,35 @@ export default function GroundRulePage() {
       )}
 
       <RuleList>
-        {rules.map((rule) => {
-          const isEditing = editingId === rule.id;
-          return (
-            <RuleBox
-              key={rule.id}
-              isEditing={isEditing}
-              hasValue={isEditing ? !!tempText.trim() : !!(rule.text ?? '').trim()}
-            >
-              {isEditing ? (
-                <>
-                  <EditingInput
-                    value={tempText}
-                    onChange={(e) => setTempText(e.target.value)}
-                    placeholder="그라운드 룰을 입력하세요"
-                    autoFocus
-                  />
-                  <IconGroup>
-                    <IconButton
-                      variant="success"
-                      disabled={!tempText.trim()}
-                      onClick={() => handleSaveRule(rule.id)}
-                    >
-                      <FiCheck size={20} />
-                    </IconButton>
-                    <IconButton variant="danger" onClick={() => setEditingId(null)}>
-                      <FiX size={20} />
-                    </IconButton>
-                  </IconGroup>
-                </>
-              ) : (
-                <>
-                  <RuleText>{rule.text ?? ''}</RuleText>
-                  <IconGroup>
-                    <IconButton
-                      variant="success"
-                      onClick={() => {
-                        setEditingId(rule.id);
-                        setTempText(rule.text ?? '');
-                      }}
-                    >
-                      <FiEdit2 size={20} />
-                    </IconButton>
-                    <IconButton variant="danger" onClick={() => handleDeleteRule(rule.id)}>
-                      <FiTrash2 size={20} />
-                    </IconButton>
-                  </IconGroup>
-                </>
-              )}
-            </RuleBox>
-          );
-        })}
+        {rules.map((rule) => (
+          <RuleItem
+            key={rule.id}
+            rule={rule}
+            isEditing={editingId === rule.id}
+            tempText={tempText}
+            setTempText={setTempText}
+            onSave={handleSaveRule}
+            onDelete={(id) => deleteMutation.mutate(id)}
+            onCancel={() => setEditingId(null)}
+            onStartEdit={(r) => {
+              setEditingId(r.id);
+              setTempText(r.text ?? '');
+            }}
+          />
+        ))}
 
         {editingId === -1 && (
-          <RuleBox key="new" isEditing hasValue={!!tempText.trim()}>
-            <EditingInput
-              value={tempText}
-              onChange={(e) => setTempText(e.target.value)}
-              placeholder="그라운드 룰을 입력하세요"
-              autoFocus
-            />
-            <IconGroup>
-              <IconButton
-                variant="success"
-                disabled={!tempText.trim()}
-                onClick={() => handleSaveRule(-1)}
-              >
-                <FiCheck size={20} />
-              </IconButton>
-              <IconButton variant="danger" onClick={() => setEditingId(null)}>
-                <FiX size={20} />
-              </IconButton>
-            </IconGroup>
-          </RuleBox>
+          <RuleItem
+            key="new"
+            rule={{ id: -1, text: '', createdAt: '', updatedAt: '' }}
+            isEditing
+            tempText={tempText}
+            setTempText={setTempText}
+            onSave={handleSaveRule}
+            onDelete={() => {}}
+            onCancel={() => setEditingId(null)}
+            onStartEdit={() => {}}
+          />
         )}
       </RuleList>
 
@@ -172,70 +124,3 @@ const RuleList = styled.div({
   gap: '12px',
   marginBottom: '24px',
 });
-
-const RuleBox = styled.div<{ hasValue: boolean; isEditing?: boolean }>(
-  ({ hasValue, isEditing }) => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 16px',
-    backgroundColor: isEditing ? colors.gray200 : hasValue ? colors.primaryLight : colors.gray200,
-    borderRadius: '8px',
-  })
-);
-
-const RuleText = styled.span({
-  ...typography.body,
-  color: colors.black,
-  flex: 1,
-});
-
-const EditingInput = styled.input({
-  flex: 1,
-  border: 'none',
-  outline: 'none',
-  backgroundColor: 'transparent',
-  ...typography.body,
-  color: colors.black,
-  '::placeholder': {
-    color: colors.gray400,
-  },
-});
-
-const IconGroup = styled.div({
-  display: 'flex',
-  gap: '8px',
-});
-
-const IconButton = styled.button<{
-  variant?: 'success' | 'danger' | 'edit';
-  disabled?: boolean;
-}>(({ variant, disabled }) => ({
-  border: 'none',
-  background: 'transparent',
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '4px',
-  fontSize: '18px',
-  color: disabled
-    ? colors.gray400
-    : variant === 'success'
-      ? colors.primary
-      : variant === 'danger'
-        ? colors.error
-        : colors.gray700,
-  transition: 'color 0.2s ease',
-  ':hover': {
-    color: disabled
-      ? colors.gray400
-      : variant === 'success'
-        ? colors.primaryDark
-        : variant === 'danger'
-          ? colors.error
-          : variant === 'edit'
-            ? colors.gray900
-            : colors.primary,
-  },
-}));
