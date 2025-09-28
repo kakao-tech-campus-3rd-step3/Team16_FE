@@ -6,93 +6,170 @@ import { typography } from '@/styles/typography';
 import { useHeader } from '@/hooks/useHeader';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { FiEdit2, FiTrash2, FiCheck, FiX } from 'react-icons/fi';
-
-interface Rule {
-  id: number;
-  text: string;
-  isEditing: boolean;
-}
+import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { getRules, createRule, updateRule, deleteRule } from '@/api/rulesApi';
+import type { Rule } from '@/api/rulesApi';
 
 export default function GroundRulePage() {
   useHeader({ centerContent: '그라운드룰 생성' });
-  const [rules, setRules] = useState<Rule[]>([]);
+  const { groupId } = useParams();
+  const queryClient = useQueryClient();
+
+  const numericGroupId = Number(groupId);
+
+  const { data: rules = [] } = useQuery({
+    queryKey: ['rules', numericGroupId],
+    queryFn: () => getRules(numericGroupId),
+    enabled: !!numericGroupId,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (text: string) => createRule(numericGroupId, text),
+    onSuccess: (newRule) => {
+      queryClient.setQueryData<Rule[]>(['rules', numericGroupId], (oldRules = []) => [
+        ...oldRules,
+        newRule,
+      ]);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ ruleId, text }: { ruleId: number; text: string }) =>
+      updateRule(numericGroupId, ruleId, text),
+    onSuccess: (updatedRule) => {
+      queryClient.setQueryData<Rule[]>(['rules', numericGroupId], (oldRules = []) =>
+        oldRules.map((r) => (r.id === updatedRule.id ? updatedRule : r))
+      );
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (ruleId: number) => deleteRule(numericGroupId, ruleId),
+    onSuccess: (_, ruleId) => {
+      queryClient.setQueryData<Rule[]>(['rules', numericGroupId], (oldRules = []) =>
+        oldRules.filter((r) => r.id !== ruleId)
+      );
+    },
+  });
+
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [tempText, setTempText] = useState('');
 
   const handleAddRule = () => {
     if (rules.length >= 5) return;
-    setRules((prev) => [...prev, { id: Date.now(), text: '', isEditing: true }]);
-  };
-
-  const handleChangeRule = (id: number, value: string) => {
-    setRules((prev) => prev.map((rule) => (rule.id === id ? { ...rule, text: value } : rule)));
+    setEditingId(-1);
+    setTempText('');
   };
 
   const handleSaveRule = (id: number) => {
-    setRules((prev) => prev.map((rule) => (rule.id === id ? { ...rule, isEditing: false } : rule)));
-  };
-
-  const handleCancelRule = (id: number) => {
-    setRules((prev) => prev.filter((rule) => rule.id !== id));
+    if (id === -1) {
+      createMutation.mutate(tempText);
+    } else {
+      updateMutation.mutate({ ruleId: id, text: tempText });
+    }
+    setEditingId(null);
+    setTempText('');
   };
 
   const handleDeleteRule = (id: number) => {
-    setRules((prev) => prev.filter((rule) => rule.id !== id));
-  };
-
-  const handleEditRule = (id: number) => {
-    setRules((prev) => prev.map((rule) => (rule.id === id ? { ...rule, isEditing: true } : rule)));
+    deleteMutation.mutate(id);
   };
 
   return (
     <Wrapper>
-      {rules.length === 0 && (
+      {rules.length === 0 && editingId === null && (
         <EmptyWrapper>
           <EmptyState>
-            모임의 원활한 활동을 위해서 <br></br>그라운드룰을 등록해보세요!
+            모임의 원활한 활동을 위해서 <br />
+            그라운드룰을 등록해보세요!
           </EmptyState>
         </EmptyWrapper>
       )}
 
       <RuleList>
-        {rules.map((rule) => (
-          <RuleBox key={rule.id} hasValue={!!rule.text.trim()}>
-            {rule.isEditing ? (
-              <>
-                <EditingInput
-                  value={rule.text}
-                  placeholder="그라운드 룰을 입력하세요"
-                  onChange={(e) => handleChangeRule(rule.id, e.target.value)}
-                  autoFocus
-                />
-                <IconGroup>
-                  <IconButton
-                    variant="success"
-                    disabled={!rule.text.trim()}
-                    onClick={() => handleSaveRule(rule.id)}
-                  >
-                    <FiCheck size={20} />
-                  </IconButton>
-                  <IconButton variant="danger" onClick={() => handleCancelRule(rule.id)}>
-                    <FiX size={20} />
-                  </IconButton>
-                </IconGroup>
-              </>
-            ) : (
-              <>
-                <RuleText>{rule.text}</RuleText>
-                <IconGroup>
-                  <IconButton variant="edit" onClick={() => handleEditRule(rule.id)}>
-                    <FiEdit2 size={20} />
-                  </IconButton>
-                  <IconButton variant="danger" onClick={() => handleDeleteRule(rule.id)}>
-                    <FiTrash2 size={20} />
-                  </IconButton>
-                </IconGroup>
-              </>
-            )}
+        {rules.map((rule) => {
+          const isEditing = editingId === rule.id;
+          return (
+            <RuleBox
+              key={rule.id}
+              isEditing={isEditing}
+              hasValue={isEditing ? !!tempText.trim() : !!(rule.text ?? '').trim()}
+            >
+              {isEditing ? (
+                <>
+                  <EditingInput
+                    value={tempText}
+                    onChange={(e) => setTempText(e.target.value)}
+                    placeholder="그라운드 룰을 입력하세요"
+                    autoFocus
+                  />
+                  <IconGroup>
+                    <IconButton
+                      variant="success"
+                      disabled={!tempText.trim()}
+                      onClick={() => handleSaveRule(rule.id)}
+                    >
+                      <FiCheck size={20} />
+                    </IconButton>
+                    <IconButton variant="danger" onClick={() => setEditingId(null)}>
+                      <FiX size={20} />
+                    </IconButton>
+                  </IconGroup>
+                </>
+              ) : (
+                <>
+                  <RuleText>{rule.text ?? ''}</RuleText>
+                  <IconGroup>
+                    <IconButton
+                      variant="success"
+                      onClick={() => {
+                        setEditingId(rule.id);
+                        setTempText(rule.text ?? '');
+                      }}
+                    >
+                      <FiEdit2 size={20} />
+                    </IconButton>
+                    <IconButton variant="danger" onClick={() => handleDeleteRule(rule.id)}>
+                      <FiTrash2 size={20} />
+                    </IconButton>
+                  </IconGroup>
+                </>
+              )}
+            </RuleBox>
+          );
+        })}
+
+        {editingId === -1 && (
+          <RuleBox key="new" isEditing hasValue={!!tempText.trim()}>
+            <EditingInput
+              value={tempText}
+              onChange={(e) => setTempText(e.target.value)}
+              placeholder="그라운드 룰을 입력하세요"
+              autoFocus
+            />
+            <IconGroup>
+              <IconButton
+                variant="success"
+                disabled={!tempText.trim()}
+                onClick={() => handleSaveRule(-1)}
+              >
+                <FiCheck size={20} />
+              </IconButton>
+              <IconButton variant="danger" onClick={() => setEditingId(null)}>
+                <FiX size={20} />
+              </IconButton>
+            </IconGroup>
           </RuleBox>
-        ))}
+        )}
       </RuleList>
-      <PrimaryButton text="+ 추가하기" onClick={handleAddRule} disabled={rules.length >= 5} />
+
+      <PrimaryButton
+        text="+ 추가하기"
+        onClick={handleAddRule}
+        disabled={rules.length >= 5 || editingId !== null}
+      />
     </Wrapper>
   );
 }
@@ -126,14 +203,16 @@ const RuleList = styled.div({
   marginBottom: '24px',
 });
 
-const RuleBox = styled.div<{ hasValue: boolean }>(({ hasValue }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '12px 16px',
-  backgroundColor: hasValue ? colors.primaryLight : colors.gray200,
-  borderRadius: '8px',
-}));
+const RuleBox = styled.div<{ hasValue: boolean; isEditing?: boolean }>(
+  ({ hasValue, isEditing }) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '12px 16px',
+    backgroundColor: isEditing ? colors.gray200 : hasValue ? colors.primaryLight : colors.gray200,
+    borderRadius: '8px',
+  })
+);
 
 const RuleText = styled.span({
   ...typography.body,
