@@ -94,7 +94,7 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
         ))}
 
         {imageUrls.length < maxCount && (
-          <UploadBox onClick={() => inputRef.current?.click()}>
+          <UploadBox onClick={() => handlePickClick()}>
             <PlusIcon>＋</PlusIcon>
           </UploadBox>
         )}
