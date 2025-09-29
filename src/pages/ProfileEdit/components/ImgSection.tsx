@@ -42,20 +42,22 @@ const ImgSection = ({ setSelectedFile, profileImgUrl }: ImgSectionProps) => {
       <Img src={previewUrl ?? defaultUserImg} onClick={() => setIsOpen(true)} />
       <Camera />
       <BaseModal isOpen={isOpen} onClose={() => setIsOpen(false)} variant="bottom">
-        <OptionList>
-          <OptionItem onClick={handleOptionClick}>앨범에서 선택</OptionItem>
-          <OptionItem
-            onClick={() => {
-              setSelectedFile(null);
-              setPreviewUrl(null);
-            }}
-          >
-            프로필 사진 삭제
-          </OptionItem>
-        </OptionList>
-        <OptionList>
-          <OptionItem onClick={() => setIsOpen(false)}>닫기</OptionItem>
-        </OptionList>
+        <OptionWrapper>
+          <OptionList>
+            <OptionItem onClick={handleOptionClick}>앨범에서 선택</OptionItem>
+            <OptionItem
+              onClick={() => {
+                setSelectedFile(null);
+                setPreviewUrl(null);
+              }}
+            >
+              프로필 사진 삭제
+            </OptionItem>
+          </OptionList>
+          <OptionList>
+            <OptionItem onClick={() => setIsOpen(false)}>닫기</OptionItem>
+          </OptionList>
+        </OptionWrapper>
       </BaseModal>
       <input
         type="file"
@@ -104,6 +106,10 @@ const OptionItem = styled.div({
   padding: '15px',
   textAlign: 'center',
   borderBottom: `1px solid ${colors.gray100}`,
+});
+
+const OptionWrapper = styled.div({
+  marginBottom: '20px',
 });
 
 export default ImgSection;
