@@ -12,12 +12,14 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
     imageFiles.map((file) => URL.createObjectURL(file))
   );
 
+  // 남은 선택 가능 장수
+  const remaining = Math.max(0, maxCount - imageUrls.length);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (files.length === 0) return;
 
-    // 파일 크기 검사(개별) 및 남은 선택 가능 개수 계산
-    const remaining = Math.max(0, maxCount - imageUrls.length);
+    // 파일 크기 검사(개별)
     const validFiles = files
       .filter((f) => {
         if (f.size > MAX_FILE_SIZE) {
@@ -53,7 +55,6 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
   };
 
   const handleRemove = (index: number) => {
-    // revoke object URL to free memory
     const url = imageUrls[index];
     URL.revokeObjectURL(url);
     const next = imageUrls.filter((_, i) => i !== index);
@@ -74,9 +75,6 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
 
   return (
     <Wrapper>
-      <CountText>
-        선택된 사진: {imageUrls.length} / {maxCount}
-      </CountText>
       <input
         ref={inputRef}
         type="file"
@@ -85,19 +83,25 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
         style={{ display: 'none' }}
         onChange={handleFileChange}
       />
-      <PickButton type="button" onClick={handlePickClick} disabled={imageUrls.length >= maxCount}>
-        사진 선택
-      </PickButton>
       <Preview>
         {imageUrls.map((src, idx) => (
           <Thumb key={idx}>
             <Img src={src} alt={`selected-${idx}`} />
             <RemoveButton type="button" onClick={() => handleRemove(idx)}>
-              삭제
+              ✕
             </RemoveButton>
           </Thumb>
         ))}
+
+        {imageUrls.length < maxCount && (
+          <UploadBox onClick={() => inputRef.current?.click()}>
+            <PlusIcon>＋</PlusIcon>
+          </UploadBox>
+        )}
       </Preview>
+      <CountText>
+        {maxCount - remaining}/{maxCount}
+      </CountText>
     </Wrapper>
   );
 };
@@ -106,15 +110,6 @@ const Wrapper = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: spacing.spacing2,
-});
-
-const PickButton = styled.button({
-  background: colors.primary,
-  color: 'white',
-  border: 'none',
-  padding: '8px 12px',
-  borderRadius: 8,
-  cursor: 'pointer',
 });
 
 const CountText = styled.div({
@@ -160,5 +155,20 @@ const RemoveButton = styled.button({
   cursor: 'pointer',
   fontSize: 12,
 });
+
+const UploadBox = styled.div({
+  width: 96,
+  height: 96,
+  borderRadius: 8,
+  border: `2px dashed ${colors.gray400}`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: colors.gray500,
+  fontSize: 24,
+  cursor: 'pointer',
+});
+
+const PlusIcon = styled.span({});
 
 export default ImagePicker;
