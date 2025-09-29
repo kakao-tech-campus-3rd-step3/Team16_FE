@@ -39,7 +39,11 @@ const ProfileEditPage = () => {
         return { newProfileImg: null, newNickname };
       } else {
         const [newProfileImg, newNickname] = await Promise.all([
-          uploadImageApi(selectedFile, { type: 'PROFILE', completionUrl }),
+          uploadImageApi(selectedFile, {
+            type: 'PROFILE',
+            completionUrl,
+            request_url: '/image/presigned',
+          }),
           updateNickname(data.nickname),
         ]);
         return { newProfileImg, newNickname };

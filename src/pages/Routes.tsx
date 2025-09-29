@@ -17,6 +17,7 @@ import MemberReview from './MemberReview/Page';
 import CreateSchedulePage from './CreateSchedule/Page';
 import LocationPage from './LocationInput/Page';
 import CreateScheduleProvider from './CreateSchedule/CreateScheduleProvider';
+import GroupPost from './GroupPost/page';
 //import { PrivateRoute } from '@/components/PrivateRoute';
 
 export const Routes = () => {
@@ -37,6 +38,7 @@ export const Routes = () => {
       <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
       <Route path={'/member-review'} element={<MemberReview />} />
       <Route path={'/demo'} element={<DemoPage />} />
+      <Route path={'/create-post/:groupId'} element={<GroupPost />} />
       <Route
         element={
           <CreateScheduleProvider>

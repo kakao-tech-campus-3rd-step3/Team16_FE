@@ -12,6 +12,8 @@ import CommentModal from './components/CommentModal';
 import { format } from 'date-fns';
 import { useToggleLike } from './hooks/useToggleLike';
 import FullScreenLoader from '@/components/common/LoadingSpinner';
+import { FaPencilAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 interface Post {
   postId: number;
@@ -29,6 +31,7 @@ const GroupBoard = () => {
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
+    const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ['groupPosts', Number(groupId)],
     queryFn: () => fetchGroupPosts(Number(groupId)),
@@ -72,7 +75,19 @@ const GroupBoard = () => {
           </PostActions>
         </PostContent>
       ))}
+      
       <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
+      
+      <EditButtonWrapper>
+        <EditButton
+          onClick={() => {
+            console.log(`create-post/${groupId}`);
+            navigate(`/create-post/${groupId}`);
+          }}
+        >
+          <EditIcon />
+        </EditButton>
+      </EditButtonWrapper>
     </Wrapper>
   );
 };
@@ -128,6 +143,33 @@ const ActionButton = styled.button({
   cursor: 'pointer',
   padding: spacing.spacing3,
   flex: 1,
+});
+
+const EditButtonWrapper = styled.div({
+  position: 'fixed',
+  left: '50%',
+  width: '100%',
+  transform: 'translateX(-10%)',
+  maxWidth: '720px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  bottom: 30,
+});
+
+const EditButton = styled.button({
+  backgroundColor: colors.primary,
+  width: 56,
+  height: 56,
+  borderRadius: '50%',
+  border: 'none',
+  zIndex: 1000,
+});
+
+const EditIcon = styled(FaPencilAlt)({
+  color: colors.white,
+  width: 20,
+  height: 20,
 });
 
 export default GroupBoard;

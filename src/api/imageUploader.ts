@@ -2,12 +2,12 @@ import axios from 'axios';
 import { apiClient } from '@/api/apiClient';
 
 export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
-  const { type, completionUrl, onProgress } = options;
+  const { type, completionUrl, onProgress, request_url } = options;
 
   // 1. Presigned URL 요청
   const {
     data: { url: presignedUrl, fileName },
-  } = await apiClient.post<PresignedUrlResponse>('/image/presigned', {
+  } = await apiClient.post<PresignedUrlResponse>(request_url, {
     fileExtension: file.name.split('.').pop()?.toUpperCase(),
     type: type,
   });
@@ -23,7 +23,7 @@ export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
     },
   });
 
-  // 3. 업로드 완료 알림
+  // 3. 업로드 완료 알림 (필요한 경우)
   if (completionUrl) {
     await apiClient.put(completionUrl, { fileName, type });
   }
@@ -36,6 +36,7 @@ interface UploadApiOptions {
   type: string;
   completionUrl?: string;
   onProgress?: (progress: number) => void;
+  request_url: string;
 }
 
 interface PresignedUrlResponse {
