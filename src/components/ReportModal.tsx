@@ -127,6 +127,8 @@ const Wrapper = styled.div({
   padding: spacing.spacing4,
   boxSizing: 'border-box',
   width: '100%',
+  backgroundColor: colors.white,
+  borderRadius: '8px',
 });
 
 const Title = styled.h2({
