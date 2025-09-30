@@ -2,71 +2,82 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
-import { SlLike } from 'react-icons/sl';
+import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 import { FaRegComment } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGroupPosts } from '@/api/groupApi';
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import CommentModal from './components/CommentModal';
+import { format } from 'date-fns';
+import { useToggleLike } from './hooks/useToggleLike';
+import FullScreenLoader from '@/components/common/LoadingSpinner';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-interface Author {
-  id: string;
-  nickname: string;
-  avatarUrl: string | null;
-}
-
 interface Post {
-  id: string;
-  groupId: string;
-  author: Author;
+  postId: number;
+  authorNickname: string;
   title: string;
   content: string;
-  images: string[];
+  imageUrls: string[];
+  createdAt: string;
   likeCount: number;
   commentCount: number;
-  isLikedByMe: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface GroupPostsResponse {
-  items: Post[];
-  nextCursor: string | null;
+  isLike: boolean;
 }
 
 const GroupBoard = () => {
   const { groupId } = useParams();
-  const navigate = useNavigate();
-  const { data } = useQuery<GroupPostsResponse>({
-    queryKey: ['groupPosts', groupId],
+  const [isOpen, setIsOpen] = useState(false);
+  const [postId, setPostId] = useState<number>(0);
+    const navigate = useNavigate();
+  const { data, isPending } = useQuery({
+    queryKey: ['groupPosts', Number(groupId)],
     queryFn: () => fetchGroupPosts(Number(groupId)),
   });
+  const { mutate: toggleLike } = useToggleLike(Number(groupId));
 
-  const posts = data?.items || [];
+  const posts = data || [];
 
+  if (isPending) {
+    return <FullScreenLoader />;
+  }
   return (
     <Wrapper>
       {posts.map((post: Post) => (
-        <PostContent key={post.id}>
+        <PostContent key={post.postId}>
           <Header>
             <PostTitle>{post.title}</PostTitle>
-            <PostDate>{post.createdAt}</PostDate>
+            <PostDate>{format(new Date(post.createdAt), 'yyyy.MM.dd HH:mm')}</PostDate>
           </Header>
-          {post.images.length > 0 && <PostImage src={post.images[0]} alt={post.title} />}
+          {post.imageUrls.length > 0 && <PostImage src={post.imageUrls[0]} alt={post.title} />}
           {post.content && <PostDescription>{post.content}</PostDescription>}
           <PostActions>
-            <ActionButton>
-              <SlLike />
+            <ActionButton
+              onClick={() => {
+                console.log('post.postId', post.postId);
+                toggleLike({ postId: post.postId, isLike: post.isLike });
+              }}
+            >
+              {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
               <span>좋아요 {post.likeCount}</span>
             </ActionButton>
-            <ActionButton>
+            <ActionButton
+              onClick={() => {
+                setIsOpen(true);
+                setPostId(post.postId);
+              }}
+            >
               <FaRegComment />
               <span>댓글 {post.commentCount}</span>
             </ActionButton>
           </PostActions>
         </PostContent>
       ))}
+      
+      <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
+      
       <EditButtonWrapper>
         <EditButton
           onClick={() => {

@@ -16,8 +16,10 @@ export const fetchGroupHome = async (_groupId: number): Promise<GroupHomeRespons
   // return response.data;
 };
 
-export const fetchGroupPosts = async (_groupId: number) => {
-  const response = await axios.get('/data/groupPosts.json');
+//게시글 전체 조회
+export const fetchGroupPosts = async (groupId: number) => {
+  const response = await apiClient.get(`/groups/${groupId}/posts`);
+  console.log('fetchGroupPosts response:', response.data);
   return response.data;
 };
 
