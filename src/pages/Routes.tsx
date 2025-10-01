@@ -39,7 +39,7 @@ export const Routes = () => {
       <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
       <Route path={'/member-review'} element={<MemberReview />} />
       <Route path={'/demo'} element={<DemoPage />} />
-      <Route path={'/create-ground-rule/:groupId'} element={<CreateGroundRule />} />
+      <Route path={'/group/:groupId/create-ground-rule'} element={<CreateGroundRule />} />
       <Route path={'/create-post/:groupId'} element={<GroupPost />} />
       <Route
         element={
