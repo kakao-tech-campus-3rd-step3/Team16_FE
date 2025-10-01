@@ -4,34 +4,42 @@ import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import { spacing } from '@/styles/spacing';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useLeave } from '@/hooks/useLeave';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const LeavePage = () => {
   useHeader({ leftContent: null, centerContent: '탈퇴하기' });
   const navigate = useNavigate();
   const [review, setReview] = useState('');
+  const { mutate: leaveMutate, isPending } = useLeave();
+  const { groupId } = useParams<{ groupId: string }>();
 
-  const handleSubmit = async () => {
-    try {
-      // 1) 리뷰 먼저 저장
-      // await postGroupReview(review);
-      await axios.post('/api/groups/review', { content: review });
-
-      // 2) 리뷰 저장 성공 시 탈퇴 처리
-      // await postLeaveGroup();
-      await axios.post('/api/groups/alarm/leave');
-
-      alert('리뷰가 제출되고 모임에서 탈퇴되었습니다.');
-      navigate('/mypage');
-    } catch (error) {
-      console.error(error);
-      alert('처리에 실패했습니다. 다시 시도해주세요.');
+  const handleSubmit = () => {
+    if (!groupId) {
+      alert('잘못된 접근입니다.');
+      return;
     }
+
+    leaveMutate(
+      { content: review, groupId: Number(groupId) },
+      {
+        onSuccess: () => {
+          navigate('/');
+          alert('모임 탈퇴가 완료되었습니다.');
+        },
+        onError: (error) => {
+          console.error(error);
+          alert('모임 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
   };
 
   return (
     <Wrapper>
+      {isPending && <LoadingSpinner />}
       <Title>이 모임은 어떠셨나요?</Title>
       <Content>
         모임에 대한 솔직한 리뷰를 남겨주시면<br></br>다른 모임원들에게 큰 도움이 됩니다.
