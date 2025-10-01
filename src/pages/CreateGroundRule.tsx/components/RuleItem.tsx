@@ -102,10 +102,25 @@ const IconGroup = styled.div({
   gap: '8px',
 });
 
+const variantColors = {
+  success: {
+    default: colors.primary,
+    hover: colors.primaryDark,
+  },
+  danger: {
+    default: colors.error,
+    hover: colors.error,
+  },
+  edit: {
+    default: colors.gray700,
+    hover: colors.gray900,
+  },
+} as const;
+
 const IconButton = styled.button<{
   variant?: 'success' | 'danger' | 'edit';
   disabled?: boolean;
-}>(({ variant, disabled }) => ({
+}>(({ variant = 'edit', disabled }) => ({
   border: 'none',
   background: 'transparent',
   cursor: disabled ? 'not-allowed' : 'pointer',
@@ -114,23 +129,9 @@ const IconButton = styled.button<{
   justifyContent: 'center',
   padding: '4px',
   fontSize: '18px',
-  color: disabled
-    ? colors.gray400
-    : variant === 'success'
-      ? colors.primary
-      : variant === 'danger'
-        ? colors.error
-        : colors.gray700,
+  color: disabled ? colors.gray400 : variantColors[variant].default,
   transition: 'color 0.2s ease',
   ':hover': {
-    color: disabled
-      ? colors.gray400
-      : variant === 'success'
-        ? colors.primaryDark
-        : variant === 'danger'
-          ? colors.error
-          : variant === 'edit'
-            ? colors.gray900
-            : colors.primary,
+    color: disabled ? colors.gray400 : variantColors[variant].hover,
   },
 }));
