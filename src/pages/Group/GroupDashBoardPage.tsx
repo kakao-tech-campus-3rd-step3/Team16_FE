@@ -9,11 +9,12 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { useGroundRules } from '@/hooks/useGroundRules';
 import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DateDiff from './components/DateDiff';
 import { FaCalendarAlt } from 'react-icons/fa';
 
 export const DashBoard = () => {
+  const { groupId } = useParams();
   const { data: groundRules, isLoading: isGroundRulesLoading } = useGroundRules('1');
   const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule('1');
   const [open, setOpen] = useState(false);
@@ -48,7 +49,7 @@ export const DashBoard = () => {
           {upcomingSchedules.map((sch: ScheduleType) => (
             <AccordionItem
               key={sch.id}
-              onClick={() => navigate(`/group/1/attend/${sch.id}`)}
+              onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}
               style={{ cursor: 'pointer' }}
             >
               <Info>
@@ -73,7 +74,7 @@ export const DashBoard = () => {
         </Body>
       </GroundRule>
       <CardSection>
-        <Card onClick={() => navigate('/group/1/schedule')}>
+        <Card onClick={() => navigate(`/group/${groupId}/schedule`)}>
           <FaCalendarAlt size={24} color={colors.primary} />
           <Attend>일정</Attend>
         </Card>
