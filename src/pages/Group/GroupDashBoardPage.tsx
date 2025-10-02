@@ -15,8 +15,10 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 export const DashBoard = () => {
   const { groupId } = useParams();
-  const { data: groundRules, isLoading: isGroundRulesLoading } = useGroundRules('1');
-  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule('1');
+  const { data: groundRules, isLoading: isGroundRulesLoading } = useGroundRules(Number(groupId));
+  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule(
+    Number(groupId)
+  );
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const isDashBoardLoading = isGroundRulesLoading || isGroupScheduleLoading;
