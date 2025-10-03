@@ -17,7 +17,6 @@ import type { Rule } from '@/api/rulesApi';
 
 export const DashBoard = () => {
   const { groupId } = useParams();
-  const { data: groundRules, isLoading: isGroundRulesLoading } = useGroundRules(Number(groupId));
   const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule(
     Number(groupId)
   );
@@ -25,7 +24,6 @@ export const DashBoard = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { groupId } = useParams();
   const numericGroupId = Number(groupId);
 
   const { data: groundRules = [], isLoading: isGroundRulesLoading } = useQuery({
