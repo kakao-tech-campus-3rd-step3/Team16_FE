@@ -13,7 +13,7 @@ const RecordSection = () => {
           <GroupStatusInfo>
             <GroupName>한사랑 산악회</GroupName>
             <GroupStatus>현재 가입중</GroupStatus>
-            <TagBadge tag="주의" />
+            <TagBadge tag="CAUTION" />
           </GroupStatusInfo>
           <GroupDate>기간: 2023. 03. 18 ~ ing</GroupDate>
         </RecordListItem>
@@ -21,7 +21,7 @@ const RecordSection = () => {
           <GroupStatusInfo>
             <GroupName>한사랑 산악회</GroupName>
             <GroupStatus>현재 가입중</GroupStatus>
-            <TagBadge tag="주의" />
+            <TagBadge tag="DANGER" />
           </GroupStatusInfo>
           <GroupDate>기간: 2023. 03. 18 ~ ing</GroupDate>
         </RecordListItem>
@@ -29,7 +29,7 @@ const RecordSection = () => {
           <GroupStatusInfo>
             <GroupName>한사랑 산악회</GroupName>
             <GroupStatus>현재 가입중</GroupStatus>
-            <TagBadge tag="주의" />
+            <TagBadge tag="SAFE" />
           </GroupStatusInfo>
           <GroupDate>기간: 2023. 03. 18 ~ ing</GroupDate>
         </RecordListItem>

@@ -3,14 +3,27 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 
+interface Review {
+  id: number;
+  content: string;
+  evaluation: 'POSITIVE' | 'NEGATIVE';
+}
+
+const reviews: Review[] = [
+  { id: 1, content: '조용하고 친절했어요.', evaluation: 'POSITIVE' },
+  { id: 2, content: '시간 약속을 잘 안 지켜요.', evaluation: 'NEGATIVE' },
+];
+
 const ReviewSection = () => {
   return (
     <Wrapper>
       <Title>내가 받은 리뷰 보기</Title>
       <ReviewList>
-        <ReviewListItem>
-          <ReviewContent>친절해요!</ReviewContent>
-        </ReviewListItem>
+        {reviews.map((r) => (
+          <ReviewListItem key={r.id} evaluation={r.evaluation}>
+            <ReviewContent>{r.content}</ReviewContent>
+          </ReviewListItem>
+        ))}
       </ReviewList>
     </Wrapper>
   );
@@ -38,15 +51,18 @@ const Title = styled.span({
 const ReviewList = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  gap: spacing.spacing5,
+  gap: spacing.spacing2,
 });
 
-const ReviewListItem = styled.div({
+const ReviewListItem = styled.div<{ evaluation: 'POSITIVE' | 'NEGATIVE' }>(({ evaluation }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: spacing.spacing1,
+  padding: spacing.spacing3,
+  borderRadius: 8,
+  backgroundColor: evaluation === 'POSITIVE' ? colors.primaryLight : colors.errorLight,
   cursor: 'pointer',
-});
+}));
 
 const ReviewContent = styled.div({
   ...typography.body,
