@@ -12,14 +12,20 @@ const ATTENDANCE_RADIUS = 50; // 출석인정 거리
 interface MapSectionProps {
   isAttendanceValid: boolean;
   setIsAttendanceValid: (value: boolean) => void;
+  latitude: number;
+  longitude: number;
 }
 
-const MapSection = ({ isAttendanceValid, setIsAttendanceValid }: MapSectionProps) => {
+const MapSection = ({
+  isAttendanceValid,
+  setIsAttendanceValid,
+  latitude,
+  longitude,
+}: MapSectionProps) => {
   useKakaoLoader();
 
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const MeetingLocation = { lat: 35.17898169622223, lng: 126.90961034009142 };
-
+  const MeetingLocation = { lat: latitude, lng: longitude };
   //사용자 위치
   useEffect(() => {
     if (!navigator.geolocation) {

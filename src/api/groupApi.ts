@@ -48,12 +48,9 @@ export const fetchGroundRules = async (_groupId: number) => {
   // return response.data;
 };
 
-export const fetchGroupSchedule = async (_groupId: number) => {
-  const response = await axios.get('/data/groupSchedule.json');
+export const fetchGroupSchedule = async (groupId: number) => {
+  const response = await apiClient.get(`/groups/${groupId}/plans`);
   return response.data;
-  // 실제 API 호출 (백엔드 준비되면 위 코드 삭제하고 아래 주석 해제)
-  // const response = await apiClient.get(`/groups/${groupId}/rule`);
-  // return response.data;
 };
 
 interface Review {

@@ -16,11 +16,14 @@ import { getRules } from '@/api/rulesApi';
 import type { Rule } from '@/api/rulesApi';
 
 export const DashBoard = () => {
-  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule('1');
+  const { groupId } = useParams();
+  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule(
+    Number(groupId)
+  );
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { groupId } = useParams();
   const numericGroupId = Number(groupId);
 
   const { data: groundRules = [], isLoading: isGroundRulesLoading } = useQuery({
@@ -59,7 +62,7 @@ export const DashBoard = () => {
           {upcomingSchedules.map((sch: ScheduleType) => (
             <AccordionItem
               key={sch.id}
-              onClick={() => navigate(`/group/1/attend/${sch.id}`)}
+              onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}
               style={{ cursor: 'pointer' }}
             >
               <Info>
@@ -88,7 +91,7 @@ export const DashBoard = () => {
         </Body>
       </GroundRule>
       <CardSection>
-        <Card onClick={() => navigate('/group/1/schedule')}>
+        <Card onClick={() => navigate(`/group/${groupId}/schedule`)}>
           <FaCalendarAlt size={24} color={colors.primary} />
           <Attend>일정</Attend>
         </Card>

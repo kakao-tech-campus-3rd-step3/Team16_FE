@@ -5,6 +5,7 @@ import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useHeader } from '@/hooks/useHeader';
 import { IoIosArrowForward } from 'react-icons/io';
+import PrimaryButton from '@/components/common/PrimaryButton';
 
 // 날짜 비교 함수
 const isPast = (dateStr: string) => {
@@ -17,24 +18,25 @@ const AllSchedulePage = () => {
   const { groupId } = useParams();
   useHeader({ centerContent: '모든 일정' });
   const navigate = useNavigate();
-  const { data: groupSchedule, isLoading: isGroupScheduleLoading } = useGroupSchedule(
-    String(groupId)
+  const { data: groupSchedules, isLoading: isGroupScheduleLoading } = useGroupSchedule(
+    Number(groupId)
   );
 
   if (isGroupScheduleLoading) return <div>로딩중...</div>;
 
-  const pastSchedules = Array.isArray(groupSchedule)
-    ? groupSchedule.filter((sch: any) => isPast(sch.startTime)).reverse()
+  const pastSchedules = Array.isArray(groupSchedules)
+    ? groupSchedules.filter((sch: any) => isPast(sch.startTime)).reverse()
     : [];
 
-  const upcomingSchedules = Array.isArray(groupSchedule)
-    ? groupSchedule.filter((sch: any) => !isPast(sch.startTime)).reverse()
+  const upcomingSchedules = Array.isArray(groupSchedules)
+    ? groupSchedules.filter((sch: any) => !isPast(sch.startTime)).reverse()
     : [];
 
-  if (pastSchedules.length === 0) {
+  if (groupSchedules.length === 0) {
     return (
       <Wrapper>
         <EmptyText>일정이 없습니다.</EmptyText>
+        <PrimaryButton text={'일정 추가'} onClick={() => navigate(`/create-schedule/${groupId}`)} />
       </Wrapper>
     );
   }
@@ -66,6 +68,7 @@ const AllSchedulePage = () => {
           <InfoText> {sch.title}</InfoText>
         </ScheduleItem>
       ))}
+      <PrimaryButton text={'일정 추가'} onClick={() => navigate(`/create-schedule/${groupId}`)} />
     </Wrapper>
   );
 };

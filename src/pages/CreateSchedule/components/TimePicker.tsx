@@ -16,6 +16,7 @@ const TimePicker = ({ control }: { control: any }) => {
       name="startTime"
       control={control}
       render={({ field: { onChange, value } }) => {
+        value = new Date(value);
         const selectedHour = String(value.getHours()).padStart(2, '0');
         const selectedMinute = String(value.getMinutes()).padStart(2, '0');
 

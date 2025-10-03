@@ -12,6 +12,10 @@ import MemberCountEditor from './components/MemberCountEditor';
 import TimePicker from './components/TimePicker';
 import { useGroupPlan } from '@/hooks/useGroupPlan';
 import Description from './components/Description';
+import DurationPicker from './components/DurationPicker';
+import { ConvertTimeString } from './components/DurationPicker';
+import { formatInTimeZone } from 'date-fns-tz';
+import { useScheduleMutation } from './hooks/useScheduleMutation';
 
 const CreateEventPage = () => {
   const navigate = useNavigate();
@@ -20,20 +24,39 @@ const CreateEventPage = () => {
   const pagePurpose = isEdit ? '일정 수정' : '일정 생성';
   useHeader({ centerContent: pagePurpose });
 
-  const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId), {
-    enabled: isEdit,
-  });
-  const { control, formState, handleSubmit, watch, reset } = useFormContext();
+  const { createMutation, updateMutation } = useScheduleMutation(Number(groupId), Number(planId));
+
+  const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId));
+
+  const { control, handleSubmit, watch, reset, setValue } = useFormContext();
   const [activeEditor, setActiveEditor] = useState(null);
   const formValues = watch();
   useEffect(() => {
-    if (!formState.isDirty && scheduleData) {
-      reset(scheduleData);
+    if (scheduleData) {
+      reset({
+        ...scheduleData,
+        duration: computeDurationInMinutes(scheduleData.startTime, scheduleData.endTime),
+      });
     }
   }, [scheduleData]);
 
   const onSubmit = (data: any) => {
-    alert(JSON.stringify(data, null, 2));
+    const { duration, ...rest } = data;
+    //백엔드 request 데이터 형식에 맞춤
+    const payload = {
+      ...rest,
+      //한국 시간으로 포맷
+      startTime: formatInTimeZone(data.startTime, 'Asia/Seoul', "yyyy-MM-dd'T'HH:mm:ss"),
+      endTime: formatInTimeZone(
+        addDurationToTime(data.startTime, data.duration),
+        'Asia/Seoul',
+        "yyyy-MM-dd'T'HH:mm:ss"
+      ),
+      duration, //분 단위
+    };
+    if (isEdit)
+      updateMutation.mutate({ payload, groupId: Number(groupId), planId: Number(planId) });
+    else createMutation.mutate({ payload, groupId: Number(groupId) });
   };
 
   const openEditor = (editorName: any) => {
@@ -67,6 +90,20 @@ const CreateEventPage = () => {
           </>
         )}
 
+        {/*진행시간*/}
+        <SummaryItem onClick={() => openEditor('duration')}>
+          <Label>진행 시간</Label>
+          <Value>{ConvertTimeString(formValues.duration)}</Value>
+        </SummaryItem>
+        {activeEditor === 'duration' && (
+          <DurationPicker
+            duration={formValues.duration}
+            onChange={(newDuration) => {
+              setValue('duration', newDuration);
+            }}
+          />
+        )}
+
         {/* 장소 */}
         <SummaryItem onClick={() => navigate(address)}>
           <Label>장소</Label>
@@ -95,6 +132,20 @@ const CreateEventPage = () => {
       <PrimaryButton text={pagePurpose} onClick={handleSubmit(onSubmit)} disabled={!isFormValid} />
     </PageContainer>
   );
+};
+
+//startTime에 duration을 더하여 endTime 구하기
+const addDurationToTime = (startTime: Date, duration: number): Date => {
+  const endTime = new Date(startTime);
+  endTime.setMinutes(endTime.getMinutes() + duration);
+  return endTime;
+};
+
+// duration 계산 함수
+const computeDurationInMinutes = (startTime: string | Date, endTime: string | Date): number => {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  return (end.getTime() - start.getTime()) / (1000 * 60);
 };
 
 const PageContainer = styled.div({
