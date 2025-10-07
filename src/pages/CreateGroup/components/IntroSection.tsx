@@ -8,12 +8,12 @@ import type { IntroSectionProps } from '../type';
 const MAX_LENGTH = 200;
 const MIN_LENGTH = 8;
 
-const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
+const IntroSection = ({ register, errors, intro }: IntroSectionProps) => {
   return (
     <Wrapper>
       <Title>모임 소개</Title>
       <GroupIntroInput
-        {...register('groupIntro', {
+        {...register('intro', {
           required: '모임 소개를 입력해주세요.',
           minLength: {
             value: MIN_LENGTH,
@@ -27,10 +27,8 @@ const IntroSection = ({ register, errors, groupIntro }: IntroSectionProps) => {
         placeholder="모임에 대한 소개를 입력해주세요"
       />
       <Bottom>
-        {errors.groupIntro?.message && (
-          <ErrorMessage>{String(errors.groupIntro.message)}</ErrorMessage>
-        )}
-        <TextLengthValidator currentLength={groupIntro.length} maxLength={MAX_LENGTH} />
+        {errors.intro?.message && <ErrorMessage>{String(errors.intro.message)}</ErrorMessage>}
+        <TextLengthValidator currentLength={intro.length} maxLength={MAX_LENGTH} />
       </Bottom>
     </Wrapper>
   );
