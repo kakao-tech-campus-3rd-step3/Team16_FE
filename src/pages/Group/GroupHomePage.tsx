@@ -22,8 +22,7 @@ const GroupHome = () => {
 
   if (isLoadingGroupHome || isLoadingReviews) return <div>로딩중...</div>;
   if (!data) return <div>데이터가 없습니다</div>;
-
-  console.log('GroupHome data:', data);
+  
   return (
     <Wrapper>
       <ImgWrapper>

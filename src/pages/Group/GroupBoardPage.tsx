@@ -85,7 +85,6 @@ const GroupBoard = () => {
         <EditButtonWrapper>
           <EditButton
             onClick={() => {
-              console.log(`create-post/${groupId}`);
               navigate(`/create-post/${groupId}`);
             }}
           >

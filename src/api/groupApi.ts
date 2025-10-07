@@ -14,7 +14,6 @@ export const fetchGroupHome = async (groupId: number): Promise<GroupHomeResponse
 //게시글 전체 조회
 export const fetchGroupPosts = async (groupId: number) => {
   const response = await apiClient.get(`/groups/${groupId}/posts`);
-  console.log('fetchGroupPosts response:', response.data);
   return response.data;
 };
 
@@ -47,11 +46,6 @@ export const fetchGroupSchedule = async (groupId: number) => {
   const response = await apiClient.get(`/groups/${groupId}/plans`);
   return response.data;
 };
-
-interface Review {
-  id: number;
-  content: string;
-}
 
 interface GroupHomeResponse {
   groupId: number;

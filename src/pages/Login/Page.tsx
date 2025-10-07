@@ -15,10 +15,8 @@ const LoginPage = () => {
     const accessToken = new URL(window.location.href).searchParams.get('token');
     if (accessToken) {
       setAccessToken(accessToken);
-      console.log(accessToken);
       // 사용자 정보 가져오고 유저정보 zustand에 저장
       getUserInfo().then((userInfo) => {
-        console.log(userInfo);
         setUserInfo(userInfo);
         navigate('/'); // 메인 페이지로 이동
       });

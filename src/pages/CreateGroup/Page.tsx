@@ -32,7 +32,6 @@ const CreateGroupPage = () => {
     onSuccess: (response) => {
       alert('모임이 성공적으로 생성되었습니다!');
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
-      console.log(queryClient.getQueryData(['userInfo']));
       navigate(`/group/${response.groupId}`);
     },
     onError: () => {
