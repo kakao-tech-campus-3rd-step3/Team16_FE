@@ -4,25 +4,30 @@ import { CiCalendarDate } from 'react-icons/ci';
 import { IoPeopleOutline } from 'react-icons/io5';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
-import { useQuery } from '@tanstack/react-query';
-import { fetchGroupHome } from '@/api/groupApi';
-import { useParams } from 'react-router-dom';
+import useGroupHome from '@/hooks/useGroupHome';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useGroupReviews } from '@/hooks/useGroupReviews';
+import { format } from 'date-fns';
+import PrimaryButton from '@/components/common/PrimaryButton';
+import { isUserMember } from '@/utils/groupMemberShip';
 
 const GroupHome = () => {
   const { groupId } = useParams();
+  const navigate = useNavigate();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['groupHome'],
-    queryFn: () => fetchGroupHome(Number(groupId)),
-  });
+  const { data, isLoading: isLoadingGroupHome } = useGroupHome(Number(groupId));
+  const { data: reviews, isLoading: isLoadingReviews } = useGroupReviews(Number(groupId));
 
-  if (isLoading) return <div>로딩중...</div>;
+  const userIsMember = isUserMember(Number(groupId));
+
+  if (isLoadingGroupHome || isLoadingReviews) return <div>로딩중...</div>;
   if (!data) return <div>데이터가 없습니다</div>;
 
+  console.log('GroupHome data:', data);
   return (
     <Wrapper>
       <ImgWrapper>
-        <Img src={data.groupImg} />
+        <Img src={data.coverImageUrl} />
       </ImgWrapper>
       <BodyWrapper>
         <GroupInfo>
@@ -32,7 +37,9 @@ const GroupHome = () => {
           </GroupHeader>
           <Desc>
             <CiCalendarDate />
-            <GroupCreatedDay>{data.createdAt} 개설됨</GroupCreatedDay>
+            <GroupCreatedDay>
+              {format(new Date(data.createdAt), 'yyyy-MM-dd')} 개설됨
+            </GroupCreatedDay>
           </Desc>
           <Desc>
             <IoPeopleOutline />
@@ -41,10 +48,18 @@ const GroupHome = () => {
         </GroupInfo>
         <GroupDesc>{data.intro}</GroupDesc>
         <ReviewHeader>이 모임이 받은 리뷰</ReviewHeader>
-        {data.reviews.map((review, idx) => (
-          <ReviewItem key={idx}> {review.content} </ReviewItem>
+        {reviews.map((review: any, idx: any) => (
+          <ReviewItem key={idx}> {review.contents} </ReviewItem>
         ))}
       </BodyWrapper>
+      {!userIsMember && (
+        <PrimaryButton
+          text={'가입신청'}
+          onClick={() => {
+            navigate(`/apply-to-join-group/${groupId}`);
+          }}
+        />
+      )}
     </Wrapper>
   );
 };
