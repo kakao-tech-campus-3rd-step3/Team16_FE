@@ -25,3 +25,10 @@ export const updateUserProfileImg = async () => {
   const res = await apiClient.put('/users/profile-image');
   return res.data;
 };
+
+//유저 정보 요청 api
+export const getUserInfo = async () => {
+  console.log(apiClient.defaults.headers);
+  const res= await apiClient.get('/users/me');
+  return res.data;
+};
