@@ -42,6 +42,7 @@ export const Routes = () => {
         <Route path={'/group/:groupId/create-ground-rule'} element={<CreateGroundRule />} />
         <Route path={'/create-post/:groupId'} element={<GroupPost />} />
         <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />{' '}
+        <Route path={'/group/:groupId/leave'} element={<LeavePage />} />
         {/* new route */}
         <Route
           element={
@@ -57,35 +58,6 @@ export const Routes = () => {
         </Route>
       </Route>
       <Route path={'/student'} element={<StudentPage />} />
-      {/* <Route element={<PrivateRoute />}> */}
-      <Route path={'/'} element={<HomePage />} />
-      <Route path={'/profile-edit'} element={<ProfileEditPage />} />
-      <Route path={'/student'} element={<StudentPage />} />
-      <Route path={'/mypage'} element={<Mypage />} />
-      <Route path={'/setting'} element={<SettingPage />} />
-      <Route path={'/group/:groupId'} element={<GroupPage />} />
-      <Route path={'/group/:groupId/leave'} element={<LeavePage />} />
-      <Route path={'/pending-application'} element={<PendingApplicationPage />} />
-      <Route path={'/alarm'} element={<AlarmPage />} />
-      <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
-      <Route path={'/create-group'} element={<CreateGroupPage />} />
-      <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
-      <Route path={'/member-review'} element={<MemberReview />} />
-      <Route path={'/demo'} element={<DemoPage />} />
-      <Route path={'/create-post/:groupId'} element={<GroupPost />} />
-      <Route
-        element={
-          <CreateScheduleProvider>
-            <Outlet />
-          </CreateScheduleProvider>
-        }
-      >
-        <Route path={'/create-schedule/:groupId'} element={<CreateSchedulePage />} />
-        <Route path={'/create-schedule/:groupId/:planId'} element={<CreateSchedulePage />} />
-        <Route path={'/location-input/:groupId'} element={<LocationPage />} />
-        <Route path={'/location-input/:groupId/:planId'} element={<LocationPage />} />
-      </Route>
-      {/* </Route> */}
       <Route path={'/login'} element={<LoginPage />} />
     </RouterRoutes>
   );
