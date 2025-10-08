@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { apiClient } from './apiClient';
 
 export type TargetType = 'USER' | 'GROUP' | 'POST' | 'COMMENT';
 
@@ -14,19 +14,12 @@ export interface ReportResponse {
   targetId: number;
   reasonCode: string;
   reason: string;
-  status: string;
+  status: 'PENDING' | 'RESOLVE' | 'REJECTED';
   createdAt: string;
   updatedAt: string;
 }
 
-export const createReport = async (
-  targetType: TargetType,
-  targetId: number,
-  payload: ReportRequest
-): Promise<ReportResponse> => {
-  const { data } = await axios.post<ReportResponse>(
-    `/api/reports/${targetType}/${targetId}`,
-    payload
-  );
-  return data;
+export const reportApi = {
+  submitReport: (targetType: string, targetId: number, data: ReportRequest) =>
+    apiClient.post(`/reports/${targetType}/${targetId}`, data),
 };

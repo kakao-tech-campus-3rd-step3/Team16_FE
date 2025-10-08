@@ -4,17 +4,21 @@ import { typography } from '@/styles/typography';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useNavigate } from 'react-router-dom';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
+import useAuthStore from '@/stores/authStore';
+import { useHeader } from '@/hooks/useHeader';
 
 const SettingPage = () => {
   const { profileImg, nickname, isLoading } = useUserProfile();
   const navigate = useNavigate();
+  const { clearTokens } = useAuthStore();
+  useHeader({ centerContent: '설정' });
 
   const editProfile = () => {
     navigate('/profile-edit');
   };
 
   const logout = () => {
-    //로그아웃 처리
+    clearTokens();
   };
 
   const deleteAccount = () => {

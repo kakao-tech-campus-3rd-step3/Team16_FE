@@ -1,17 +1,17 @@
 import styled from '@emotion/styled';
 import { theme } from '@/styles/theme';
-import useAuthStore from '@/stores/authStore';
 import { useState, useRef } from 'react';
 import studentCard from '@/assets/studentCard.svg';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import CircularProgress from './components/CircularProgress';
 import { IoCamera } from 'react-icons/io5';
+import useAuthStore from '@/stores/authStore';
 
 const StudentPage = () => {
-  const { verificationStatus } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
   const [selectedFile, setSelectedFile] = useState<File[] | null>(null);
+  const { isStudentVerified } = useAuthStore();
 
   const { uploadImagesAsync, isUploading, uploadProgress } = useImageUpload({
     type: 'VERIFICATION',
@@ -74,7 +74,7 @@ const StudentPage = () => {
       />
 
       <Notice>
-        {verificationStatus === 'pending'
+        {isStudentVerified === 'PENDING'
           ? '승인 여부 심사 중입니다.'
           : '24시간 내에 관리자가 승인 여부 심사합니다.'}
       </Notice>
@@ -140,18 +140,6 @@ const PreviewImage = styled.img`
   object-fit: contain;
 `;
 
-const Notice = styled.div`
-  width: 90%;
-  background: #eafbe7;
-  color: #3cb371;
-  font-size: 13px;
-  padding: 15px 0;
-  border-radius: 4px;
-  margin-bottom: 32px;
-  text-align: center;
-  margin-top: 10vh;
-`;
-
 const SubmitButton = styled.button`
   width: 90%;
   background: ${theme.colors.primary};
@@ -173,6 +161,18 @@ const ProgressOverlay = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 12px;
+`;
+
+const Notice = styled.div`
+  width: 90%;
+  background: #eafbe7;
+  color: #3cb371;
+  font-size: 13px;
+  padding: 15px 0;
+  border-radius: 4px;
+  margin-bottom: 32px;
+  text-align: center;
+  margin-top: 10vh;
 `;
 
 export default StudentPage;

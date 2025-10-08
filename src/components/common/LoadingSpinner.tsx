@@ -11,6 +11,14 @@ const FullScreenLoader = () => {
 
 export default FullScreenLoader;
 
+export const CenteredLoader = () => {
+  return (
+    <CenterContainer>
+      <Spinner />
+    </CenterContainer>
+  );
+};
+
 const Overlay = styled.div({
   position: 'fixed',
   top: 0,
@@ -22,6 +30,14 @@ const Overlay = styled.div({
   alignItems: 'center',
   justifyContent: 'center',
   zIndex: 9999,
+});
+
+const CenterContainer = styled.div({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 const Spinner = styled.div({
