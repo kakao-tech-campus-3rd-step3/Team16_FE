@@ -14,6 +14,7 @@ import { useToggleLike } from './hooks/useToggleLike';
 import FullScreenLoader from '@/components/common/LoadingSpinner';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { isUserMember } from '@/utils/groupMemberShip';
 
 interface Post {
   postId: number;
@@ -31,7 +32,7 @@ const GroupBoard = () => {
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ['groupPosts', Number(groupId)],
     queryFn: () => fetchGroupPosts(Number(groupId)),
@@ -39,6 +40,8 @@ const GroupBoard = () => {
   const { mutate: toggleLike } = useToggleLike(Number(groupId));
 
   const posts = data || [];
+
+  const isUserMemberOfGroup = isUserMember(Number(groupId));
 
   if (isPending) {
     return <FullScreenLoader />;
@@ -75,19 +78,20 @@ const GroupBoard = () => {
           </PostActions>
         </PostContent>
       ))}
-      
+
       <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
-      
-      <EditButtonWrapper>
-        <EditButton
-          onClick={() => {
-            console.log(`create-post/${groupId}`);
-            navigate(`/create-post/${groupId}`);
-          }}
-        >
-          <EditIcon />
-        </EditButton>
-      </EditButtonWrapper>
+
+      {isUserMemberOfGroup && (
+        <EditButtonWrapper>
+          <EditButton
+            onClick={() => {
+              navigate(`/create-post/${groupId}`);
+            }}
+          >
+            <EditIcon />
+          </EditButton>
+        </EditButtonWrapper>
+      )}
     </Wrapper>
   );
 };

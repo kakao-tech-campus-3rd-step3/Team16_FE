@@ -6,20 +6,14 @@ export const fetchGroups = async () => {
   return response.data;
 };
 
-export const fetchGroupHome = async (_groupId: number): Promise<GroupHomeResponse> => {
-  // 목데이터를 axios로 불러오기
-  const response = await axios.get('/data/mockData.json');
+export const fetchGroupHome = async (groupId: number): Promise<GroupHomeResponse> => {
+  const response = await apiClient.get(`/groups/${groupId}`);
   return response.data;
-
-  // 실제 API 호출 (백엔드 준비되면 위 코드 삭제하고 아래 주석 해제)
-  // const response = await apiClient.get(`/groups/${_groupId}`);
-  // return response.data;
 };
 
 //게시글 전체 조회
 export const fetchGroupPosts = async (groupId: number) => {
   const response = await apiClient.get(`/groups/${groupId}/posts`);
-  console.log('fetchGroupPosts response:', response.data);
   return response.data;
 };
 
@@ -53,28 +47,22 @@ export const fetchGroupSchedule = async (groupId: number) => {
   return response.data;
 };
 
-interface Review {
-  id: number;
-  content: string;
-}
-
 interface GroupHomeResponse {
-  id: number;
+  groupId: number;
   name: string;
   intro: string;
   safetyTag: string;
+  coverImageUrl: string;
   createdAt: string;
   capacity: number;
-  reviews: Review[];
-  groupImg: string;
 }
 
 interface CreateGroupFormData {
-  groupName: string;
-  groupIntro: string;
+  name: string;
+  intro: string;
 }
 
 export async function createGroupApi(data: CreateGroupFormData) {
-  const response = await axios.post('/data/createGroup.json', data);
+  const response = await apiClient.post('/groups', { ...data, capacity: 1 });
   return response.data;
 }
