@@ -1,22 +1,20 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 interface CreateGroupFormData {
-  groupName: string;
-  groupIntro: string;
+  name: string;
+  intro: string;
 }
 
 interface IntroSectionProps {
   register: UseFormRegister<CreateGroupFormData>;
   errors: FieldErrors<CreateGroupFormData>;
-  groupIntro: string;
+  intro: string;
 }
 
 interface NameSectionProps {
   register: UseFormRegister<CreateGroupFormData>;
   errors: FieldErrors<CreateGroupFormData>;
-  groupName: string;
+  name: string;
 }
-
-
 
 export type { CreateGroupFormData, IntroSectionProps, NameSectionProps };
