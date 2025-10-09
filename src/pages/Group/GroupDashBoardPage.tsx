@@ -14,6 +14,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { getRules } from '@/api/rulesApi';
 import type { Rule } from '@/api/rulesApi';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 export const DashBoard = () => {
   const { groupId } = useParams();
@@ -35,7 +36,7 @@ export const DashBoard = () => {
   const isDashBoardLoading = isGroundRulesLoading || isGroupScheduleLoading;
 
   if (isDashBoardLoading) {
-    return <div>로딩중...</div>;
+    return <LoadingSpinner />;
   }
 
   const upcomingSchedules = Array.isArray(groupSchedule)
