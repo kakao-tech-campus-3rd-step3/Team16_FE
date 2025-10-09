@@ -3,22 +3,35 @@ import { useParams, useLocation } from 'react-router-dom';
 import GroupHome from './GroupHomePage';
 import GroupBoard from './GroupBoardPage';
 import Nav from './components/Navigator';
-import { isUserMember } from '@/utils/groupMemberShip';
 import styled from '@emotion/styled';
 import { useHeader } from '@/hooks/useHeader';
 import { DashBoard } from './GroupDashBoardPage';
 import useGroupHome from '@/hooks/useGroupHome';
+import { HiOutlineMenu } from 'react-icons/hi';
+import useAuthStore from '@/stores/authStore';
+import GroupDrawer from './components/GroupDrawer';
 
 const GroupPage = () => {
-  const { groupId } = useParams();
+  const { groupId } = useParams<{ groupId: string }>();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('');
-  const isMember = isUserMember(Number(groupId));
+  const { groups } = useAuthStore();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const isMember = !!groupId && groups.memberOf.includes(groupId);
 
   const { data: group } = useGroupHome(Number(groupId));
   const groupName = group?.name;
 
-  useHeader({ centerContent: groupName });
+  useHeader({
+    centerContent: groupName,
+    rightContent: isMember ? (
+      <HiOutlineMenu
+        size={24}
+        style={{ cursor: 'pointer' }}
+        onClick={() => setIsDrawerOpen(true)}
+      />
+    ) : null,
+  });
 
   // 멤버십 상태에 따라 초기 탭 설정
   useEffect(() => {
@@ -48,6 +61,7 @@ const GroupPage = () => {
     <Wrapper>
       <Nav activeTab={activeTab} onTabChange={setActiveTab} />
       {renderContent()}
+      {isDrawerOpen && <GroupDrawer onClose={() => setIsDrawerOpen(false)} />}
     </Wrapper>
   );
 };

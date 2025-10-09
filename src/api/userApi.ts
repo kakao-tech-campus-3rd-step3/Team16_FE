@@ -27,7 +27,7 @@ export const updateUserProfileImg = async () => {
 };
 
 //유저 정보 요청 api
-export const getUserInfo = async () => {
-  const res= await apiClient.get('/users/me');
+export const getUserInfo = async (userId: number) => {
+  const res = await apiClient.get(`/users/${userId}/me`);
   return res.data;
 };
