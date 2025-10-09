@@ -14,7 +14,7 @@ import { useToggleLike } from './hooks/useToggleLike';
 import FullScreenLoader from '@/components/common/LoadingSpinner';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { isUserMember } from '@/utils/groupMemberShip';
+import { useGroupMembershipStatus } from '@/hooks/useGroupMembershipStatus';
 
 interface Post {
   postId: number;
@@ -41,9 +41,9 @@ const GroupBoard = () => {
 
   const posts = data || [];
 
-  const isUserMemberOfGroup = isUserMember(Number(groupId));
+  const { isMember, isLoading: membershipLoading } = useGroupMembershipStatus();
 
-  if (isPending) {
+  if (isPending || membershipLoading) {
     return <FullScreenLoader />;
   }
   return (
@@ -81,13 +81,9 @@ const GroupBoard = () => {
 
       <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
 
-      {isUserMemberOfGroup && (
+      {isMember && (
         <EditButtonWrapper>
-          <EditButton
-            onClick={() => {
-              navigate(`/create-post/${groupId}`);
-            }}
-          >
+          <EditButton onClick={() => navigate(`/create-post/${groupId}`)}>
             <EditIcon />
           </EditButton>
         </EditButtonWrapper>
