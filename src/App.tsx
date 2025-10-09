@@ -6,14 +6,14 @@ import useAuthStore from '@/stores/authStore';
 import { useEffect } from 'react';
 
 function App() {
-  const { userId, setUserInfo, isAuthenticated } = useAuthStore();
-  const { data: userInfo } = useUserInfo(userId!, { enabled: !!userId && isAuthenticated });
+  const { setUserInfo } = useAuthStore();
+  const { data: userInfo } = useUserInfo();
 
   useEffect(() => {
     if (userInfo) {
       setUserInfo(userInfo);
     }
-  }, [userInfo, setUserInfo]);
+  }, [userInfo]);
 
   return (
     <>
