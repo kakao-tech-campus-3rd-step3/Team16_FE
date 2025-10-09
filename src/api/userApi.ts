@@ -26,8 +26,12 @@ export const updateUserProfileImg = async () => {
   return res.data;
 };
 
-//유저 정보 요청 api
-export const getUserInfo = async () => {
-  const res= await apiClient.get('/users/me');
+export const getUserInfo = async (userId: string) => {
+  const res = await apiClient.get(`/users/${userId}/me`);
+  return res.data;
+};
+
+export const getUserGroupHistory = async (userId: string) => {
+  const res = await apiClient.get(`/users/${userId}/groups/history`);
   return res.data;
 };
