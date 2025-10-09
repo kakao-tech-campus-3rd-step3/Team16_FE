@@ -30,7 +30,7 @@ export function useGroupMembershipStatus() {
   } else if (isError || !userId) {
     status = 'ERROR';
   } else {
-    const record = history?.find((h) => h.groupId === numericGroupId);
+    const record = history?.find((h: { groupId: number }) => h.groupId === numericGroupId);
 
     if (!record) {
       status = 'NONE';
