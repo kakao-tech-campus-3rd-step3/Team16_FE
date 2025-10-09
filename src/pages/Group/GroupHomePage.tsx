@@ -9,7 +9,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useGroupReviews } from '@/hooks/useGroupReviews';
 import { format } from 'date-fns';
 import PrimaryButton from '@/components/common/PrimaryButton';
-import { isUserMember } from '@/utils/groupMemberShip';
+import { useGroupMembershipStatus } from '@/hooks/useGroupMembershipStatus';
+import LoadingSpiiner from '@/components/common/LoadingSpinner';
 
 const GroupHome = () => {
   const { groupId } = useParams();
@@ -18,11 +19,11 @@ const GroupHome = () => {
   const { data, isLoading: isLoadingGroupHome } = useGroupHome(Number(groupId));
   const { data: reviews, isLoading: isLoadingReviews } = useGroupReviews(Number(groupId));
 
-  const userIsMember = isUserMember(Number(groupId));
+  const { isLeft, isNew, isLoading } = useGroupMembershipStatus();
 
-  if (isLoadingGroupHome || isLoadingReviews) return <div>로딩중...</div>;
+  if (isLoadingGroupHome || isLoadingReviews || isLoading) return <LoadingSpiiner />;
   if (!data) return <div>데이터가 없습니다</div>;
-  
+
   return (
     <Wrapper>
       <ImgWrapper>
@@ -51,12 +52,10 @@ const GroupHome = () => {
           <ReviewItem key={idx}> {review.contents} </ReviewItem>
         ))}
       </BodyWrapper>
-      {!userIsMember && (
+      {(isLeft || isNew) && (
         <PrimaryButton
           text={'가입신청'}
-          onClick={() => {
-            navigate(`/apply-to-join-group/${groupId}`);
-          }}
+          onClick={() => navigate(`/apply-to-join-group/${groupId}`)}
         />
       )}
     </Wrapper>

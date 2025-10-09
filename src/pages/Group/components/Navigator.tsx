@@ -1,16 +1,12 @@
 import styled from '@emotion/styled';
-import { useParams } from 'react-router-dom';
-import { isUserMember } from '@/utils/groupMemberShip';
 
 interface NavigatorProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  isMember: boolean;
 }
 
-const Navigator = ({ activeTab, onTabChange }: NavigatorProps) => {
-  const { groupId } = useParams();
-  const isMember = isUserMember(Number(groupId));
-
+const Navigator = ({ activeTab, onTabChange, isMember }: NavigatorProps) => {
   const handleItemClick = (tab: string) => {
     onTabChange(tab);
   };
