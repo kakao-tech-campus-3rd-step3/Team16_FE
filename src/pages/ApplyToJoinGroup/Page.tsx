@@ -8,6 +8,7 @@ import { useHeader } from '@/hooks/useHeader';
 import { useParams } from 'react-router-dom';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import useApplyToJoinGroup from './hooks/useApplyToJoinGroup';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 const MAX_LENGTH = 200;
 const MIN_LENGTH = 8;
@@ -82,12 +83,6 @@ const GroupIntroInput = styled.textarea({
   resize: 'none',
   ...typography.body,
   fontFamily: typography.fontFamily,
-});
-
-const ErrorMessage = styled.span({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing1,
 });
 
 const Bottom = styled.div({

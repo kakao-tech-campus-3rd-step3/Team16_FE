@@ -4,6 +4,7 @@ import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import TextLength from '@/components/common/TextLength';
 import type { TitleSectionProps } from '../type';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 const MAX_LENGTH = 10;
 const MIN_LENGTH = 2;
@@ -54,12 +55,6 @@ const TitleInput = styled.input({
   boxSizing: 'border-box',
   outline: 'none',
   ...typography.body,
-});
-
-const ErrorMessage = styled.span({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing1,
 });
 
 const Bottom = styled.div({

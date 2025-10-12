@@ -7,6 +7,7 @@ import TextLength from './common/TextLength';
 import { useForm, Controller } from 'react-hook-form';
 import { useReport } from '@/hooks/useReport';
 import { useEffect } from 'react';
+import { ErrorMessage } from './common/ErrorMessage';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -185,12 +186,6 @@ const DetailTextarea = styled.textarea({
 
 const Bottom = styled.div({
   display: 'flex',
-});
-
-const ErrorMessage = styled.span({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing1,
 });
 
 const ButtonGroup = styled.div({

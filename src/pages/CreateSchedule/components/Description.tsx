@@ -4,6 +4,7 @@ import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import TextLengthValidator from '@/components/common/TextLength';
 import { Controller } from 'react-hook-form';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 const MAX_LENGTH = 200;
 
@@ -59,12 +60,6 @@ const GroupIntroInput = styled.textarea({
   resize: 'none',
   ...typography.body,
   fontFamily: typography.fontFamily,
-});
-
-const ErrorMessage = styled.span({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing1,
 });
 
 const Bottom = styled.div({

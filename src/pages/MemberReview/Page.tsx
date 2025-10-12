@@ -8,6 +8,7 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import { useReview } from '@/hooks/useReveiw';
 import FullScreenLoader from '@/components/common/LoadingSpinner';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 const MemberReview = () => {
   const [choice, setChoice] = useState<'positive' | 'negative' | null>(null);
@@ -57,7 +58,7 @@ const MemberReview = () => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <PrimaryButton text="제출하기" onClick={handleSubmit} />
     </Wrapper>
   );
@@ -115,10 +116,4 @@ const InputBox = styled.textarea({
   ...typography.body,
   color: colors.black,
   fontFamily: 'inherit',
-});
-
-const ErrorText = styled.p({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing4,
 });

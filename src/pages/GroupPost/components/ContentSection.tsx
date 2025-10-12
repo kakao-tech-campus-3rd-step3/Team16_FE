@@ -4,6 +4,8 @@ import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import TextLengthValidator from '@/components/common/TextLength';
 import type { ContentSectionProps } from '../type';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
+
 const MAX_LENGTH = 200;
 const MIN_LENGTH = 8;
 
@@ -56,12 +58,6 @@ const ContentInput = styled.textarea({
   resize: 'none',
   ...typography.body,
   fontFamily: typography.fontFamily,
-});
-
-const ErrorMessage = styled.span({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing1,
 });
 
 const Bottom = styled.div({
