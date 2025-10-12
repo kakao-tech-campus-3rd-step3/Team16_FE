@@ -1,7 +1,6 @@
-import { colors } from '@/styles/colors';
 import styled from '@emotion/styled';
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
-import { typography } from '@/styles/typography';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 const MIN_LENGTH = 2;
 const MAX_LENGTH = 10;
@@ -52,12 +51,6 @@ const Input = styled.input({
   borderRadius: '4px',
   width: '100%',
   boxSizing: 'border-box',
-  
-});
-
-const ErrorMessage = styled.p({
-  color: colors.error,
-  ...typography.small,
 });
 
 export default Nickname;
