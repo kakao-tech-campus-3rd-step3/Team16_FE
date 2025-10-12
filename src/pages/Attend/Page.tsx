@@ -29,7 +29,7 @@ const AttendPage = () => {
     enabled: !!groupId && !!planId,
   });
   const attendees = data?.attendees || [];
-  const isUserAttended = data?.isUserAttended || true; //유저가 출석했는지 여부
+  const isUserAttended = data?.isUserAttended || false; //유저가 출석했는지 여부
 
   const [isAttendanceValid, setIsAttendanceValid] = useState<boolean>(false);
 
