@@ -66,3 +66,8 @@ export async function createGroupApi(data: CreateGroupFormData) {
   const response = await apiClient.post('/groups', { ...data, capacity: 1 });
   return response.data;
 }
+
+export const fetchGroupApplications = async (groupId: number) => {
+  const res = await apiClient.get(`/group/${groupId}/join-requests`);
+  return res.data;
+};
