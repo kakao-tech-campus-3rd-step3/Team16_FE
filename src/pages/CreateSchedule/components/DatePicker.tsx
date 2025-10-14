@@ -6,7 +6,7 @@ import { colors } from '@/styles/colors';
 const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
 const DatePicker = ({ control, startTime }: { control: any; startTime: Date }) => {
-  const [selectedDate, setSelectedDate] = useState(startTime);
+  const [selectedDate, setSelectedDate] = useState(new Date(startTime));
   const today = new Date();
   const currentYear = selectedDate.getFullYear();
   const currentMonth = selectedDate.getMonth();
@@ -54,10 +54,11 @@ const DatePicker = ({ control, startTime }: { control: any; startTime: Date }) =
   // 달력에서 선택된 날짜인지 판별 함수
   const isSelectedDay = (day: number | null, value: Date | null) => {
     if (!day || !value) return false;
+    const selectedDate = new Date(value);
     return (
-      value.getFullYear() === currentYear &&
-      value.getMonth() === currentMonth &&
-      value.getDate() === day
+      selectedDate.getFullYear() === currentYear &&
+      selectedDate.getMonth() === currentMonth &&
+      selectedDate.getDate() === day
     );
   };
 
@@ -114,7 +115,7 @@ const DatePicker = ({ control, startTime }: { control: any; startTime: Date }) =
                         new Date(currentYear, currentMonth, day) >=
                           new Date(today.setHours(0, 0, 0, 0))
                       ) {
-                        const baseDate = field.value;
+                        const baseDate = new Date(field.value);
                         const newDate = new Date(
                           currentYear,
                           currentMonth,

@@ -7,6 +7,8 @@ type FormValues = {
   location: { name: string; latitude: number; longitude: number };
   capacity: number;
   description: string;
+  endTime: Date;
+  duration: number;
 };
 
 type Props = {
@@ -22,6 +24,12 @@ export const CreateScheduleProvider: React.FC<Props> = ({ children }) => {
         d.setHours(d.getHours() + 1, 0, 0, 0);
         return d;
       })(),
+      endTime: (() => {
+        const d = new Date();
+        d.setHours(d.getHours() + 1, +30, 0, 0);
+        return d;
+      })(),
+      duration: 30,
       location: {
         name: '전남대학교 용봉탑',
         latitude: 35.17529475708064,

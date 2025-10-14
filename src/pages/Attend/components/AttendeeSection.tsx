@@ -1,20 +1,15 @@
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
+import type { AttendeeSectionProps } from '../type';
 
-const AttendeeSection = () => {
-  const attendees = [
-    { name: '홍길동', time: '10:00' },
-    { name: '김철수', time: '10:05' },
-    { name: '이영희', time: '10:10' },
-  ];
-
+const AttendeeSection = ({ attendees }: AttendeeSectionProps) => {
   return (
     <Wrapper>
       {attendees.map((attendee, index) => (
         <AttendeeList key={index}>
-          <Time>{attendee.time}</Time>
-          <Name>{attendee.name}</Name>
+          <Time>{attendee.attendAt}</Time>
+          <Name>{attendee.userName}</Name>
         </AttendeeList>
       ))}
     </Wrapper>

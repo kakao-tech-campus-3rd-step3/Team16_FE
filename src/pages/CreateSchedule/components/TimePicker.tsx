@@ -16,8 +16,9 @@ const TimePicker = ({ control }: { control: any }) => {
       name="startTime"
       control={control}
       render={({ field: { onChange, value } }) => {
-        const selectedHour = String(value.getHours()).padStart(2, '0');
-        const selectedMinute = String(value.getMinutes()).padStart(2, '0');
+        const selectedTime = new Date(value);
+        const selectedHour = String(selectedTime.getHours()).padStart(2, '0');
+        const selectedMinute = String(selectedTime.getMinutes()).padStart(2, '0');
 
         // 컴포넌트가 처음 렌더링될 때 현재 시간으로 스크롤을 이동
         useEffect(() => {

@@ -3,15 +3,21 @@ import { IoSettingsOutline } from 'react-icons/io5';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import defaultUserImg from '@/assets/defaultUserImg.svg';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileSection = () => {
+  const { profileImg, nickname } = useUserProfile();
+  const navigation = useNavigate();
+
   return (
     <Wrapper>
-      <ProfileImage />
+      <ProfileImage src={profileImg ?? defaultUserImg} />
       <ProfileInfo>
-        <Nickname>나는야 산악왕</Nickname>
+        <Nickname>{nickname}</Nickname>
       </ProfileInfo>
-      <SettingButton>
+      <SettingButton onClick={() => navigation('/setting')}>
         <IoSettingsOutline size={20} />
         설정
       </SettingButton>
@@ -31,11 +37,10 @@ const Wrapper = styled.section({
   backgroundColor: colors.backgroundGray,
 });
 
-const ProfileImage = styled.image({
+const ProfileImage = styled.img({
   width: '64px',
   height: '64px',
   borderRadius: '50%',
-  backgroundColor: colors.gray300, //임시
 });
 
 const ProfileInfo = styled.div({

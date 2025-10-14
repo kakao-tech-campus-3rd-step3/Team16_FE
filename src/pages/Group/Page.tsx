@@ -1,26 +1,35 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import GroupHome from './GroupHomePage';
 import GroupBoard from './GroupBoardPage';
 import Nav from './components/Navigator';
-import { useGroupMembership } from '@/hooks/useGroupMembership';
+import { isUserMember } from '@/utils/groupMemberShip';
 import styled from '@emotion/styled';
 import { useHeader } from '@/hooks/useHeader';
 import { DashBoard } from './GroupDashBoardPage';
+import useGroupHome from '@/hooks/useGroupHome';
 
 const GroupPage = () => {
   const { groupId } = useParams();
-  const { isMember, isLoading } = useGroupMembership(groupId);
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('');
+  const isMember = isUserMember(Number(groupId));
 
-  useHeader({ centerContent: '스터디 그룹' });
+  const { data: group } = useGroupHome(Number(groupId));
+  const groupName = group?.name;
+
+  useHeader({ centerContent: groupName });
 
   // 멤버십 상태에 따라 초기 탭 설정
   useEffect(() => {
-    if (!isLoading) {
+    // 우선순위: location.state.activeTab > 기존 멤버십 초기값
+    const stateTab = location.state?.activeTab;
+    if (stateTab) {
+      setActiveTab(stateTab);
+    } else {
       setActiveTab(isMember ? '대시보드' : '홈');
     }
-  }, [isMember, isLoading]);
+  }, [location.state?.activeTab, isMember]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -34,10 +43,6 @@ const GroupPage = () => {
         return <div>채팅 컴포넌트 (구현 예정)</div>;
     }
   };
-
-  if (isLoading || !activeTab) {
-    return <div>로딩 중...</div>;
-  }
 
   return (
     <Wrapper>

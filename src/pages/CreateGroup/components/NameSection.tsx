@@ -4,16 +4,17 @@ import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import TextLength from '@/components/common/TextLength';
 import type { NameSectionProps } from '../type';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
 
 const MAX_LENGTH = 10;
 const MIN_LENGTH = 2;
 
-const NameSection = ({ register, errors, groupName }: NameSectionProps) => {
+const NameSection = ({ register, errors, name }: NameSectionProps) => {
   return (
     <Wrapper>
       <Title>모임명</Title>
       <GroupNameInput
-        {...register('groupName', {
+        {...register('name', {
           required: '모임명을 입력해주세요.',
           minLength: {
             value: MIN_LENGTH,
@@ -27,10 +28,8 @@ const NameSection = ({ register, errors, groupName }: NameSectionProps) => {
         placeholder="모임명을 입력해주세요"
       />
       <Bottom>
-        {errors.groupName?.message && (
-          <ErrorMessage>{String(errors.groupName.message)}</ErrorMessage>
-        )}
-        <TextLength currentLength={groupName.length} maxLength={MAX_LENGTH} />
+        {errors.name?.message && <ErrorMessage>{String(errors.name.message)}</ErrorMessage>}
+        <TextLength currentLength={name.length} maxLength={MAX_LENGTH} />
       </Bottom>
     </Wrapper>
   );
@@ -56,12 +55,6 @@ const GroupNameInput = styled.input({
   boxSizing: 'border-box',
   outline: 'none',
   ...typography.body,
-});
-
-const ErrorMessage = styled.span({
-  ...typography.caption,
-  color: colors.error,
-  marginLeft: spacing.spacing1,
 });
 
 const Bottom = styled.div({

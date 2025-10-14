@@ -2,12 +2,18 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 
-const InfoSection = () => {
+interface InfoSectionProps {
+  location: string | undefined;
+  startTime: string | undefined;
+  planTitle: string | undefined;
+}
+
+const InfoSection = ({ location, startTime, planTitle }: InfoSectionProps) => {
   return (
     <Wrapper>
-      <Header>27회 정기모임</Header>
-      <Date>2024년 6월 15일 토요일</Date>
-      <Location>서울시 강남구</Location>
+      <Header>{planTitle}</Header>
+      <Date>{startTime}</Date>
+      <Location>{location}</Location>
     </Wrapper>
   );
 };
