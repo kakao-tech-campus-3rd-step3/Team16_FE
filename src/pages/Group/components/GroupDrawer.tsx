@@ -3,6 +3,7 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { isUserLeader } from '@/utils/groupMemberShip';
 
 interface DrawerProps {
   onClose: () => void;
@@ -32,6 +33,10 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
     onClose();
   };
 
+  const handleAttend = () => {
+    navigate(`/group/${groupId}/pending-application`);
+  };
+
   return (
     <>
       <Overlay onClick={handleClose} />
@@ -40,6 +45,9 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
         <MenuList>
           <MenuItem onClick={handleLeave}>모임 탈퇴하기</MenuItem>
           <MenuItem onClick={handleReport}>모임 신고하기</MenuItem>
+          {isUserLeader(Number(groupId)) && (
+            <MenuItem onClick={handleAttend}>가입신청 리스트</MenuItem>
+          )}
         </MenuList>
       </Drawer>
     </>
