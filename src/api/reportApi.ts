@@ -1,6 +1,8 @@
 import { apiClient } from './apiClient';
 
-export type TargetType = 'USER' | 'GROUP' | 'POST' | 'COMMENT';
+export type ReportTargetType = 'USER' | 'GROUP' | 'POST' | 'COMMENT';
+
+export type ReportResponseStatus = 'PENDING' | 'RESOLVE' | 'REJECTED';
 
 export interface ReportRequest {
   reasonCode: string;
@@ -10,11 +12,11 @@ export interface ReportRequest {
 export interface ReportResponse {
   id: number;
   reporterId: number;
-  targetType: TargetType;
+  targetType: ReportTargetType;
   targetId: number;
   reasonCode: string;
   reason: string;
-  status: 'PENDING' | 'RESOLVE' | 'REJECTED';
+  status: ReportResponseStatus;
   createdAt: string;
   updatedAt: string;
 }

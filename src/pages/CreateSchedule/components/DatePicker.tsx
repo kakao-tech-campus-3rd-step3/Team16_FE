@@ -54,11 +54,11 @@ const DatePicker = ({ control, startTime }: { control: any; startTime: Date }) =
   // 달력에서 선택된 날짜인지 판별 함수
   const isSelectedDay = (day: number | null, value: Date | null) => {
     if (!day || !value) return false;
-    value = new Date(value);
+    const selectedDate = new Date(value);
     return (
-      value.getFullYear() === currentYear &&
-      value.getMonth() === currentMonth &&
-      value.getDate() === day
+      selectedDate.getFullYear() === currentYear &&
+      selectedDate.getMonth() === currentMonth &&
+      selectedDate.getDate() === day
     );
   };
 
