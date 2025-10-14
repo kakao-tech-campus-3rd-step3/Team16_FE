@@ -31,3 +31,8 @@ export const getUserInfo = async () => {
   const res = await apiClient.get(`/users/me`);
   return res.data;
 };
+
+export const getUserInfoById = async (userId: number) => {
+  const res = await apiClient.get(`/users/${userId}/me`);
+  return res.data;
+};
