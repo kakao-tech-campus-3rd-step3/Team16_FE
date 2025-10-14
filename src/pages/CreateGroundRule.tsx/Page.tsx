@@ -11,6 +11,8 @@ import { getRules } from '@/api/rulesApi';
 import { useRuleMutations } from '@/hooks/useRuleMutation';
 import { RuleItem } from './components/RuleItem';
 
+const MAX_RULE_COUNT = 5;
+
 export default function GroundRulePage() {
   useHeader({ centerContent: '그라운드룰 생성' });
   const { groupId } = useParams();
@@ -28,7 +30,7 @@ export default function GroundRulePage() {
   const [tempText, setTempText] = useState('');
 
   const handleAddRule = () => {
-    if (rules.length >= 5) return;
+    if (rules.length >= MAX_RULE_COUNT) return;
     setEditingId(-1);
     setTempText('');
   };
