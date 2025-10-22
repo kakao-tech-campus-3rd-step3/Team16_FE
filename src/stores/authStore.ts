@@ -8,6 +8,7 @@ const initialState: Omit<
 > = {
   accessToken: null,
   isAuthenticated: false,
+  id: null,
   nickname: '익명',
   profileImage: '/data/profile.png',
   groups: { leaderOf: [], memberOf: [] },
@@ -61,6 +62,7 @@ interface AuthState {
   accessToken: string | null;
   isAuthenticated: boolean;
   nickname: string;
+  id: number | null;
   profileImage: string;
   groups: Groups;
   isStudentVerified: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
