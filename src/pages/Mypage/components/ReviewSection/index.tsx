@@ -2,28 +2,52 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
+import useAuthStore from '@/stores/authStore';
+import { useQuery } from '@tanstack/react-query';
+import { getUsersReview } from '@/api/userApi';
 
 interface Review {
-  id: number;
+  groupId: number;
+  groupName: string;
   content: string;
   evaluation: 'POSITIVE' | 'NEGATIVE';
 }
 
-const reviews: Review[] = [
-  { id: 1, content: '조용하고 친절했어요.', evaluation: 'POSITIVE' },
-  { id: 2, content: '시간 약속을 잘 안 지켜요.', evaluation: 'NEGATIVE' },
-];
+interface ReviewSectionProps {
+  userId?: number;
+}
 
-const ReviewSection = () => {
+const ReviewSection = ({ userId }: ReviewSectionProps) => {
+  const { id: myId } = useAuthStore();
+  const targetId = userId ?? myId;
+
+  const {
+    data: reviews,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['userReviews', targetId],
+    queryFn: () => getUsersReview(Number(targetId)),
+    enabled: !!targetId,
+  });
+
+  if (isLoading) return <Wrapper>리뷰 불러오는 중...</Wrapper>;
+  if (isError) return <Wrapper>리뷰를 불러오는 중 오류가 발생했습니다.</Wrapper>;
+
   return (
     <Wrapper>
-      <Title>내가 받은 리뷰 보기</Title>
+      <Title>{userId ? '받은 리뷰 보기' : '내가 받은 리뷰 보기'}</Title>
       <ReviewList>
-        {reviews.map((r) => (
-          <ReviewListItem key={r.id} evaluation={r.evaluation}>
-            <ReviewContent>{r.content}</ReviewContent>
-          </ReviewListItem>
-        ))}
+        {reviews && reviews.length > 0 ? (
+          reviews.map((r: Review, index: number) => (
+            <ReviewListItem key={index} evaluation={r.evaluation}>
+              <GroupName>💬 {r.groupName}</GroupName>
+              <ReviewContent>{r.content}</ReviewContent>
+            </ReviewListItem>
+          ))
+        ) : (
+          <div>아직 받은 리뷰가 없습니다.</div>
+        )}
       </ReviewList>
     </Wrapper>
   );
@@ -63,6 +87,11 @@ const ReviewListItem = styled.div<{ evaluation: 'POSITIVE' | 'NEGATIVE' }>(({ ev
   backgroundColor: evaluation === 'POSITIVE' ? colors.primaryLight : colors.errorLight,
   cursor: 'pointer',
 }));
+
+const GroupName = styled.span({
+  ...typography.caption,
+  color: colors.gray700,
+});
 
 const ReviewContent = styled.div({
   ...typography.body,
