@@ -15,3 +15,7 @@ export const rejectGroupApplication = async (groupId: number, userId: number) =>
   return res.data;
 };
 
+export const approveAllGroupApplications = async (groupId: number) => {
+  const res = await apiClient.post(`/group/join/all`, { groupId });
+  return res.data;
+};
