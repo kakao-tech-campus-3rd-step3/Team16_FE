@@ -5,10 +5,16 @@ import PrimaryButton from '@/components/common/PrimaryButton';
 import { useHeader } from '@/hooks/useHeader';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchGroupApplications, approveGroupApplication } from '@/api/applicantsApi';
+import {
+  fetchGroupApplications,
+  approveGroupApplication,
+  rejectGroupApplication,
+} from '@/api/applicantsApi';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
+import React from 'react';
+
 const PendingApplicationPage = () => {
   useHeader({ centerContent: '참가신청 대기' });
 
@@ -32,6 +38,13 @@ const PendingApplicationPage = () => {
     },
   });
 
+  const rejectMutation = useMutation({
+    mutationFn: (userId: number) => rejectGroupApplication(Number(groupId), userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupApplications', groupId] });
+    },
+  });
+
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <div>신청 목록을 불러오지 못했습니다.</div>;
 
@@ -39,14 +52,15 @@ const PendingApplicationPage = () => {
     <Wrapper>
       {applications?.length ? (
         applications.map((app: any) => (
-          <>
+          <React.Fragment key={app.userId}>
             <ApplicationItem
               key={app.userId}
               data={app}
               onAccept={(id) => approveMutation.mutate(id)}
+              onReject={(id) => rejectMutation.mutate(id)}
             />
-            <PrimaryButton text="모두 수락하기" />
-          </>
+            />
+          </React.Fragment>
         ))
       ) : (
         <Message>대기 중인 신청이 없습니다.</Message>
