@@ -9,6 +9,7 @@ import {
   fetchGroupApplications,
   approveGroupApplication,
   rejectGroupApplication,
+  approveAllGroupApplications,
 } from '@/api/applicantsApi';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useQueryClient } from '@tanstack/react-query';
@@ -45,6 +46,13 @@ const PendingApplicationPage = () => {
     },
   });
 
+  const approveAllMutation = useMutation({
+    mutationFn: () => approveAllGroupApplications(Number(groupId)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupApplications', groupId] });
+    },
+  });
+
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <div>신청 목록을 불러오지 못했습니다.</div>;
 
@@ -59,6 +67,9 @@ const PendingApplicationPage = () => {
               onAccept={(id) => approveMutation.mutate(id)}
               onReject={(id) => rejectMutation.mutate(id)}
             />
+            <PrimaryButton
+              text={approveAllMutation.isPending ? '처리 중...' : '모두 수락하기'}
+              onClick={() => approveAllMutation.mutate()}
             />
           </React.Fragment>
         ))
