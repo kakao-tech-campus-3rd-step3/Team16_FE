@@ -4,20 +4,40 @@ import { colors } from '@/styles/colors';
 import { spacing } from '@/styles/spacing';
 import { HiCheck } from 'react-icons/hi';
 import { HiOutlineX } from 'react-icons/hi';
+import { getUserInfoById } from '@/api/userApi';
+import { useQuery } from '@tanstack/react-query';
 
-const ApplicationItem = () => {
+interface ApplicationItemProps {
+  data: {
+    userId: number;
+    intro: string;
+    profileImageUrl: string;
+  };
+  onAccept?: (userId: number) => void;
+  onReject?: (userId: number) => void;
+}
+
+const ApplicationItem = ({ data, onAccept, onReject }: ApplicationItemProps) => {
+  const { userId, intro, profileImageUrl } = data;
+  const { data: userInfo } = useQuery({
+    queryKey: ['userInfo', userId],
+    queryFn: () => getUserInfoById(userId),
+  });
+
+  const nickname = userInfo?.nickname;
+
   return (
     <ItemWrapper>
-      <ProfileImage />
+      <ProfileImage src={profileImageUrl || '/data/profile.png'} alt={`${nickname} 프로필`} />
       <UserInfo>
-        <UserName>유저이름</UserName>
-        <Message>신청이유</Message>
+        <UserName>{nickname}</UserName>
+        <Message>{intro}</Message>
       </UserInfo>
       <ButtonWrapper>
-        <RejectButton>
+        <RejectButton onClick={() => onReject?.(userId)}>
           <HiOutlineX />
         </RejectButton>
-        <AcceptButton>
+        <AcceptButton onClick={() => onAccept?.(userId)}>
           <HiCheck />
         </AcceptButton>
       </ButtonWrapper>
@@ -36,7 +56,6 @@ const ItemWrapper = styled.div({
   boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
   borderRadius: '12px',
   backgroundColor: colors.white,
-  margin: `${spacing.spacing4}px ${spacing.spacing4}px`,
 });
 
 const ProfileImage = styled.img({

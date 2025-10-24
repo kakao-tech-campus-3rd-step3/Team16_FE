@@ -33,7 +33,7 @@ export const Routes = () => {
         <Route path={'/setting'} element={<SettingPage />} />
         <Route path={'/group/:groupId'} element={<GroupPage />} />
         <Route path={'/leave'} element={<LeavePage />} />
-        <Route path={'/pending-application'} element={<PendingApplicationPage />} />
+        <Route path={'/group/:groupId/pending-application'} element={<PendingApplicationPage />} />
         <Route path={'/alarm'} element={<AlarmPage />} />
         <Route path={'/group/:groupId/attend/:planId'} element={<AttendPage />} />
         <Route path={'/create-group'} element={<CreateGroupPage />} />
