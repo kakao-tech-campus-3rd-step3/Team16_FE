@@ -1,7 +1,7 @@
 import BottomNavigation from '@/components/common/BottomNavigation';
 import ProfileSection from './components/ProfileSection';
 import RecordSection from './components/RecordSection';
-import ReviewSection from './components/ReviewSection';
+// import ReviewSection from './components/ReviewSection';
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { useParams } from 'react-router-dom';
