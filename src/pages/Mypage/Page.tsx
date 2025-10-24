@@ -4,14 +4,20 @@ import RecordSection from './components/RecordSection';
 import ReviewSection from './components/ReviewSection';
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
+import { useParams } from 'react-router-dom';
 
 const Mypage = () => {
+  const { userId: paramId } = useParams<{ userId: string }>();
+
+  const isMyPage = !paramId;
+  const targetId = paramId ? Number(paramId) : undefined;
+
   return (
     <Wrapper>
-      <ProfileSection />
-      <RecordSection />
-      <ReviewSection />
-      <BottomNavigation />
+      <ProfileSection userId={targetId} isMyPage={isMyPage} />
+      <RecordSection userId={targetId} />
+      <ReviewSection userId={targetId} />
+      {isMyPage && <BottomNavigation />}
     </Wrapper>
   );
 };

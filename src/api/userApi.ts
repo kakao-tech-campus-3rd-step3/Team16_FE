@@ -36,3 +36,23 @@ export const getUserInfoById = async (userId: number) => {
   const res = await apiClient.get(`/users/${userId}/me`);
   return res.data;
 };
+
+export const getUserHistory = async (userId: number): Promise<GroupHistory[]> => {
+  const res = await apiClient.get(`/users/${userId}/groups/history`);
+  return res.data;
+};
+
+export const getUsersReview = async (userId: number) => {
+  const res = await apiClient.get(`/users/${userId}/review`);
+  return res.data;
+};
+
+export interface GroupHistory {
+  groupId: number;
+  name: string;
+  groupMemberStatus: 'ACTIVE' | 'LEFT' | 'BANNED' | 'PENDING' | 'CANCELLED';
+  joinAt: string;
+  leftAt: string | null;
+  safetyTag: 'SAFE' | 'CAUTION' | 'DANGER';
+}
+

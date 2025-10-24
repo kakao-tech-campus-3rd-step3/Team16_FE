@@ -29,6 +29,7 @@ export const Routes = () => {
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/profile-edit'} element={<ProfileEditPage />} />
         <Route path={'/mypage'} element={<Mypage />} />
+        <Route path={'/mypage/:userId'} element={<Mypage />} />
         <Route path={'/setting'} element={<SettingPage />} />
         <Route path={'/group/:groupId'} element={<GroupPage />} />
         <Route path={'/leave'} element={<LeavePage />} />
