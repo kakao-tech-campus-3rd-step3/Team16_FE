@@ -1,48 +1,56 @@
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import TagBadge from '@/components/common/TagBadge';
-import { useQuery } from '@tanstack/react-query';
-import { fetchGroups } from '@/api/groupApi';
 import { useNavigate } from 'react-router-dom';
 
-const GroupListSection = () => {
-  const navigate = useNavigate();
+interface Group {
+  groupId: number;
+  name: string;
+  intro: string;
+  safetyTag: string;
+  coverImageUrl: string;
+  createdAt: string;
+  capacity: number;
+}
 
-  const {
-    data: groups,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['groups'],
-    queryFn: fetchGroups,
-  });
+interface GroupListSectionProps {
+  groups: Group[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
+const GroupListSection = ({ groups, isLoading, isError }: GroupListSectionProps) => {
+  const navigate = useNavigate();
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>에러가 발생했습니다.</div>;
 
+  if (groups.length === 0) {
+    return <NoResultsMessage>검색 결과가 없습니다.</NoResultsMessage>;
+  }
+
   return (
     <GroupListContainer>
-      {groups &&
-        groups.map((group: any) => (
-          <GroupListItem
-            key={group.groupId}
-            onClick={() => {
-              navigate(`/group/${group.groupId}`);
-            }}
-          >
-            <GroupImg>
-              <Img src={group.coverImageUrl} alt="" />
-            </GroupImg>
-            <GroupInfo>
-              <GroupHeader>
-                <GroupName>{group.name}</GroupName>
-                <TagBadge tag={group.safetyTag} />
-              </GroupHeader>
-              <GroupDesc>{group.intro}</GroupDesc>
-              <GroupTag />
-            </GroupInfo>
-          </GroupListItem>
-        ))}
+      {groups.map((group) => (
+        <GroupListItem
+          key={group.groupId}
+          onClick={() => {
+            navigate(`/group/${group.groupId}`);
+          }}
+        >
+          <GroupImg>
+            <Img src={group.coverImageUrl} alt="" />
+          </GroupImg>
+          <GroupInfo>
+            <GroupHeader>
+              <GroupName>{group.name}</GroupName>
+              <TagBadge tag={group.safetyTag} />
+            </GroupHeader>
+            <GroupDesc>{group.intro}</GroupDesc>
+            <GroupTag />
+          </GroupInfo>
+        </GroupListItem>
+      ))}
     </GroupListContainer>
   );
 };
@@ -107,4 +115,13 @@ const GroupDesc = styled.p(({ theme }) => ({
 const GroupTag = styled.div(({ theme }) => ({
   ...theme.typography.small,
   color: colors.primary,
+}));
+
+const NoResultsMessage = styled.div(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '40px 20px',
+  ...theme.typography.body,
+  color: theme.colors.gray500,
 }));
