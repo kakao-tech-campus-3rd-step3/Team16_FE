@@ -14,6 +14,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { getRules } from '@/api/rulesApi';
 import type { Rule } from '@/api/rulesApi';
+import { GoPeople } from 'react-icons/go';
 
 export const DashBoard = () => {
   const { groupId } = useParams();
@@ -98,6 +99,10 @@ export const DashBoard = () => {
         <Card>
           <CiShare2 size={24} color={colors.primary} strokeWidth={1} />
           <TimePicker>공유 시간 플래너</TimePicker>
+        </Card>
+        <Card onClick={() => navigate(`/group/${groupId}/members`)}>
+          <GoPeople size={24} color={colors.primary} strokeWidth={1} />
+          <TimePicker>멤버</TimePicker>
         </Card>
       </CardSection>
     </Wrapper>
