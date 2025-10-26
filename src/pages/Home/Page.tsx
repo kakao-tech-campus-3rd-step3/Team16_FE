@@ -2,6 +2,7 @@ import BottomNavigation from '@/components/common/BottomNavigation';
 import SearchFieldSection from './components/SearchFieldSection';
 import GroupListSection from './components/GroupListSection';
 import styled from '@emotion/styled';
+import CreateGroupButton from './components/CreateGroupButton';
 
 const HomePage = () => {
   return (
@@ -11,6 +12,7 @@ const HomePage = () => {
         <GroupListSection />
       </GroupListWrapper>
       <BottomNavigation />
+      <CreateGroupButton />
     </PageContainer>
   );
 };
