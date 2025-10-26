@@ -5,6 +5,8 @@ import ReviewSection from './components/ReviewSection';
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { useParams } from 'react-router-dom';
+import { Suspense } from 'react';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const Mypage = () => {
   const { userId: paramId } = useParams<{ userId: string }>();
@@ -14,10 +16,12 @@ const Mypage = () => {
 
   return (
     <Wrapper>
-      <ProfileSection userId={targetId} isMyPage={isMyPage} />
-      <RecordSection userId={targetId} />
-      <ReviewSection userId={targetId} />
-      {isMyPage && <BottomNavigation />}
+      <Suspense fallback={<LoadingSpinner />}>
+        <ProfileSection userId={targetId} isMyPage={isMyPage} />
+        <RecordSection userId={targetId} />
+        <ReviewSection userId={targetId} />
+        {isMyPage && <BottomNavigation />}
+      </Suspense>
     </Wrapper>
   );
 };

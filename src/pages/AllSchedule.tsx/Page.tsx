@@ -7,6 +7,7 @@ import { useHeader } from '@/hooks/useHeader';
 import { IoIosArrowForward } from 'react-icons/io';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { isUserLeader } from '@/utils/groupMemberShip';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 // 날짜 비교 함수
 const isPast = (dateStr: string) => {
@@ -24,7 +25,7 @@ const AllSchedulePage = () => {
   );
   const userIsLeader = isUserLeader(Number(groupId));
 
-  if (isGroupScheduleLoading) return <div>로딩중...</div>;
+  if (isGroupScheduleLoading) return <LoadingSpinner />;
 
   const pastSchedules = Array.isArray(groupSchedules)
     ? groupSchedules.filter((sch: any) => isPast(sch.startTime)).reverse()

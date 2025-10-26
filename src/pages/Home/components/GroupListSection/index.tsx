@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import TagBadge from '@/components/common/TagBadge';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 interface Group {
   groupId: number;
@@ -22,7 +23,7 @@ interface GroupListSectionProps {
 const GroupListSection = ({ groups, isLoading, isError }: GroupListSectionProps) => {
   const navigate = useNavigate();
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <div>에러가 발생했습니다.</div>;
 
   if (groups.length === 0) {

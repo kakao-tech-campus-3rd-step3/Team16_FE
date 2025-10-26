@@ -6,15 +6,20 @@ import { useHeader } from '@/hooks/useHeader';
 import { useParams } from 'react-router-dom';
 import { getMemberListApi } from './api/getMemeberListApi';
 import type { Member } from './types';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const PendingApplicationPage = () => {
   useHeader({ centerContent: '멤버' });
   const { groupId } = useParams<{ groupId: string }>();
 
-  const { data: members } = useQuery({
+  const { data: members, isLoading } = useQuery({
     queryKey: ['members', groupId],
     queryFn: () => getMemberListApi(Number(groupId)),
   });
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Wrapper>

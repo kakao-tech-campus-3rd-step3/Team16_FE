@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import useAuthStore from '@/stores/authStore';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUsersReview } from '@/api/userApi';
 
 interface Review {
@@ -21,18 +21,10 @@ const ReviewSection = ({ userId }: ReviewSectionProps) => {
   const { id: myId } = useAuthStore();
   const targetId = userId ?? myId;
 
-  const {
-    data: reviews,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: reviews } = useSuspenseQuery({
     queryKey: ['userReviews', targetId],
     queryFn: () => getUsersReview(Number(targetId)),
-    enabled: !!targetId,
   });
-
-  if (isLoading) return <Wrapper>리뷰 불러오는 중...</Wrapper>;
-  if (isError) return <Wrapper>리뷰를 불러오는 중 오류가 발생했습니다.</Wrapper>;
 
   return (
     <Wrapper>

@@ -5,7 +5,7 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserInfo, getUserInfoById } from '@/api/userApi';
 
 interface ProfileSectionProps {
@@ -18,16 +18,10 @@ const ProfileSection = ({ userId, isMyPage }: ProfileSectionProps) => {
 
   const {
     data: profile,
-    isLoading,
-    isError,
-  } = useQuery({
+  } = useSuspenseQuery({
     queryKey: ['userProfile', isMyPage ? 'me' : userId],
     queryFn: () => (isMyPage ? getUserInfo() : getUserInfoById(userId!)),
-    enabled: isMyPage || !!userId,
   });
-
-  if (isLoading) return <div>불러오는 중...</div>;
-  if (isError || !profile) return <div>프로필 정보를 불러오지 못했습니다.</div>;
 
   return (
     <Wrapper>

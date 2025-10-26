@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserHistory } from '@/api/userApi';
 import type { GroupHistory } from '@/api/userApi';
 import useAuthStore from '@/stores/authStore';
@@ -16,15 +16,10 @@ const RecordSection = ({ userId }: RecordSectionProps) => {
   const { id: myId } = useAuthStore();
   const targetUserId = userId ?? Number(myId);
 
-  const { data, isLoading, isError } = useQuery<GroupHistory[]>({
+  const { data } = useSuspenseQuery<GroupHistory[]>({
     queryKey: ['userHistory', targetUserId],
     queryFn: () => getUserHistory(targetUserId),
-    enabled: !!targetUserId,
   });
-
-  if (isLoading) return <Wrapper></Wrapper>;
-  if (isError) return <></>;
-  if (!data || data.length === 0) return <Wrapper>활동 이력이 없습니다.</Wrapper>;
 
   return (
     <Wrapper>

@@ -11,7 +11,7 @@ import { useState } from 'react';
 import CommentModal from './components/CommentModal';
 import { format } from 'date-fns';
 import { useToggleLike } from './hooks/useToggleLike';
-import FullScreenLoader from '@/components/common/LoadingSpinner';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { isUserMember } from '@/utils/groupMemberShip';
@@ -44,7 +44,7 @@ const GroupBoard = () => {
   const isUserMemberOfGroup = isUserMember(Number(groupId));
 
   if (isPending) {
-    return <FullScreenLoader />;
+    return <LoadingSpinner />;
   }
   return (
     <Wrapper>

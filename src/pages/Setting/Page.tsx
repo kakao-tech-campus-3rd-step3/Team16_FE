@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 import useAuthStore from '@/stores/authStore';
 import { useHeader } from '@/hooks/useHeader';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const SettingPage = () => {
   const { profileImg, nickname, isLoading } = useUserProfile();
@@ -30,10 +31,7 @@ const SettingPage = () => {
     { label: '로그아웃', action: logout },
     { label: '회원탈퇴', action: deleteAccount },
   ];
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <Wrapper>
