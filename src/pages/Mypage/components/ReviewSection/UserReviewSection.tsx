@@ -35,8 +35,8 @@ const UserReviewSection = ({ userId }: UserReviewSectionProps) => {
       <Title>받은 리뷰</Title>
       <ReviewList>
         {reviews && reviews.length > 0 ? (
-          reviews.map((r, index) => (
-            <ReviewListItem key={index} evaluation={r.evaluation}>
+          reviews.map((r) => (
+            <ReviewListItem key={r.groupId} evaluation={r.evaluation}>
               <GroupName>💬 {r.groupName}</GroupName>
               <ReviewContent>{r.content}</ReviewContent>
             </ReviewListItem>
