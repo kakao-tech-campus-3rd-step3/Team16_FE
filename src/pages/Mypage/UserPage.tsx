@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import UserProfileSection from './components/ProfileSection/UserProfileSection';
-import UserRecordSection from './components/RecordSection/UserRecrodSection';
+import UserRecordSection from './components/RecordSection/UserRecordSection';
 import UserReviewSection from './components/ReviewSection/UserReviewSection';
 
 interface UserPageProps {
