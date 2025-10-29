@@ -3,7 +3,6 @@ import HomePage from './Home/Page';
 import LoginPage from './Login/Page';
 import ProfileEditPage from './ProfileEdit/Page';
 import StudentPage from './Student/Page';
-import Mypage from './Mypage/Page';
 import GroupPage from './Group/Page';
 import SettingPage from './Setting/Page';
 import LeavePage from './Leave/Page';
@@ -21,6 +20,7 @@ import CreateGroundRule from './CreateGroundRule.tsx/Page';
 import GroupPost from './GroupPost/page';
 import { PrivateRoute } from '@/components/PrivateRoute';
 import ApplyToJoinGroupPage from './ApplyToJoinGroup/Page'; // import the new page component
+import MypageRouter from './Mypage';
 
 export const Routes = () => {
   return (
@@ -28,8 +28,8 @@ export const Routes = () => {
       <Route element={<PrivateRoute />}>
         <Route path={'/'} element={<HomePage />} />
         <Route path={'/profile-edit'} element={<ProfileEditPage />} />
-        <Route path={'/mypage'} element={<Mypage />} />
-        <Route path={'/mypage/:userId'} element={<Mypage />} />
+        <Route path="/mypage" element={<MypageRouter />} />
+        <Route path="/mypage/:userId" element={<MypageRouter />} />
         <Route path={'/setting'} element={<SettingPage />} />
         <Route path={'/group/:groupId'} element={<GroupPage />} />
         <Route path={'/leave'} element={<LeavePage />} />

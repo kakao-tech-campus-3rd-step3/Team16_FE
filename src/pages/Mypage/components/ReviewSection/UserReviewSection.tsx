@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
-import useAuthStore from '@/stores/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { getUsersReview } from '@/api/userApi';
 
@@ -13,22 +12,19 @@ interface Review {
   evaluation: 'POSITIVE' | 'NEGATIVE';
 }
 
-interface ReviewSectionProps {
-  userId?: number;
+interface UserReviewSectionProps {
+  userId: number;
 }
 
-const ReviewSection = ({ userId }: ReviewSectionProps) => {
-  const { id: myId } = useAuthStore();
-  const targetId = userId ?? myId;
-
+const UserReviewSection = ({ userId }: UserReviewSectionProps) => {
   const {
     data: reviews,
     isLoading,
     isError,
-  } = useQuery({
-    queryKey: ['userReviews', targetId],
-    queryFn: () => getUsersReview(Number(targetId)),
-    enabled: !!targetId,
+  } = useQuery<Review[]>({
+    queryKey: ['userReviews', userId],
+    queryFn: () => getUsersReview(userId),
+    enabled: !!userId,
   });
 
   if (isLoading) return <Wrapper>리뷰 불러오는 중...</Wrapper>;
@@ -36,10 +32,10 @@ const ReviewSection = ({ userId }: ReviewSectionProps) => {
 
   return (
     <Wrapper>
-      <Title>{userId ? '받은 리뷰 보기' : '내가 받은 리뷰 보기'}</Title>
+      <Title>받은 리뷰</Title>
       <ReviewList>
         {reviews && reviews.length > 0 ? (
-          reviews.map((r: Review, index: number) => (
+          reviews.map((r, index) => (
             <ReviewListItem key={index} evaluation={r.evaluation}>
               <GroupName>💬 {r.groupName}</GroupName>
               <ReviewContent>{r.content}</ReviewContent>
@@ -53,7 +49,7 @@ const ReviewSection = ({ userId }: ReviewSectionProps) => {
   );
 };
 
-export default ReviewSection;
+export default UserReviewSection;
 
 const Wrapper = styled.section({
   margin: `${spacing.spacing4}px ${spacing.spacing4}px`,
@@ -85,7 +81,6 @@ const ReviewListItem = styled.div<{ evaluation: 'POSITIVE' | 'NEGATIVE' }>(({ ev
   padding: spacing.spacing3,
   borderRadius: 8,
   backgroundColor: evaluation === 'POSITIVE' ? colors.primaryLight : colors.errorLight,
-  cursor: 'pointer',
 }));
 
 const GroupName = styled.span({
