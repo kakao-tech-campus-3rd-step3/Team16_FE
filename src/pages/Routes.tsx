@@ -42,7 +42,7 @@ export const Routes = () => {
         <Route path={'/demo'} element={<DemoPage />} />
         <Route path={'/group/:groupId/create-ground-rule'} element={<CreateGroundRule />} />
         <Route path={'/create-post/:groupId'} element={<GroupPost />} />
-        <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />{' '}
+        <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />
         <Route path={'/group/:groupId/leave'} element={<LeavePage />} />
         {/* new route */}
         <Route
