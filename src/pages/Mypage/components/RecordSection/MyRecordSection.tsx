@@ -8,22 +8,17 @@ import { getUserHistory } from '@/api/userApi';
 import type { GroupHistory } from '@/api/userApi';
 import useAuthStore from '@/stores/authStore';
 
-interface RecordSectionProps {
-  userId?: number;
-}
-
-const RecordSection = ({ userId }: RecordSectionProps) => {
+const MyRecordSection = () => {
   const { id: myId } = useAuthStore();
-  const targetUserId = userId ?? Number(myId);
 
   const { data, isLoading, isError } = useQuery<GroupHistory[]>({
-    queryKey: ['userHistory', targetUserId],
-    queryFn: () => getUserHistory(targetUserId),
-    enabled: !!targetUserId,
+    queryKey: ['userHistory', myId],
+    queryFn: () => getUserHistory(Number(myId)),
+    enabled: !!myId,
   });
 
-  if (isLoading) return <Wrapper></Wrapper>;
-  if (isError) return <></>;
+  if (isLoading) return <Wrapper />;
+  if (isError) return <Wrapper>활동 정보를 불러오지 못했습니다.</Wrapper>;
   if (!data || data.length === 0) return <Wrapper>활동 이력이 없습니다.</Wrapper>;
 
   return (
@@ -35,7 +30,7 @@ const RecordSection = ({ userId }: RecordSectionProps) => {
             <GroupStatusInfo>
               <GroupName>{record.name}</GroupName>
               <GroupStatus>
-                {record.groupMemberStatus == 'ACTIVE' ? '현재 가입중' : '활동 종료'}
+                {record.groupMemberStatus === 'ACTIVE' ? '현재 가입중' : '활동 종료'}
               </GroupStatus>
               <TagBadge tag={record.safetyTag} />
             </GroupStatusInfo>
@@ -49,11 +44,11 @@ const RecordSection = ({ userId }: RecordSectionProps) => {
   );
 };
 
-export default RecordSection;
+export default MyRecordSection;
 
 const Wrapper = styled.section({
-  margin: `0px ${spacing.spacing4}px`,
-  padding: `${spacing.spacing4}px ${spacing.spacing4}px`,
+  margin: `0 ${spacing.spacing4}px`,
+  padding: `${spacing.spacing4}px`,
   display: 'flex',
   flexDirection: 'column',
   gap: spacing.spacing2,
