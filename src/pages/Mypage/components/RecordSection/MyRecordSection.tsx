@@ -3,46 +3,52 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
+import { useQuery } from '@tanstack/react-query';
+import { getUserHistory } from '@/api/userApi';
+import type { GroupHistory } from '@/api/userApi';
+import useAuthStore from '@/stores/authStore';
 
-const RecordSection = () => {
+const MyRecordSection = () => {
+  const { id: myId } = useAuthStore();
+
+  const { data, isLoading, isError } = useQuery<GroupHistory[]>({
+    queryKey: ['userHistory', myId],
+    queryFn: () => getUserHistory(Number(myId)),
+    enabled: !!myId,
+  });
+
+  if (isLoading) return <Wrapper />;
+  if (isError) return <Wrapper>활동 정보를 불러오지 못했습니다.</Wrapper>;
+  if (!data || data.length === 0) return <Wrapper>활동 이력이 없습니다.</Wrapper>;
+
   return (
     <Wrapper>
       <Title>나의 활동 이력</Title>
       <RecordList>
-        <RecordListItem>
-          <GroupStatusInfo>
-            <GroupName>한사랑 산악회</GroupName>
-            <GroupStatus>현재 가입중</GroupStatus>
-            <TagBadge tag="CAUTION" />
-          </GroupStatusInfo>
-          <GroupDate>기간: 2023. 03. 18 ~ ing</GroupDate>
-        </RecordListItem>
-        <RecordListItem>
-          <GroupStatusInfo>
-            <GroupName>한사랑 산악회</GroupName>
-            <GroupStatus>현재 가입중</GroupStatus>
-            <TagBadge tag="DANGER" />
-          </GroupStatusInfo>
-          <GroupDate>기간: 2023. 03. 18 ~ ing</GroupDate>
-        </RecordListItem>
-        <RecordListItem>
-          <GroupStatusInfo>
-            <GroupName>한사랑 산악회</GroupName>
-            <GroupStatus>현재 가입중</GroupStatus>
-            <TagBadge tag="SAFE" />
-          </GroupStatusInfo>
-          <GroupDate>기간: 2023. 03. 18 ~ ing</GroupDate>
-        </RecordListItem>
+        {data.map((record) => (
+          <RecordListItem key={record.groupId}>
+            <GroupStatusInfo>
+              <GroupName>{record.name}</GroupName>
+              <GroupStatus>
+                {record.groupMemberStatus === 'ACTIVE' ? '현재 가입중' : '활동 종료'}
+              </GroupStatus>
+              <TagBadge tag={record.safetyTag} />
+            </GroupStatusInfo>
+            <GroupDate>
+              기간: {record.joinAt} ~ {record.leftAt ?? 'ing'}
+            </GroupDate>
+          </RecordListItem>
+        ))}
       </RecordList>
     </Wrapper>
   );
 };
 
-export default RecordSection;
+export default MyRecordSection;
 
 const Wrapper = styled.section({
-  margin: `0px ${spacing.spacing4}px`,
-  padding: `${spacing.spacing4}px ${spacing.spacing4}px`,
+  margin: `0 ${spacing.spacing4}px`,
+  padding: `${spacing.spacing4}px`,
   display: 'flex',
   flexDirection: 'column',
   gap: spacing.spacing2,

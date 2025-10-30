@@ -3,21 +3,33 @@ import { IoSettingsOutline } from 'react-icons/io5';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
-import { useUserProfile } from '@/hooks/useUserProfile';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '@/api/userApi';
 
-const ProfileSection = () => {
-  const { profileImg, nickname } = useUserProfile();
-  const navigation = useNavigate();
+const MyProfileSection = () => {
+  const navigate = useNavigate();
+
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['userProfile', 'me'],
+    queryFn: getUserInfo,
+  });
+
+  if (isLoading) return <div>불러오는 중...</div>;
+  if (isError || !profile) return <div>프로필 정보를 불러오지 못했습니다.</div>;
 
   return (
     <Wrapper>
-      <ProfileImage src={profileImg ?? defaultUserImg} />
+      <ProfileImage src={profile.profileImageUrl ?? defaultUserImg} alt="내 프로필" />
       <ProfileInfo>
-        <Nickname>{nickname}</Nickname>
+        <Nickname>{profile.nickname}</Nickname>
       </ProfileInfo>
-      <SettingButton onClick={() => navigation('/setting')}>
+      <SettingButton onClick={() => navigate('/setting')}>
         <IoSettingsOutline size={20} />
         설정
       </SettingButton>
@@ -25,13 +37,12 @@ const ProfileSection = () => {
   );
 };
 
-export default ProfileSection;
+export default MyProfileSection;
 
 const Wrapper = styled.section({
-  margin: `0px ${spacing.spacing4}px`,
-  padding: `${spacing.spacing4}px 0px`,
+  margin: `0 ${spacing.spacing4}px`,
+  padding: `${spacing.spacing4}px 0`,
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
   gap: spacing.spacing2,
   backgroundColor: colors.backgroundGray,
@@ -56,7 +67,6 @@ const Nickname = styled.span({
 
 const SettingButton = styled.button({
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
   gap: spacing.spacing1,
   backgroundColor: colors.gray200,
