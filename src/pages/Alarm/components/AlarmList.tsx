@@ -33,6 +33,7 @@ const AlarmList = () => {
                     state: {
                       groupId: alarm.relatedGroupId,
                       targetUserId: alarm.relatedUserId,
+                      targetNickname: alarm.nickname,
                     },
                   })
                 }

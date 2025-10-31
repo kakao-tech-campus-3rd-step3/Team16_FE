@@ -8,6 +8,7 @@ export interface Alarm {
   relatedUserId: number;
   message: string;
   isRead: boolean;
+  nickname: string;
 }
 
 export const getAlarms = async (): Promise<Alarm[]> => {
