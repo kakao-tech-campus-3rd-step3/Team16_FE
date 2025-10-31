@@ -11,7 +11,6 @@ import AlarmPage from './Alarm/Page';
 import AttendPage from './Attend/Page';
 import CreateGroupPage from './CreateGroup/Page';
 import AllSchedulePage from './AllSchedule.tsx/Page';
-import DemoPage from './DemoPage';
 import MemberReview from './MemberReview/Page';
 import CreateSchedulePage from './CreateSchedule/Page';
 import LocationPage from './LocationInput/Page';
