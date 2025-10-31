@@ -18,7 +18,15 @@ const AlarmList = () => {
   return (
     <>
       {alarms?.map((alarm: Alarm) => (
-        <ItemWrapper key={alarm.alarmId} isRead={alarm.isRead}>
+        <ItemWrapper
+          key={alarm.alarmId}
+          isRead={alarm.isRead}
+          onClick={() => {
+            if (alarm.notificationType !== 'GROUP_JOIN_LEFT' && alarm.relatedGroupId) {
+              navigate(`/group/${alarm.relatedGroupId}`);
+            }
+          }}
+        >
           <AlarmIcon>{getIcon(alarm.notificationType)}</AlarmIcon>
           <AlarmInfo>
             <AlarmContent>{alarm.message}</AlarmContent>
