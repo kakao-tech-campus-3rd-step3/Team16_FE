@@ -24,7 +24,7 @@ const AlarmList = () => {
             <AlarmContent>{alarm.message}</AlarmContent>
             <AlarmMeta>
               <AlarmType>{convertTypeLabel(alarm.notificationType)}</AlarmType>
-              <AlarmStatus isRead={alarm.isRead}>{alarm.isRead ? '읽음' : '새 알림'}</AlarmStatus>
+              {/* <AlarmStatus isRead={alarm.isRead}>{alarm.isRead ? '읽음' : '새 알림'}</AlarmStatus> */}
             </AlarmMeta>
             {alarm.notificationType === 'GROUP_JOIN_LEFT' && (
               <ActionButton
@@ -120,10 +120,10 @@ const AlarmType = styled.div({
   color: colors.gray600,
 });
 
-const AlarmStatus = styled.div<{ isRead: boolean }>(({ isRead }) => ({
-  ...typography.small,
-  color: isRead ? colors.gray500 : colors.primary,
-}));
+// const AlarmStatus = styled.div<{ isRead: boolean }>(({ isRead }) => ({
+//   ...typography.small,
+//   color: isRead ? colors.gray500 : colors.primary,
+// }));
 
 const ActionButton = styled.button({
   marginTop: spacing.spacing2,
