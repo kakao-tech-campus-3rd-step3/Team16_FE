@@ -9,9 +9,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createGroupApi } from '@/api/groupApi';
 import { useNavigate } from 'react-router-dom';
 import type { CreateGroupFormData } from './type';
+import ImagePicker from './components/ImagePicker';
+import { useState } from 'react';
+import { useImageUpload } from '@/hooks/useImageUpload';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const CreateGroupPage = () => {
   const navigate = useNavigate();
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   useHeader({ centerContent: '모임 만들기' });
   const queryClient = useQueryClient();
 
@@ -27,7 +32,13 @@ const CreateGroupPage = () => {
   const name = watch('name') || '';
   const intro = watch('intro') || '';
 
-  const { mutate } = useMutation({
+  const requestUrl = `/image/presigned/groups`;
+  const { uploadImagesAsync, isUploading } = useImageUpload({
+    type: 'PROFILE',
+    request_url: requestUrl,
+  });
+
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateGroupFormData) => createGroupApi(data),
     onSuccess: (response) => {
       alert('모임이 성공적으로 생성되었습니다!');
@@ -39,15 +50,22 @@ const CreateGroupPage = () => {
     },
   });
 
-  const onSubmit = (data: CreateGroupFormData) => {
+  const onSubmit = async (data: CreateGroupFormData) => {
+    data.imageUrls = await uploadImagesAsync(imageFiles);
+    
     mutate(data);
   };
+
+  if (isPending || isUploading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper>
         <NameSection register={register} errors={errors} name={name} />
         <IntroSection register={register} errors={errors} intro={intro} />
+        <ImagePicker setImageFiles={setImageFiles} imageFiles={imageFiles} />
         <PrimaryButton text="모임 만들기" onClick={handleSubmit(onSubmit)} />
       </Wrapper>
     </form>
