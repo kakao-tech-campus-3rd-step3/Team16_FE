@@ -1,7 +1,8 @@
 import { apiClient } from './apiClient';
 
 export interface ReviewRequest {
-  revieweeID: number;
+  revieweeId: number;
+  groupId: number;
   content: string;
   evaluation: 'POSITIVE' | 'NEGATIVE';
 }

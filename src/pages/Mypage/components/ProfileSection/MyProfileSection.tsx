@@ -5,47 +5,37 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 import { useNavigate } from 'react-router-dom';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getUserInfo, getUserInfoById } from '@/api/userApi';
+import { useQuery } from '@tanstack/react-query';
+import { getUserInfo } from '@/api/userApi';
 
-interface ProfileSectionProps {
-  userId?: number;
-  isMyPage: boolean;
-}
-
-const ProfileSection = ({ userId, isMyPage }: ProfileSectionProps) => {
+const MyProfileSection = () => {
   const navigate = useNavigate();
 
-  const {
-    data: profile,
-  } = useSuspenseQuery({
-    queryKey: ['userProfile', isMyPage ? 'me' : userId],
-    queryFn: () => (isMyPage ? getUserInfo() : getUserInfoById(userId!)),
+  const { data: profile } = useQuery({
+    queryKey: ['userProfile', 'me'],
+    queryFn: getUserInfo,
   });
 
   return (
     <Wrapper>
-      <ProfileImage src={profile.profileImageUrl ?? defaultUserImg} />
+      <ProfileImage src={profile.profileImageUrl ?? defaultUserImg} alt="내 프로필" />
       <ProfileInfo>
         <Nickname>{profile.nickname}</Nickname>
       </ProfileInfo>
-      {isMyPage && (
-        <SettingButton onClick={() => navigate('/setting')}>
-          <IoSettingsOutline size={20} />
-          설정
-        </SettingButton>
-      )}
+      <SettingButton onClick={() => navigate('/setting')}>
+        <IoSettingsOutline size={20} />
+        설정
+      </SettingButton>
     </Wrapper>
   );
 };
 
-export default ProfileSection;
+export default MyProfileSection;
 
 const Wrapper = styled.section({
-  margin: `0px ${spacing.spacing4}px`,
-  padding: `${spacing.spacing4}px 0px`,
+  margin: `0 ${spacing.spacing4}px`,
+  padding: `${spacing.spacing4}px 0`,
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
   gap: spacing.spacing2,
   backgroundColor: colors.backgroundGray,
@@ -70,7 +60,6 @@ const Nickname = styled.span({
 
 const SettingButton = styled.button({
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
   gap: spacing.spacing1,
   backgroundColor: colors.gray200,

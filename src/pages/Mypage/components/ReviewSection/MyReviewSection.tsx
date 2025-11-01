@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import useAuthStore from '@/stores/authStore';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getUsersReview } from '@/api/userApi';
 
 interface Review {
@@ -13,26 +13,22 @@ interface Review {
   evaluation: 'POSITIVE' | 'NEGATIVE';
 }
 
-interface ReviewSectionProps {
-  userId?: number;
-}
-
-const ReviewSection = ({ userId }: ReviewSectionProps) => {
+const MyReviewSection = () => {
   const { id: myId } = useAuthStore();
-  const targetId = userId ?? myId;
 
-  const { data: reviews } = useSuspenseQuery({
-    queryKey: ['userReviews', targetId],
-    queryFn: () => getUsersReview(Number(targetId)),
+  const { data: reviews } = useQuery<Review[]>({
+    queryKey: ['userReviews', myId],
+    queryFn: () => getUsersReview(Number(myId)),
+    enabled: !!myId,
   });
 
   return (
     <Wrapper>
-      <Title>{userId ? '받은 리뷰 보기' : '내가 받은 리뷰 보기'}</Title>
+      <Title>내가 받은 리뷰</Title>
       <ReviewList>
         {reviews && reviews.length > 0 ? (
-          reviews.map((r: Review, index: number) => (
-            <ReviewListItem key={index} evaluation={r.evaluation}>
+          reviews.map((r) => (
+            <ReviewListItem key={r.groupId} evaluation={r.evaluation}>
               <GroupName>💬 {r.groupName}</GroupName>
               <ReviewContent>{r.content}</ReviewContent>
             </ReviewListItem>
@@ -45,7 +41,7 @@ const ReviewSection = ({ userId }: ReviewSectionProps) => {
   );
 };
 
-export default ReviewSection;
+export default MyReviewSection;
 
 const Wrapper = styled.section({
   margin: `${spacing.spacing4}px ${spacing.spacing4}px`,
@@ -77,7 +73,6 @@ const ReviewListItem = styled.div<{ evaluation: 'POSITIVE' | 'NEGATIVE' }>(({ ev
   padding: spacing.spacing3,
   borderRadius: 8,
   backgroundColor: evaluation === 'POSITIVE' ? colors.primaryLight : colors.errorLight,
-  cursor: 'pointer',
 }));
 
 const GroupName = styled.span({

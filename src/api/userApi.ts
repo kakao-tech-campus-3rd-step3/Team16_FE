@@ -55,4 +55,3 @@ export interface GroupHistory {
   leftAt: string | null;
   safetyTag: 'SAFE' | 'CAUTION' | 'DANGER';
 }
-
