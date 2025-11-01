@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserInfoById } from '@/api/userApi';
 
 interface UserProfileSectionProps {
@@ -15,10 +15,9 @@ const UserProfileSection = ({ userId }: UserProfileSectionProps) => {
     data: profile,
     isLoading,
     isError,
-  } = useQuery({
+  } = useSuspenseQuery({
     queryKey: ['userProfile', userId],
     queryFn: () => getUserInfoById(userId),
-    enabled: !!userId,
   });
 
   if (isLoading) return <div>불러오는 중...</div>;

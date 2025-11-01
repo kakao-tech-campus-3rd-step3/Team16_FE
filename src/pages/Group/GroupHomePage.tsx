@@ -10,6 +10,7 @@ import { useGroupReviews } from '@/hooks/useGroupReviews';
 import { format } from 'date-fns';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { isUserMember } from '@/utils/groupMemberShip';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const GroupHome = () => {
   const { groupId } = useParams();
@@ -20,9 +21,9 @@ const GroupHome = () => {
 
   const userIsMember = isUserMember(Number(groupId));
 
-  if (isLoadingGroupHome || isLoadingReviews) return <div>로딩중...</div>;
+  if (isLoadingGroupHome || isLoadingReviews) return <LoadingSpinner />;
   if (!data) return <div>데이터가 없습니다</div>;
-  
+
   return (
     <Wrapper>
       <ImgWrapper>

@@ -11,7 +11,7 @@ import { useState } from 'react';
 import CommentModal from './components/CommentModal';
 import { format } from 'date-fns';
 import { useToggleLike } from './hooks/useToggleLike';
-import FullScreenLoader from '@/components/common/LoadingSpinner';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { isUserMember } from '@/utils/groupMemberShip';
@@ -44,40 +44,47 @@ const GroupBoard = () => {
   const isUserMemberOfGroup = isUserMember(Number(groupId));
 
   if (isPending) {
-    return <FullScreenLoader />;
+    return <LoadingSpinner />;
   }
   return (
     <Wrapper>
-      {posts.map((post: Post) => (
-        <PostContent key={post.postId}>
-          <Header>
-            <PostTitle>{post.title}</PostTitle>
-            <PostDate>{format(new Date(post.createdAt), 'yyyy.MM.dd HH:mm')}</PostDate>
-          </Header>
-          {post.imageUrls.length > 0 && <PostImage src={post.imageUrls[0]} alt={post.title} />}
-          {post.content && <PostDescription>{post.content}</PostDescription>}
-          <PostActions>
-            <ActionButton
-              onClick={() => {
-                console.log('post.postId', post.postId);
-                toggleLike({ postId: post.postId, isLike: post.isLike });
-              }}
-            >
-              {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
-              <span>좋아요 {post.likeCount}</span>
-            </ActionButton>
-            <ActionButton
-              onClick={() => {
-                setIsOpen(true);
-                setPostId(post.postId);
-              }}
-            >
-              <FaRegComment />
-              <span>댓글 {post.commentCount}</span>
-            </ActionButton>
-          </PostActions>
-        </PostContent>
-      ))}
+      {posts.map((post: Post) => {
+        const date = new Date(post.createdAt);
+        const formattedDate = isNaN(date.getTime())
+          ? '날짜 없음'
+          : format(date, 'yyyy.MM.dd HH:mm');
+
+        return (
+          <PostContent key={post.postId}>
+            <Header>
+              <PostTitle>{post.title}</PostTitle>
+              <PostDate>{formattedDate}</PostDate>
+            </Header>
+            {post.imageUrls.length > 0 && <PostImage src={post.imageUrls[0]} alt={post.title} />}
+            {post.content && <PostDescription>{post.content}</PostDescription>}
+            <PostActions>
+              <ActionButton
+                onClick={() => {
+                  console.log('post.postId', post.postId);
+                  toggleLike({ postId: post.postId, isLike: post.isLike });
+                }}
+              >
+                {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
+                <span>좋아요 {post.likeCount}</span>
+              </ActionButton>
+              <ActionButton
+                onClick={() => {
+                  setIsOpen(true);
+                  setPostId(post.postId);
+                }}
+              >
+                <FaRegComment />
+                <span>댓글 {post.commentCount}</span>
+              </ActionButton>
+            </PostActions>
+          </PostContent>
+        );
+      })}
 
       <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
 
@@ -98,6 +105,8 @@ const GroupBoard = () => {
 
 const Wrapper = styled.div({
   backgroundColor: colors.gray100,
+  display: 'flex',
+  flexDirection: 'column-reverse', // 역순으로 표시
 });
 
 const Header = styled.div({

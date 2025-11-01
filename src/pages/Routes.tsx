@@ -19,6 +19,7 @@ import CreateGroundRule from './CreateGroundRule.tsx/Page';
 import GroupPost from './GroupPost/page';
 import { PrivateRoute } from '@/components/PrivateRoute';
 import ApplyToJoinGroupPage from './ApplyToJoinGroup/Page'; // import the new page component
+import MemberListPage from './MemberList/Page';
 import MypageRouter from './Mypage';
 
 export const Routes = () => {
@@ -42,6 +43,7 @@ export const Routes = () => {
         <Route path={'/create-post/:groupId'} element={<GroupPost />} />
         <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />
         <Route path={'/group/:groupId/leave'} element={<LeavePage />} />
+        <Route path={'/group/:groupId/members'} element={<MemberListPage />} />
         {/* new route */}
         <Route
           element={
