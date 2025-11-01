@@ -9,11 +9,17 @@ import { spacing } from '@/styles/spacing';
 import { useReview } from '@/hooks/useReveiw';
 import FullScreenLoader from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MemberReview = () => {
   const [choice, setChoice] = useState<'positive' | 'negative' | null>(null);
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { groupId, targetUserId, targetNickname } = location.state || {};
 
   useHeader({ centerContent: '모임원 리뷰 남기기' });
 
@@ -24,18 +30,31 @@ const MemberReview = () => {
       setErrorMessage('리뷰 종류를 선택해주세요.');
       return;
     }
+    if (!content.trim()) {
+      setErrorMessage('리뷰 내용을 입력해주세요.');
+      return;
+    }
     setErrorMessage('');
-    mutate({
-      revieweeID: 1,
-      content: '불성실합니다.',
-      evaluation: 'NEGATIVE',
-    });
+    mutate(
+      {
+        groupId,
+        revieweeId: targetUserId,
+        content,
+        evaluation: choice === 'positive' ? 'POSITIVE' : 'NEGATIVE',
+      },
+      {
+        onSuccess: () => {
+          alert('리뷰가 성공적으로 등록되었습니다.');
+          navigate('/');
+        },
+      }
+    );
   };
 
   return (
     <Wrapper>
       {isPending && <FullScreenLoader />}
-      <ExplainText>김힘찬 모임원에 대한 솔직한 리뷰를 남겨주세요.</ExplainText>
+      <ExplainText>{targetNickname} 모임원에 대한 솔직한 리뷰를 남겨주세요.</ExplainText>
       <ButtonSection>
         <ChoiceButton
           variant="positive"
@@ -58,7 +77,9 @@ const MemberReview = () => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
-      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      <ErrorMessageWrapper>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      </ErrorMessageWrapper>
       <PrimaryButton text="제출하기" onClick={handleSubmit} />
     </Wrapper>
   );
@@ -116,4 +137,8 @@ const InputBox = styled.textarea({
   ...typography.body,
   color: colors.black,
   fontFamily: 'inherit',
+});
+
+const ErrorMessageWrapper = styled.div({
+  marginLeft: spacing.spacing4,
 });

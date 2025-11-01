@@ -11,7 +11,6 @@ import AlarmPage from './Alarm/Page';
 import AttendPage from './Attend/Page';
 import CreateGroupPage from './CreateGroup/Page';
 import AllSchedulePage from './AllSchedule.tsx/Page';
-import DemoPage from './DemoPage';
 import MemberReview from './MemberReview/Page';
 import CreateSchedulePage from './CreateSchedule/Page';
 import LocationPage from './LocationInput/Page';
@@ -39,7 +38,6 @@ export const Routes = () => {
         <Route path={'/create-group'} element={<CreateGroupPage />} />
         <Route path={'/group/:groupId/schedule'} element={<AllSchedulePage />} />
         <Route path={'/member-review'} element={<MemberReview />} />
-        <Route path={'/demo'} element={<DemoPage />} />
         <Route path={'/group/:groupId/create-ground-rule'} element={<CreateGroundRule />} />
         <Route path={'/create-post/:groupId'} element={<GroupPost />} />
         <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />

@@ -2,34 +2,51 @@ import styled from '@emotion/styled';
 import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import { spacing } from '@/styles/spacing';
-import { FaCalendarAlt, FaUserMinus, FaBell } from 'react-icons/fa';
-import { useQuery } from '@tanstack/react-query';
-import { getMockAlarms, type Alarm } from '@/api/alarmApi';
+import { FaCalendarAlt, FaUserMinus, FaBell, FaUserPlus } from 'react-icons/fa';
+import { useAlarms } from '@/hooks/useAlarms';
+import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import type { Alarm } from '@/api/alarmApi';
 
 const AlarmList = () => {
-  const {
-    data: alarms,
-    isLoading,
-    isError,
-  } = useQuery<Alarm[]>({
-    queryKey: ['alarms'],
-    queryFn: getMockAlarms, // 나중에 getAlarms로 교체
-  });
+  const { data: alarms, isLoading, error } = useAlarms();
+  const navigate = useNavigate();
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>알림을 불러오는 중 오류가 발생했습니다.</div>;
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <div>알림을 불러오는 중 오류가 발생했습니다.</div>;
 
   return (
     <>
-      {alarms?.map((alarm) => (
-        <ItemWrapper key={alarm.id}>
-          <AlarmIcon>{getIcon(alarm.type)}</AlarmIcon>
+      {alarms?.map((alarm: Alarm) => (
+        <ItemWrapper
+          key={alarm.alarmId}
+          isRead={alarm.isRead}
+          onClick={() => {
+            if (alarm.notificationType !== 'GROUP_JOIN_LEFT' && alarm.relatedGroupId) {
+              navigate(`/group/${alarm.relatedGroupId}`);
+            }
+          }}
+        >
+          <AlarmIcon>{getIcon(alarm.notificationType)}</AlarmIcon>
           <AlarmInfo>
             <AlarmContent>{alarm.message}</AlarmContent>
-            <AlarmDate>{formatDate(alarm.createdAt)}</AlarmDate>
-            {alarm.action && alarm.action.label === '모임원 리뷰하기' && (
-              <ActionButton onClick={() => (window.location.href = alarm.action!.url)}>
-                {alarm.action.label}
+            <AlarmMeta>
+              <AlarmType>{convertTypeLabel(alarm.notificationType)}</AlarmType>
+              {/* <AlarmStatus isRead={alarm.isRead}>{alarm.isRead ? '읽음' : '새 알림'}</AlarmStatus> */}
+            </AlarmMeta>
+            {alarm.notificationType === 'GROUP_JOIN_LEFT' && (
+              <ActionButton
+                onClick={() =>
+                  navigate('/member-review', {
+                    state: {
+                      groupId: alarm.relatedGroupId,
+                      targetUserId: alarm.relatedUserId,
+                      targetNickname: alarm.nickname,
+                    },
+                  })
+                }
+              >
+                모임원 리뷰하기
               </ActionButton>
             )}
           </AlarmInfo>
@@ -43,34 +60,39 @@ export default AlarmList;
 
 function getIcon(type: string) {
   switch (type) {
-    case 'schedule_created':
-      return <FaCalendarAlt size={24} />;
-    case 'member_left':
-      return <FaUserMinus size={24} />;
+    case 'GROUP_JOIN_LEFT':
+      return <FaUserMinus size={22} />;
+    case 'GROUP_JOIN_REQUEST':
+      return <FaUserPlus size={22} />;
+    case 'CHANGE_GROUP_PLAN':
+      return <FaCalendarAlt size={22} />;
     default:
-      return <FaBell size={24} />;
+      return <FaBell size={22} />;
   }
 }
 
-function formatDate(isoDate: string) {
-  const date = new Date(isoDate);
-  return date.toLocaleString('ko-KR', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+function convertTypeLabel(type: string) {
+  switch (type) {
+    case 'GROUP_JOIN_LEFT':
+      return '모임 탈퇴 알림';
+    case 'GROUP_JOIN_REQUEST':
+      return '모임 가입 알림';
+    case 'CHANGE_GROUP_PLAN':
+      return '일정 변경 알림';
+    default:
+      return '일반 알림';
+  }
 }
 
-const ItemWrapper = styled.div({
+const ItemWrapper = styled.div<{ isRead: boolean }>(({ isRead }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'flex-start',
   gap: spacing.spacing3,
   padding: spacing.spacing4,
-  backgroundColor: colors.white,
+  backgroundColor: isRead ? colors.gray100 : colors.white,
   borderBottom: `1px solid ${colors.gray300}`,
-});
+}));
 
 const AlarmIcon = styled.div({
   width: '48px',
@@ -96,10 +118,21 @@ const AlarmContent = styled.div({
   marginBottom: spacing.spacing1,
 });
 
-const AlarmDate = styled.div({
+const AlarmMeta = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+const AlarmType = styled.div({
   ...typography.small,
   color: colors.gray600,
 });
+
+// const AlarmStatus = styled.div<{ isRead: boolean }>(({ isRead }) => ({
+//   ...typography.small,
+//   color: isRead ? colors.gray500 : colors.primary,
+// }));
 
 const ActionButton = styled.button({
   marginTop: spacing.spacing2,
