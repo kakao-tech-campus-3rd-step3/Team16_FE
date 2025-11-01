@@ -5,13 +5,13 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserInfo } from '@/api/userApi';
 
 const MyProfileSection = () => {
   const navigate = useNavigate();
 
-  const { data: profile } = useQuery({
+  const { data: profile } = useSuspenseQuery({
     queryKey: ['userProfile', 'me'],
     queryFn: getUserInfo,
   });

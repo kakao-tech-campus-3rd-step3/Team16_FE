@@ -4,13 +4,17 @@ import { colors } from '@/styles/colors';
 import MyProfileSection from './components/ProfileSection/MyProfileSection';
 import MyReviewSection from './components/ReviewSection/MyReviewSection';
 import MyRecordSection from './components/RecordSection/MyRecordSection';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { Suspense } from 'react';
 
 const MyPage = () => {
   return (
     <Wrapper>
-      <MyProfileSection />
-      <MyRecordSection />
-      <MyReviewSection />
+      <Suspense fallback={<LoadingSpinner />}>
+        <MyProfileSection />
+        <MyRecordSection />
+        <MyReviewSection />
+      </Suspense>
       <BottomNavigation />
     </Wrapper>
   );

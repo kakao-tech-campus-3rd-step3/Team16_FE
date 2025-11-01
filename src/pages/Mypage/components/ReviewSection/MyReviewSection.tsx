@@ -3,7 +3,7 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import useAuthStore from '@/stores/authStore';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUsersReview } from '@/api/userApi';
 
 interface Review {
@@ -16,10 +16,9 @@ interface Review {
 const MyReviewSection = () => {
   const { id: myId } = useAuthStore();
 
-  const { data: reviews } = useQuery<Review[]>({
+  const { data: reviews } = useSuspenseQuery<Review[]>({
     queryKey: ['userReviews', myId],
     queryFn: () => getUsersReview(Number(myId)),
-    enabled: !!myId,
   });
 
   return (
