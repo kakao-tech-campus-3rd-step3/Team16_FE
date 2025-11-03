@@ -6,7 +6,7 @@ import type { ImagePickerProps } from '../type';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerProps) => {
+const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>(
     imageFiles.map((file) => URL.createObjectURL(file))
