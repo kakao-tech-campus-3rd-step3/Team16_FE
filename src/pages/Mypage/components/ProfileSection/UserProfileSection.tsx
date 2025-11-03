@@ -48,6 +48,7 @@ const ProfileImage = styled.img({
   width: '64px',
   height: '64px',
   borderRadius: '50%',
+  objectFit: 'cover',
 });
 
 const ProfileInfo = styled.div({
