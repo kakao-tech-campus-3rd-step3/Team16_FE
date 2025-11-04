@@ -25,4 +25,5 @@ export default MyPage;
 const Wrapper = styled.div({
   backgroundColor: colors.backgroundGray,
   minHeight: '100vh',
+  marginBottom: '80px',
 });
