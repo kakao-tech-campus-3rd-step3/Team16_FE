@@ -6,6 +6,7 @@ export interface Member {
   nickname: string;
   groupRole: GroupRole;
   profileImageUrl: string;
+  userId: number;
 }
 
 export type Members = Member[];
