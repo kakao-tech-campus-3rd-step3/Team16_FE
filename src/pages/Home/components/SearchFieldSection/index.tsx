@@ -2,11 +2,25 @@ import styled from '@emotion/styled';
 import { GoBellFill } from 'react-icons/go';
 import { useNavigate } from 'react-router-dom';
 
-const SearchFieldSection = () => {
+interface SearchFieldSectionProps {
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+}
+
+const SearchFieldSection = ({ searchQuery, setSearchQuery }: SearchFieldSectionProps) => {
   const navigate = useNavigate();
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <Wrapper>
-      <SearchField></SearchField>
+      <SearchField
+        placeholder="모임을 검색해보세요"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
       <BellIcon onClick={() => navigate('/alarm')} />
     </Wrapper>
   );

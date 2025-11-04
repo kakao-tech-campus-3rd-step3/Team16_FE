@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUsersReview } from '@/api/userApi';
 
 interface Review {
@@ -17,17 +17,11 @@ interface UserReviewSectionProps {
 }
 
 const UserReviewSection = ({ userId }: UserReviewSectionProps) => {
-  const {
-    data: reviews,
-    isLoading,
-    isError,
-  } = useQuery<Review[]>({
+  const { data: reviews, isError } = useSuspenseQuery<Review[]>({
     queryKey: ['userReviews', userId],
     queryFn: () => getUsersReview(userId),
-    enabled: !!userId,
   });
 
-  if (isLoading) return <Wrapper>리뷰 불러오는 중...</Wrapper>;
   if (isError) return <Wrapper>리뷰를 불러오는 중 오류가 발생했습니다.</Wrapper>;
 
   return (

@@ -49,15 +49,18 @@ const GroupPostPage = () => {
 
   const { createGroupPost, isPosting } = useCreateGroupPost(Number(groupId));
 
-  const requestUrl = `/image/presigned`;
+  const requestUrl = `/image/presigned/group/${groupId}/posts`;
   const { uploadImagesAsync, isUploading } = useImageUpload({
-    type: 'POST',
+    type: 'PROFILE',
     request_url: requestUrl,
   });
+
   const onSubmit = async (data: GroupPostFormData) => {
     try {
       if (imageFiles && imageFiles.length > 0) {
+        console.log(imageFiles);
         data.imageUrls = await uploadImagesAsync(imageFiles);
+        console.log('data.imageUrls', data.imageUrls);
       }
       await createGroupPost(data);
       alert('게시글 작성이 완료되었습니다!');

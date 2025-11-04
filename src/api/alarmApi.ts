@@ -1,24 +1,17 @@
-import axios from 'axios';
+import { apiClient } from './apiClient';
 
-export type Alarm = {
-  id: number;
-  type: string;
+export interface Alarm {
+  alarmId: number;
+  receiverId: number;
+  notificationType: string;
+  relatedGroupId: number;
+  relatedUserId: number;
   message: string;
-  groupName: string;
-  createdAt: string;
-  action?: {
-    label: string;
-    url: string;
-  };
-};
+  isRead: boolean;
+  nickname: string;
+}
 
-export const getMockAlarms = async () => {
-  const res = await axios.get<Alarm[]>('/data/notifications.json');
-  return res.data;
+export const getAlarms = async (): Promise<Alarm[]> => {
+  const { data } = await apiClient.get('/notification');
+  return data;
 };
-
-// // 실제 API (아직 알림 조회 api가 없음..)
-// export const getAlarms = async () => {
-//   const res = await axios.get<Alarm[]>('/api/notifications');
-//   return res.data;
-// };

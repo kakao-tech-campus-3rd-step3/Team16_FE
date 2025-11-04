@@ -2,15 +2,31 @@ import BottomNavigation from '@/components/common/BottomNavigation';
 import SearchFieldSection from './components/SearchFieldSection';
 import GroupListSection from './components/GroupListSection';
 import styled from '@emotion/styled';
+import CreateGroupButton from './components/CreateGroupButton';
+import { useQuery } from '@tanstack/react-query';
+import { fetchGroups } from '@/api/groupApi';
+import { useSearch } from './hooks/useSearch';
 
 const HomePage = () => {
+  const {
+    data: groups,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['groups'],
+    queryFn: fetchGroups,
+  });
+
+  const { searchQuery, setSearchQuery, filteredGroups } = useSearch(groups);
+
   return (
     <PageContainer>
-      <SearchFieldSection />
+      <SearchFieldSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <GroupListWrapper>
-        <GroupListSection />
+        <GroupListSection groups={filteredGroups} isLoading={isLoading} isError={isError} />
       </GroupListWrapper>
       <BottomNavigation />
+      <CreateGroupButton />
     </PageContainer>
   );
 };

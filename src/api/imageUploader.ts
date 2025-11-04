@@ -29,7 +29,13 @@ export const uploadImageApi = async (file: File, options: UploadApiOptions) => {
   }
 
   const imageUrl = presignedUrl.split('?')[0];
-  return imageUrl;
+
+  //게시글 이미지는 fileName 반환
+  if (request_url.includes('/image/presigned/group')) {
+    return fileName;
+  }
+
+  return imageUrl; // URL 반환
 };
 
 interface UploadApiOptions {

@@ -10,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const completionUrl = '/users/profile-image';
 
@@ -68,12 +69,8 @@ const ProfileEditPage = () => {
     rightContent: <div onClick={handleSubmit(onSubmit)}>완료</div>,
   });
 
-  if (isLoading) {
-    return <div>로딩중...</div>;
-  }
-
-  if (isPending) {
-    return <div>추후에 Suspense를 적용하자</div>;
+  if (isPending || isLoading) {
+    return <LoadingSpinner />;
   }
   return (
     <Wrapper>
