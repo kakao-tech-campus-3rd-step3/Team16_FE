@@ -32,6 +32,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [translateY, setTranslateY] = useState(0);
   const [isClosing, setIsClosing] = useState(false);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.4);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { data: comments, isPending } = useQuery({
@@ -85,12 +86,14 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
     // 닫기 애니메이션 시작
     setIsClosing(true);
     setTranslateY(500); // 모달 높이만큼 아래로 이동
+    setOverlayOpacity(0); // 오버레이 투명하게
 
     // 애니메이션 완료 후 모달 닫기
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
       setTranslateY(0);
+      setOverlayOpacity(0.4); // 리셋
     }, 100); // transition 시간과 동일
   };
 
@@ -112,6 +115,11 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
     // 아래로만 드래그 가능
     if (deltaY > 0) {
       setTranslateY(deltaY);
+
+      // 드래그 거리에 따라 오버레이 투명도 계산 (0 ~ 500px 범위)
+      // deltaY가 0일 때 0.4, 500px일 때 0으로 점진적 변화
+      const newOpacity = Math.max(0, 0.4 - (deltaY / 500) * 0.4);
+      setOverlayOpacity(newOpacity);
     }
   };
 
@@ -124,11 +132,13 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
       setIsClosing(true);
       setTouchStartY(null);
       setTranslateY(500); // 모달을 화면 아래로 완전히 이동
+      setOverlayOpacity(0); // 오버레이 완전히 투명하게
 
       setTimeout(() => {
         setIsOpen(false);
         setIsClosing(false);
         setTranslateY(0);
+        setOverlayOpacity(0.4); // 리셋
       }, 300);
       return;
     }
@@ -136,10 +146,16 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
     // 상태 리셋 (드래그가 충분하지 않았을 때)
     setTouchStartY(null);
     setTranslateY(0);
+    setOverlayOpacity(0.4); // 오버레이도 원래대로
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={handleClose} variant="bottom">
+    <BaseModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      variant="bottom"
+      overlayOpacity={overlayOpacity}
+    >
       <Wrapper
         ref={wrapperRef}
         onTouchStart={handleTouchStart}
@@ -233,12 +249,12 @@ const DragHandle = styled.div({
   height: '4px',
   backgroundColor: colors.gray300,
   borderRadius: '2px',
-  margin: '12px auto 8px',
+  margin: '8px auto 0px',
   flexShrink: 0,
 });
 
 const Header = styled.div({
-  padding: '16px',
+  padding: '12px',
   fontSize: '18px',
   fontWeight: 'bold',
   textAlign: 'center',
