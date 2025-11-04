@@ -1,18 +1,18 @@
 import BaseModal from '@/components/common/BaseModal';
 import { colors } from '@/styles/colors';
 import styled from '@emotion/styled';
-import { fetchGroupPostComments, deleteGroupPostComment } from '@/api/groupPostCommentsApi';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { keyframes } from '@emotion/react';
 import { VscSend } from 'react-icons/vsc';
 import { useState, useRef } from 'react';
-import { usePostComment } from '@/hooks/usePostComment';
-import { useQueryClient } from '@tanstack/react-query';
 import { typography } from '@/styles/typography';
 import { CenteredLoader } from '@/components/common/LoadingSpinner';
 import { format } from 'date-fns';
 import { IoMdMore } from 'react-icons/io';
 import BottomSheet from '@/components/common/BottomSheet';
 import useAuthStore from '@/stores/authStore';
+import { useComments } from '@/hooks/useComments';
+import { useCreateComment } from '@/hooks/useCreateComment';
+import { useDeleteComment } from '@/hooks/useDeleteComment';
 
 interface CommentModalProps {
   isOpen: boolean;
@@ -22,11 +22,10 @@ interface CommentModalProps {
 }
 
 const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalProps) => {
-  const queryClient = useQueryClient();
   const [content, setContent] = useState('');
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<number>(0);
-  const { id: userId } = useAuthStore();
+  const { id: userId, profileImageUrl, nickname } = useAuthStore();
 
   // 스와이프 제스처를 위한 상태
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
@@ -35,48 +34,26 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
   const [overlayOpacity, setOverlayOpacity] = useState(0.4);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const { data: comments, isPending } = useQuery({
-    queryKey: ['groupPostComments', postId],
-    queryFn: () => fetchGroupPostComments(postId),
-    enabled: isOpen,
+  // 댓글 조회
+  const { data: comments, isPending } = useComments(postId, isOpen);
+
+  // 댓글 작성
+  const { mutate: postComment } = useCreateComment(postId, {
+    userId: userId ?? 0,
+    nickname: nickname ?? '',
+    profileImageUrl: profileImageUrl ?? '',
   });
 
-  const { mutate: postComment } = usePostComment(postId);
-
-  const { mutate: deleteComment } = useMutation({
-    mutationFn: (commentId: number) => deleteGroupPostComment(commentId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groupPostComments', postId] });
-      setIsBottomSheetOpen(false);
-    },
-    onMutate: (commentId: number) => {
-      //삭제 낙관적 업데이트
-      queryClient.setQueryData(['groupPostComments', postId], (oldData: any) => {
-        if (!oldData) return oldData;
-        return oldData.filter((comment: any) => comment.commentId !== commentId);
-      });
-    },
-    onError: (error) => {
-      console.error('댓글 삭제 실패:', error);
-      alert('댓글 삭제에 실패했습니다.');
-    },
-  });
+  // 댓글 삭제
+  const { mutate: deleteComment } = useDeleteComment(postId);
 
   const handleSubmit = (content: string) => {
     if (content.trim() === '') {
       alert('댓글 내용을 입력해주세요.');
       return;
     }
-    postComment(content, {
-      onSuccess: () => {
-        setContent('');
-        queryClient.invalidateQueries({ queryKey: ['groupPostComments', postId] });
-      },
-      onError: (error: any) => {
-        console.error('댓글 등록 실패:', error);
-        alert('댓글 등록에 실패했습니다. 다시 시도해주세요.');
-      },
-    });
+    postComment(content);
+    setContent(''); // 입력창 즉시 초기화
   };
 
   const handleClose = () => {
@@ -94,15 +71,10 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
       setIsClosing(false);
       setTranslateY(0);
       setOverlayOpacity(0.4); // 리셋
-    }, 100); // transition 시간과 동일
+    }, 300); // transition 시간과 동일
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    // 스크롤 가능한 영역에서 터치가 시작된 경우 제스처 무시
-    const target = e.target as HTMLElement;
-    const commentList = target.closest('[data-scrollable]');
-    if (commentList && commentList.scrollTop > 0) return;
-
     setTouchStartY(e.touches[0].clientY);
   };
 
@@ -158,22 +130,25 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
     >
       <Wrapper
         ref={wrapperRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         style={{
           transform: `translateY(${translateY}px)`,
           transition: touchStartY === null || isClosing ? 'transform 0.3s ease' : 'none',
         }}
       >
-        <DragHandle />
-        <Header>댓글</Header>
+        <HeaderArea
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <DragHandle />
+          <Header>댓글</Header>
+        </HeaderArea>
 
         <CommentList data-scrollable>
           {isPending ? (
             <CenteredLoader />
           ) : comments && comments.length > 0 ? (
-            comments.map((comment: any) => {
+            [...comments].reverse().map((comment: any) => {
               const date = new Date(comment.createdAt);
               const formattedDate = isNaN(date.getTime())
                 ? '날짜 없음'
@@ -192,15 +167,26 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
                         <CommentText>{comment.content}</CommentText>
                       </CommentContent>
                     </CommentHeader>
-                    {userId == comment.commentUserId && (
-                      <MoreButton
-                        onClick={() => {
-                          setSelectedCommentId(comment.commentId);
-                          setIsBottomSheetOpen(true);
-                        }}
-                      >
-                        <IoMdMore size={20} />
-                      </MoreButton>
+                    {comment.commentId === 0 ? (
+                      <PostingStatus>
+                        게시중
+                        <BouncingDots>
+                          <Dot delay={0} />
+                          <Dot delay={0.2} />
+                          <Dot delay={0.4} />
+                        </BouncingDots>
+                      </PostingStatus>
+                    ) : (
+                      userId == comment.commentUserId && (
+                        <MoreButton
+                          onClick={() => {
+                            setSelectedCommentId(comment.commentId);
+                            setIsBottomSheetOpen(true);
+                          }}
+                        >
+                          <IoMdMore size={20} />
+                        </MoreButton>
+                      )
                     )}
                   </CommentRow>
                 </CommentItem>
@@ -226,6 +212,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
             label: '댓글 삭제',
             onClick: () => {
               deleteComment(selectedCommentId);
+              setIsBottomSheetOpen(false);
             },
             variant: 'danger',
           },
@@ -253,6 +240,14 @@ const DragHandle = styled.div({
   flexShrink: 0,
 });
 
+const HeaderArea = styled.div({
+  cursor: 'grab',
+  userSelect: 'none',
+  '&:active': {
+    cursor: 'grabbing',
+  },
+});
+
 const Header = styled.div({
   padding: '12px',
   fontSize: '18px',
@@ -266,6 +261,8 @@ const CommentList = styled.div({
   overflowY: 'auto',
   borderTop: `1px solid ${colors.gray300}`,
   borderBottom: `1px solid ${colors.gray300}`,
+  display: 'flex',
+  flexDirection: 'column-reverse',
 });
 
 const CommentItem = styled.div({
@@ -344,6 +341,42 @@ const EmptyMessage = styled.div({
   textAlign: 'center',
   padding: '40px 0',
 });
+
+// 바운스 애니메이션
+const bounce = keyframes`
+  0%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(4px);
+  }
+`;
+
+const PostingStatus = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '2px',
+  ...typography.body,
+  fontSize: '11px',
+  color: colors.primary,
+  fontWeight: 600,
+  marginTop: '10px',
+});
+
+const BouncingDots = styled.span({
+  display: 'inline-flex',
+  gap: '2px',
+});
+
+const Dot = styled.span<{ delay: number }>(({ delay }) => ({
+  width: '3px',
+  height: '3px',
+  borderRadius: '50%',
+  backgroundColor: colors.primary,
+  display: 'inline-block',
+  animation: `${bounce} 1.4s infinite ease-in-out`,
+  animationDelay: `${delay}s`,
+}));
 
 const MoreButton = styled.button({
   display: 'flex',
