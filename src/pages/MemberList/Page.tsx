@@ -7,10 +7,12 @@ import { useParams } from 'react-router-dom';
 import { getMemberListApi } from './api/getMemeberListApi';
 import type { Member } from './types';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
 
 const PendingApplicationPage = () => {
   useHeader({ centerContent: '멤버' });
   const { groupId } = useParams<{ groupId: string }>();
+  const navigate = useNavigate();
 
   const { data: members, isLoading } = useQuery({
     queryKey: ['members', groupId],
@@ -20,11 +22,17 @@ const PendingApplicationPage = () => {
   if (isLoading) {
     return <LoadingSpinner />;
   }
-
+  console.log(members);
   return (
     <Wrapper>
       {members?.map((member: Member) => (
-        <MemberItem key={member.id} member={member} />
+        <MemberItem
+          key={member.id}
+          member={member}
+          onClick={() => {
+            console.log(member.id);
+          }}
+        />
       ))}
     </Wrapper>
   );

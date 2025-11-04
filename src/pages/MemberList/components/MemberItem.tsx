@@ -6,13 +6,14 @@ import type { Member } from '../types';
 
 interface MemberItemProps {
   member: Member;
+  onClick?: () => void;
 }
 
-export const MemberItem = ({ member }: MemberItemProps) => {
+export const MemberItem = ({ member, onClick }: MemberItemProps) => {
   const { nickname, profileImageUrl } = member;
 
   return (
-    <ItemWrapper>
+    <ItemWrapper onClick={onClick}>
       <ProfileImage src={profileImageUrl} />
       <UserInfo>
         <UserName>{nickname}</UserName>
@@ -37,6 +38,7 @@ const ProfileImage = styled.img({
   height: '48px',
   borderRadius: '50%',
   backgroundColor: colors.gray200,
+  objectFit: 'cover',
 });
 
 const UserInfo = styled.div({
