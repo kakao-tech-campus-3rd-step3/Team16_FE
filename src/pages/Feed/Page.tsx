@@ -16,6 +16,7 @@ import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { isUserMember } from '@/utils/groupMemberShip';
 import ImageViewerModal from '@/components/common/ImageViewerModal';
+import UserPageModal from '@/components/common/UserPageModal';
 import BottomNavigation from '@/components/common/BottomNavigation';
 
 interface Post {
@@ -141,6 +142,8 @@ const Feed = () => {
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const navigate = useNavigate();
   const { data, isPending } = useQuery({
     queryKey: ['feed'],
@@ -202,7 +205,20 @@ const Feed = () => {
         );
       })}
 
-      <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
+      <CommentModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        postId={postId}
+        onUserClick={(userId) => {
+          setSelectedUserId(userId);
+          setIsUserModalOpen(true);
+        }}
+      />
+      <UserPageModal
+        isOpen={isUserModalOpen}
+        onClose={() => setIsUserModalOpen(false)}
+        userId={selectedUserId}
+      />
 
       {isUserMemberOfGroup && (
         <EditButtonWrapper>
