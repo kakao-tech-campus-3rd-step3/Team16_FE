@@ -1,15 +1,18 @@
 import BaseModal from '@/components/common/BaseModal';
 import { colors } from '@/styles/colors';
 import styled from '@emotion/styled';
-import { fetchGroupPostComments } from '@/api/groupPostCommentsApi';
-import { useQuery } from '@tanstack/react-query';
+import { fetchGroupPostComments, deleteGroupPostComment } from '@/api/groupPostCommentsApi';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { VscSend } from 'react-icons/vsc';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { usePostComment } from '@/hooks/usePostComment';
 import { useQueryClient } from '@tanstack/react-query';
 import { typography } from '@/styles/typography';
 import { CenteredLoader } from '@/components/common/LoadingSpinner';
 import { format } from 'date-fns';
+import { IoMdMore } from 'react-icons/io';
+import BottomSheet from '@/components/common/BottomSheet';
+import useAuthStore from '@/stores/authStore';
 
 interface CommentModalProps {
   isOpen: boolean;
@@ -21,6 +24,16 @@ interface CommentModalProps {
 const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalProps) => {
   const queryClient = useQueryClient();
   const [content, setContent] = useState('');
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedCommentId, setSelectedCommentId] = useState<number>(0);
+  const { id: userId } = useAuthStore();
+
+  // 스와이프 제스처를 위한 상태
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [translateY, setTranslateY] = useState(0);
+  const [isClosing, setIsClosing] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const { data: comments, isPending } = useQuery({
     queryKey: ['groupPostComments', postId],
     queryFn: () => fetchGroupPostComments(postId),
@@ -28,6 +41,25 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
   });
 
   const { mutate: postComment } = usePostComment(postId);
+
+  const { mutate: deleteComment } = useMutation({
+    mutationFn: (commentId: number) => deleteGroupPostComment(commentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupPostComments', postId] });
+      setIsBottomSheetOpen(false);
+    },
+    onMutate: (commentId: number) => {
+      //삭제 낙관적 업데이트
+      queryClient.setQueryData(['groupPostComments', postId], (oldData: any) => {
+        if (!oldData) return oldData;
+        return oldData.filter((comment: any) => comment.commentId !== commentId);
+      });
+    },
+    onError: (error) => {
+      console.error('댓글 삭제 실패:', error);
+      alert('댓글 삭제에 실패했습니다.');
+    },
+  });
 
   const handleSubmit = (content: string) => {
     if (content.trim() === '') {
@@ -46,12 +78,82 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
     });
   };
 
+  const handleClose = () => {
+    // BottomSheet가 열려있으면 CommentModal을 닫지 않음
+    if (isBottomSheetOpen) return;
+
+    // 닫기 애니메이션 시작
+    setIsClosing(true);
+    setTranslateY(500); // 모달 높이만큼 아래로 이동
+
+    // 애니메이션 완료 후 모달 닫기
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+      setTranslateY(0);
+    }, 100); // transition 시간과 동일
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // 스크롤 가능한 영역에서 터치가 시작된 경우 제스처 무시
+    const target = e.target as HTMLElement;
+    const commentList = target.closest('[data-scrollable]');
+    if (commentList && commentList.scrollTop > 0) return;
+
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartY === null) return;
+
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - touchStartY;
+
+    // 아래로만 드래그 가능
+    if (deltaY > 0) {
+      setTranslateY(deltaY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartY === null) return;
+
+    // 100px 이상 드래그하면 모달 닫기
+    if (translateY > 200) {
+      // 닫기 애니메이션
+      setIsClosing(true);
+      setTouchStartY(null);
+      setTranslateY(500); // 모달을 화면 아래로 완전히 이동
+
+      setTimeout(() => {
+        setIsOpen(false);
+        setIsClosing(false);
+        setTranslateY(0);
+      }, 300);
+      return;
+    }
+
+    // 상태 리셋 (드래그가 충분하지 않았을 때)
+    setTouchStartY(null);
+    setTranslateY(0);
+  };
+
   return (
-    <BaseModal isOpen={isOpen} onClose={() => setIsOpen(false)} variant="bottom">
-      <Wrapper>
+    <BaseModal isOpen={isOpen} onClose={handleClose} variant="bottom">
+      <Wrapper
+        ref={wrapperRef}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          transform: `translateY(${translateY}px)`,
+          transition: touchStartY === null || isClosing ? 'transform 0.3s ease' : 'none',
+        }}
+      >
+        <DragHandle />
         <Header>댓글</Header>
 
-        <CommentList>
+        <CommentList data-scrollable>
           {isPending ? (
             <CenteredLoader />
           ) : comments && comments.length > 0 ? (
@@ -63,16 +165,28 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
 
               return (
                 <CommentItem key={comment.commentId}>
-                  <CommentHeader onClick={() => onUserClick(comment.commentUserId)}>
-                    <ProfileImage src={comment.userProfileImageUrl} alt={comment.userNickname} />
-                    <CommentContent>
-                      <AuthorRow>
-                        <Author>{comment.userNickname}</Author>
-                        <CommentDate>{formattedDate}</CommentDate>
-                      </AuthorRow>
-                      <CommentText>{comment.content}</CommentText>
-                    </CommentContent>
-                  </CommentHeader>
+                  <CommentRow>
+                    <CommentHeader onClick={() => onUserClick(comment.commentUserId)}>
+                      <ProfileImage src={comment.userProfileImageUrl} alt={comment.userNickname} />
+                      <CommentContent>
+                        <AuthorRow>
+                          <Author>{comment.userNickname}</Author>
+                          <CommentDate>{formattedDate}</CommentDate>
+                        </AuthorRow>
+                        <CommentText>{comment.content}</CommentText>
+                      </CommentContent>
+                    </CommentHeader>
+                    {userId == comment.commentUserId && (
+                      <MoreButton
+                        onClick={() => {
+                          setSelectedCommentId(comment.commentId);
+                          setIsBottomSheetOpen(true);
+                        }}
+                      >
+                        <IoMdMore size={20} />
+                      </MoreButton>
+                    )}
+                  </CommentRow>
                 </CommentItem>
               );
             })
@@ -88,6 +202,19 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
           <SendingButton size={24} onClick={() => handleSubmit(content)} />
         </InputWrapper>
       </Wrapper>
+      <BottomSheet
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+        options={[
+          {
+            label: '댓글 삭제',
+            onClick: () => {
+              deleteComment(selectedCommentId);
+            },
+            variant: 'danger',
+          },
+        ]}
+      />
     </BaseModal>
   );
 };
@@ -98,6 +225,16 @@ const Wrapper = styled.div({
   backgroundColor: colors.white,
   borderTopLeftRadius: '16px',
   borderTopRightRadius: '16px',
+  touchAction: 'pan-y', // 수직 스크롤 허용
+});
+
+const DragHandle = styled.div({
+  width: '40px',
+  height: '4px',
+  backgroundColor: colors.gray300,
+  borderRadius: '2px',
+  margin: '12px auto 8px',
+  flexShrink: 0,
 });
 
 const Header = styled.div({
@@ -121,6 +258,13 @@ const CommentItem = styled.div({
   '&:last-child': {
     borderBottom: 'none',
   },
+});
+
+const CommentRow = styled.div({
+  display: 'flex',
+  alignItems: 'flex-start',
+  justifyContent: 'space-between',
+  gap: '8px',
 });
 
 const CommentHeader = styled.div({
@@ -183,6 +327,19 @@ const EmptyMessage = styled.div({
   color: colors.gray500,
   textAlign: 'center',
   padding: '40px 0',
+});
+
+const MoreButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: '4px',
+  color: colors.gray600,
+  flexShrink: 0,
+  marginTop: '10px',
 });
 
 const InputWrapper = styled.div({
