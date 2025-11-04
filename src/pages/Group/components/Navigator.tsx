@@ -52,6 +52,7 @@ const Nav = styled.nav({
   display: 'flex',
   flexDirection: 'row',
   backgroundColor: 'white',
+  zIndex: 10,
 });
 
 const Item = styled.div<{ isActive?: boolean }>(({ isActive }) => ({
