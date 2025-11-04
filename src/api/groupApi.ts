@@ -17,6 +17,28 @@ export const fetchGroupPosts = async (groupId: number) => {
   return response.data;
 };
 
+//게시글 삭제
+export const deleteGroupPost = async (postId: number) => {
+  console.log('Deleting post with ID:', postId);
+  const response = await apiClient.delete(`/groups/posts/${postId}`);
+  return response.data;
+};
+
+//게시글 단건 조회
+export const fetchGroupPost = async (groupId: number, postId: number) => {
+  const response = await apiClient.get(`/groups/${groupId}/posts/${postId}`);
+  return response.data;
+};
+
+//게시글 수정
+export const updateGroupPost = async (
+  postId: number,
+  data: { title: string; content: string; imageUrls?: string[] }
+) => {
+  const response = await apiClient.put(`/groups/posts/${postId}`, data);
+  return response.data;
+};
+
 interface GroupMembershipResponse {
   isMember: boolean;
 }

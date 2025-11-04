@@ -4,8 +4,8 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 import { FaRegComment } from 'react-icons/fa';
-import { useQuery } from '@tanstack/react-query';
-import { fetchGroupPosts } from '@/api/groupApi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchGroupPosts, deleteGroupPost } from '@/api/groupApi';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import CommentModal from '@/components/common/CommentModal';
@@ -18,6 +18,9 @@ import { isUserMember } from '@/utils/groupMemberShip';
 //import { useScrollLock } from '@/hooks/useScrollLock';
 import ImageViewerModal from '@/components/common/ImageViewerModal';
 import UserPageModal from '@/components/common/UserPageModal';
+import useAuthStore from '@/stores/authStore';
+import { IoMdMore } from 'react-icons/io';
+import BottomSheet from '@/components/common/BottomSheet';
 
 interface Post {
   postId: number;
@@ -147,6 +150,10 @@ const GroupBoard = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const navigate = useNavigate();
+  const { id: userId } = useAuthStore();
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const queryClient = useQueryClient();
 
   const { data, isPending } = useQuery({
     queryKey: ['groupPosts', Number(groupId)],
@@ -154,6 +161,18 @@ const GroupBoard = () => {
   });
 
   const { mutate: toggleLike } = useToggleLike(Number(groupId));
+
+  const { mutate: deletePost } = useMutation({
+    mutationFn: (postId: number) => deleteGroupPost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
+      setIsBottomSheetOpen(false);
+    },
+    onError: (error) => {
+      console.error('게시글 삭제 실패:', error);
+      alert('게시글 삭제에 실패했습니다.');
+    },
+  });
 
   const posts = data || [];
 
@@ -173,18 +192,29 @@ const GroupBoard = () => {
         return (
           <PostContent key={post.postId}>
             <Header>
-              <AuthorSection
-                onClick={() => {
-                  setSelectedUserId(post.authorId);
-                  setIsUserModalOpen(true);
-                }}
-              >
-                <AuthorProfile src={post.authorProfileImageUrl} alt={post.authorNickname} />
-                <AuthorInfo>
-                  <AuthorName>{post.authorNickname}</AuthorName>
-                  <PostDate>{formattedDate}</PostDate>
-                </AuthorInfo>
-              </AuthorSection>
+              <AuthorRow>
+                <AuthorSection
+                  onClick={() => {
+                    setSelectedUserId(post.authorId);
+                    setIsUserModalOpen(true);
+                  }}
+                >
+                  <AuthorProfile src={post.authorProfileImageUrl} alt={post.authorNickname} />
+                  <AuthorInfo>
+                    <AuthorName>{post.authorNickname}</AuthorName>
+                    <PostDate>{formattedDate}</PostDate>
+                  </AuthorInfo>
+                </AuthorSection>
+                {userId == post.authorId && (
+                  <IoMdMore
+                    size={24}
+                    onClick={() => {
+                      setSelectedPostId(post.postId);
+                      setIsBottomSheetOpen(true);
+                    }}
+                  />
+                )}
+              </AuthorRow>
               <PostTitle>{post.title}</PostTitle>
             </Header>
             {post.imageUrls.length > 0 && (
@@ -241,6 +271,27 @@ const GroupBoard = () => {
           </EditButton>
         </EditButtonWrapper>
       )}
+      <BottomSheet
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+        options={[
+          {
+            label: '수정',
+            onClick: () => {
+              navigate(`/edit-post/${groupId}/${selectedPostId}`);
+            },
+          },
+          {
+            label: '삭제',
+            onClick: () => {
+              if (confirm('정말 삭제하시겠습니까?')) {
+                deletePost(selectedPostId);
+              }
+            },
+            variant: 'danger',
+          },
+        ]}
+      />
     </Wrapper>
   );
 };
@@ -255,6 +306,13 @@ const Header = styled.div({
   padding: spacing.spacing2,
   display: 'flex',
   flexDirection: 'column',
+  gap: spacing.spacing2,
+});
+
+const AuthorRow = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   gap: spacing.spacing2,
 });
 
