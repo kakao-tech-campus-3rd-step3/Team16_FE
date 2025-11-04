@@ -10,8 +10,6 @@ import useGroupHome from '@/hooks/useGroupHome';
 import { HiOutlineMenu } from 'react-icons/hi';
 import useAuthStore from '@/stores/authStore';
 import GroupDrawer from './components/GroupDrawer';
-import { HiOutlineChevronLeft } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
 
 const GroupPage = () => {
   const { groupId } = useParams<{ groupId: string }>();
@@ -20,16 +18,11 @@ const GroupPage = () => {
   const { groups } = useAuthStore();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const isMember = !!groupId && groups.memberOf.includes(groupId);
-  const navigate = useNavigate();
 
   const { data: group } = useGroupHome(Number(groupId));
   const groupName = group?.name;
 
   useHeader({
-    leftContent: (
-      //뒤로가기시 게시글 컴포넌트 렌더링
-      <HiOutlineChevronLeft size={20} onClick={() => navigate('/')} />
-    ),
     centerContent: groupName,
     rightContent: isMember ? (
       <HiOutlineMenu
