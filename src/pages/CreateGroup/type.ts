@@ -3,7 +3,7 @@ import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 interface CreateGroupFormData {
   name: string;
   intro: string;
-  imageUrls?: string[];
+  fileName?: string;
 }
 
 interface IntroSectionProps {

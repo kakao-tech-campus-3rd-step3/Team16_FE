@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router';
 
 const navItems = [
   { icon: GoHome, label: '홈', path: '/' },
-  { icon: GoSearch, label: '피드', path: '/' },
+  { icon: GoSearch, label: '피드', path: '/feed' },
   { icon: GoPerson, label: '마이페이지', path: '/mypage' },
 ];
 
@@ -21,11 +21,11 @@ const BottomNavigation = () => {
       {navItems.map(({ icon: Icon, label, path }) => (
         <NavItem
           key={label}
-          isActive={location.pathname === path && label !== '피드'}
+          isActive={location.pathname === path}
           onClick={() => handleNavigation(path)}
         >
           <Icon size={20} />
-          <NavText isActive={location.pathname === path && label !== '피드'}>{label}</NavText>
+          <NavText isActive={location.pathname === path}>{label}</NavText>
         </NavItem>
       ))}
     </BottomNavigationContainer>

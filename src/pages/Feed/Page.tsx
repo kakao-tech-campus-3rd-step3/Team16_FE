@@ -5,18 +5,18 @@ import { spacing } from '@/styles/spacing';
 import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 import { FaRegComment } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
-import { fetchGroupPosts } from '@/api/groupApi';
+import { fetchFeedPosts } from '@/api/feedApi';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import CommentModal from '@/components/common/CommentModal';
 import { format } from 'date-fns';
-import { useToggleLike } from '../../hooks/useToggleLike';
+import { useToggleLike } from '@/hooks/useToggleLike';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { isUserMember } from '@/utils/groupMemberShip';
-//import { useScrollLock } from '@/hooks/useScrollLock';
 import ImageViewerModal from '@/components/common/ImageViewerModal';
+import BottomNavigation from '@/components/common/BottomNavigation';
 
 interface Post {
   postId: number;
@@ -137,14 +137,14 @@ const ImageCarousel = ({ images, altText }: ImageCarouselProps) => {
   );
 };
 
-const GroupBoard = () => {
+const Feed = () => {
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
   const navigate = useNavigate();
   const { data, isPending } = useQuery({
-    queryKey: ['groupPosts', Number(groupId)],
-    queryFn: () => fetchGroupPosts(Number(groupId)),
+    queryKey: ['feed'],
+    queryFn: () => fetchFeedPosts(),
   });
   const { mutate: toggleLike } = useToggleLike(Number(groupId));
 
@@ -153,7 +153,12 @@ const GroupBoard = () => {
   const isUserMemberOfGroup = isUserMember(Number(groupId));
 
   if (isPending) {
-    return <LoadingSpinner />;
+    return (
+      <>
+        <LoadingSpinner />
+        <BottomNavigation />
+      </>
+    );
   }
   return (
     <Wrapper>
@@ -210,6 +215,7 @@ const GroupBoard = () => {
           </EditButton>
         </EditButtonWrapper>
       )}
+      <BottomNavigation />
     </Wrapper>
   );
 };
@@ -217,7 +223,7 @@ const GroupBoard = () => {
 const Wrapper = styled.div({
   backgroundColor: colors.gray100,
   display: 'flex',
-  flexDirection: 'column-reverse', // 역순으로 표시
+  flexDirection: 'column',
 });
 
 const Header = styled.div({
@@ -332,4 +338,4 @@ const EditIcon = styled(FaPencilAlt)({
   height: 20,
 });
 
-export default GroupBoard;
+export default Feed;

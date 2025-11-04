@@ -5,7 +5,7 @@ import { fetchGroupPostComments } from '@/api/groupPostCommentsApi';
 import { useQuery } from '@tanstack/react-query';
 import { VscSend } from 'react-icons/vsc';
 import { useState } from 'react';
-import { usePostComment } from '../hooks/usePostComment';
+import { usePostComment } from '@/hooks/usePostComment';
 import { useQueryClient } from '@tanstack/react-query';
 import { typography } from '@/styles/typography';
 import { CenteredLoader } from '@/components/common/LoadingSpinner';

@@ -36,4 +36,7 @@ const Wrapper = styled.div({
   backgroundColor: colors.backgroundGray,
   minHeight: '100vh',
   padding: '16px',
+  gap: '12px',
+  display: 'flex',
+  flexDirection: 'column',
 });

@@ -21,6 +21,7 @@ import { PrivateRoute } from '@/components/PrivateRoute';
 import ApplyToJoinGroupPage from './ApplyToJoinGroup/Page'; // import the new page component
 import MemberListPage from './MemberList/Page';
 import MypageRouter from './Mypage';
+import FeedPage from './Feed/Page';
 
 export const Routes = () => {
   return (
@@ -44,6 +45,7 @@ export const Routes = () => {
         <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />
         <Route path={'/group/:groupId/leave'} element={<LeavePage />} />
         <Route path={'/group/:groupId/members'} element={<MemberListPage />} />
+        <Route path={'/feed'} element={<FeedPage />} />
         {/* new route */}
         <Route
           element={
