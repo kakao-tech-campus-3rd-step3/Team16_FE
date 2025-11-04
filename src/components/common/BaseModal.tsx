@@ -10,6 +10,7 @@ interface BaseModalProps {
   children: ReactNode;
   variant?: ModalVariant;
   maxWidth?: number;
+  overlayOpacity?: number;
 }
 
 const BaseModal = ({
@@ -18,6 +19,7 @@ const BaseModal = ({
   children,
   variant = 'center',
   maxWidth = 480,
+  overlayOpacity = 0.4,
 }: BaseModalProps) => {
   useEffect(() => {
     if (!isOpen) return;
@@ -32,7 +34,7 @@ const BaseModal = ({
   if (!isOpen) return null;
 
   return (
-    <Overlay onClick={onClose}>
+    <Overlay onClick={onClose} style={{ background: `rgba(0,0,0,${overlayOpacity})` }}>
       <Content variant={variant} maxWidth={maxWidth} onClick={(e) => e.stopPropagation()}>
         {/* <Inner>{children}</Inner> */}
         {children}
@@ -58,11 +60,11 @@ const Overlay = styled.div({
   inset: 0,
   width: '100%',
   height: '100%',
-  background: 'rgba(0,0,0,0.4)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   zIndex: 2000,
+  transition: 'background 0.1s ease',
 });
 
 const Content = styled.div<{ variant: ModalVariant; maxWidth: number }>(

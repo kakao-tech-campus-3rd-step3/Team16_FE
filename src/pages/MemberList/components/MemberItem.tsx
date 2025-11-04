@@ -3,20 +3,23 @@ import { typography } from '@/styles/typography';
 import { colors } from '@/styles/colors';
 import { spacing } from '@/styles/spacing';
 import type { Member } from '../types';
+import { FaCrown } from 'react-icons/fa';
 
 interface MemberItemProps {
   member: Member;
+  onClick?: () => void;
 }
 
-export const MemberItem = ({ member }: MemberItemProps) => {
-  const { nickname, profileImageUrl } = member;
+export const MemberItem = ({ member, onClick }: MemberItemProps) => {
+  const { nickname, profileImageUrl, groupRole } = member;
 
   return (
-    <ItemWrapper>
+    <ItemWrapper onClick={onClick}>
       <ProfileImage src={profileImageUrl} />
       <UserInfo>
         <UserName>{nickname}</UserName>
       </UserInfo>
+      {groupRole === 'LEADER' && <CrownIcon />}
     </ItemWrapper>
   );
 };
@@ -37,6 +40,7 @@ const ProfileImage = styled.img({
   height: '48px',
   borderRadius: '50%',
   backgroundColor: colors.gray200,
+  objectFit: 'cover',
 });
 
 const UserInfo = styled.div({
@@ -50,4 +54,10 @@ const UserName = styled.span({
   ...typography.h3,
   color: colors.black,
   marginBottom: spacing.spacing1,
+});
+
+const CrownIcon = styled(FaCrown)({
+  color: colors.primary,
+  fontSize: '20px',
+  flexShrink: 0,
 });

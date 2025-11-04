@@ -6,14 +6,22 @@ import type { ImagePickerProps } from '../type';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerProps) => {
+const ImagePicker = ({
+  maxCount = 5,
+  setImageFiles,
+  imageFiles,
+  existingImages = [],
+  setExistingImages,
+}: ImagePickerProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>(
     imageFiles.map((file) => URL.createObjectURL(file))
   );
 
+  // 총 이미지 개수 = 기존 이미지 + 새로운 이미지
+  const totalImageCount = existingImages.length + imageUrls.length;
   // 남은 선택 가능 장수
-  const remaining = Math.max(0, maxCount - imageUrls.length);
+  const remaining = Math.max(0, maxCount - totalImageCount);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -47,7 +55,7 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
   };
 
   const handlePickClick = () => {
-    if (imageUrls.length >= maxCount) {
+    if (totalImageCount >= maxCount) {
       alert(`최대 ${maxCount}장의 사진만 선택할 수 있습니다.`);
       return;
     }
@@ -62,6 +70,13 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
 
     setImageFiles(nextFiles);
     setImageUrls(next);
+  };
+
+  const handleRemoveExisting = (index: number) => {
+    if (setExistingImages) {
+      const next = existingImages.filter((_, i) => i !== index);
+      setExistingImages(next);
+    }
   };
 
   // 언마운트 시 삭제
@@ -84,8 +99,19 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
         onChange={handleFileChange}
       />
       <Preview>
+        {/* 기존 이미지 먼저 표시 */}
+        {existingImages.map((src, idx) => (
+          <Thumb key={`existing-${idx}`}>
+            <Img src={src} alt={`existing-${idx}`} />
+            <RemoveButton type="button" onClick={() => handleRemoveExisting(idx)}>
+              ✕
+            </RemoveButton>
+          </Thumb>
+        ))}
+
+        {/* 새로 선택한 이미지 표시 */}
         {imageUrls.map((src, idx) => (
-          <Thumb key={idx}>
+          <Thumb key={`new-${idx}`}>
             <Img src={src} alt={`selected-${idx}`} />
             <RemoveButton type="button" onClick={() => handleRemove(idx)}>
               ✕
@@ -93,7 +119,7 @@ const ImagePicker = ({ maxCount = 5, setImageFiles, imageFiles }: ImagePickerPro
           </Thumb>
         ))}
 
-        {imageUrls.length < maxCount && (
+        {totalImageCount < maxCount && (
           <UploadBox onClick={() => handlePickClick()}>
             <PlusIcon>＋</PlusIcon>
           </UploadBox>

@@ -4,8 +4,8 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 import { FaRegComment } from 'react-icons/fa';
-import { useQuery } from '@tanstack/react-query';
-import { fetchGroupPosts } from '@/api/groupApi';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchGroupPosts, deleteGroupPost } from '@/api/groupApi';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import CommentModal from '@/components/common/CommentModal';
@@ -17,6 +17,11 @@ import { useNavigate } from 'react-router-dom';
 import { isUserMember } from '@/utils/groupMemberShip';
 //import { useScrollLock } from '@/hooks/useScrollLock';
 import ImageViewerModal from '@/components/common/ImageViewerModal';
+import UserPageModal from '@/components/common/UserPageModal';
+import useAuthStore from '@/stores/authStore';
+import { IoMdMore } from 'react-icons/io';
+import BottomSheet from '@/components/common/BottomSheet';
+import PostingStatus from '@/components/common/PostingStatus';
 
 interface Post {
   postId: number;
@@ -28,6 +33,8 @@ interface Post {
   likeCount: number;
   commentCount: number;
   isLike: boolean;
+  authorProfileImageUrl: string;
+  authorId: number;
 }
 
 interface ImageCarouselProps {
@@ -141,12 +148,46 @@ const GroupBoard = () => {
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const navigate = useNavigate();
+  const { id: userId } = useAuthStore();
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const queryClient = useQueryClient();
+
   const { data, isPending } = useQuery({
     queryKey: ['groupPosts', Number(groupId)],
     queryFn: () => fetchGroupPosts(Number(groupId)),
   });
+
   const { mutate: toggleLike } = useToggleLike(Number(groupId));
+
+  const { mutate: deletePost } = useMutation({
+    mutationFn: (postId: number) => deleteGroupPost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
+      setIsBottomSheetOpen(false);
+    },
+    onMutate: async (postId: number) => {
+      await queryClient.cancelQueries({ queryKey: ['groupPosts', Number(groupId)] });
+      const previousPosts = queryClient.getQueryData(['groupPosts', Number(groupId)]);
+
+      queryClient.setQueryData(['groupPosts', Number(groupId)], (oldData: any) => {
+        if (!oldData) return [];
+        return oldData.filter((post: Post) => post.postId !== postId);
+      });
+
+      return { previousPosts };
+    },
+    onError: (error) => {
+      console.error('게시글 삭제 실패:', error);
+      alert('게시글 삭제에 실패했습니다.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
+    },
+  });
 
   const posts = data || [];
 
@@ -155,49 +196,97 @@ const GroupBoard = () => {
   if (isPending) {
     return <LoadingSpinner />;
   }
+
   return (
     <Wrapper>
-      {posts.map((post: Post) => {
-        const date = new Date(post.createdAt);
-        const formattedDate = isNaN(date.getTime())
-          ? '날짜 없음'
-          : format(date, 'yyyy.MM.dd HH:mm');
+      {posts.length === 0 ? (
+        <EmptyMessage>게시글이 없습니다</EmptyMessage>
+      ) : (
+        posts.map((post: Post) => {
+          const date = new Date(post.createdAt);
+          const formattedDate = isNaN(date.getTime())
+            ? '날짜 없음'
+            : format(date, 'yyyy.MM.dd HH:mm');
 
-        return (
-          <PostContent key={post.postId}>
-            <Header>
-              <PostTitle>{post.title}</PostTitle>
-              <PostDate>{formattedDate}</PostDate>
-            </Header>
-            {post.imageUrls.length > 0 && (
-              <ImageCarousel images={post.imageUrls} altText={post.title} />
-            )}
-            {post.content && <PostDescription>{post.content}</PostDescription>}
-            <PostActions>
-              <ActionButton
-                onClick={() => {
-                  console.log('post.postId', post.postId);
-                  toggleLike({ postId: post.postId, isLike: post.isLike });
-                }}
-              >
-                {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
-                <span>좋아요 {post.likeCount}</span>
-              </ActionButton>
-              <ActionButton
-                onClick={() => {
-                  setIsOpen(true);
-                  setPostId(post.postId);
-                }}
-              >
-                <FaRegComment />
-                <span>댓글 {post.commentCount}</span>
-              </ActionButton>
-            </PostActions>
-          </PostContent>
-        );
-      })}
+          return (
+            <PostContent key={post.postId}>
+              <Header>
+                <AuthorRow>
+                  <AuthorSection
+                    onClick={() => {
+                      setSelectedUserId(post.authorId);
+                      setIsUserModalOpen(true);
+                    }}
+                  >
+                    <AuthorProfile src={post.authorProfileImageUrl} alt={post.authorNickname} />
+                    <AuthorInfo>
+                      <AuthorName>{post.authorNickname}</AuthorName>
+                      <PostDate>{formattedDate}</PostDate>
+                    </AuthorInfo>
+                  </AuthorSection>
+                  {post.postId === 0 ? (
+                    <PostingStatus />
+                  ) : (
+                    userId == post.authorId && (
+                      <IoMdMore
+                        size={24}
+                        onClick={() => {
+                          setSelectedPostId(post.postId);
+                          setIsBottomSheetOpen(true);
+                        }}
+                      />
+                    )
+                  )}
+                </AuthorRow>
+                <PostTitle>{post.title}</PostTitle>
+              </Header>
+              {post.imageUrls.length > 0 && (
+                <ImageCarousel images={post.imageUrls} altText={post.title} />
+              )}
+              {post.content && <PostDescription>{post.content}</PostDescription>}
+              <PostActions>
+                <ActionButton
+                  onClick={() => {
+                    if (post.postId === 0) return; // 게시 중일 때는 좋아요 불가
+                    console.log('post.postId', post.postId);
+                    toggleLike({ postId: post.postId, isLike: post.isLike });
+                  }}
+                  disabled={post.postId === 0}
+                >
+                  {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
+                  <span>좋아요 {post.likeCount}</span>
+                </ActionButton>
+                <ActionButton
+                  onClick={() => {
+                    if (post.postId === 0) return; // 게시 중일 때는 댓글 불가
+                    setIsOpen(true);
+                    setPostId(post.postId);
+                  }}
+                  disabled={post.postId === 0}
+                >
+                  <FaRegComment />
+                  <span>댓글 {post.commentCount}</span>
+                </ActionButton>
+              </PostActions>
+            </PostContent>
+          );
+        })
+      )}
 
-      <CommentModal isOpen={isOpen} setIsOpen={setIsOpen} postId={postId} />
+      <CommentModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        postId={postId}
+        onUserClick={(userId) => {
+          setSelectedUserId(userId);
+          setIsUserModalOpen(true);
+        }}
+      />
+      <UserPageModal
+        isOpen={isUserModalOpen}
+        onClose={() => setIsUserModalOpen(false)}
+        userId={selectedUserId}
+      />
 
       {isUserMemberOfGroup && (
         <EditButtonWrapper>
@@ -210,6 +299,27 @@ const GroupBoard = () => {
           </EditButton>
         </EditButtonWrapper>
       )}
+      <BottomSheet
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+        options={[
+          {
+            label: '수정',
+            onClick: () => {
+              navigate(`/edit-post/${groupId}/${selectedPostId}`);
+            },
+          },
+          {
+            label: '삭제',
+            onClick: () => {
+              if (confirm('정말 삭제하시겠습니까?')) {
+                deletePost(selectedPostId);
+              }
+            },
+            variant: 'danger',
+          },
+        ]}
+      />
     </Wrapper>
   );
 };
@@ -217,11 +327,55 @@ const GroupBoard = () => {
 const Wrapper = styled.div({
   backgroundColor: colors.gray100,
   display: 'flex',
-  flexDirection: 'column-reverse', // 역순으로 표시
+  flexDirection: 'column', // 역순으로 표시
+  minHeight: '100vh',
 });
 
 const Header = styled.div({
   padding: spacing.spacing2,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: spacing.spacing2,
+});
+
+const AuthorRow = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: spacing.spacing2,
+});
+
+const AuthorSection = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: spacing.spacing2,
+  cursor: 'pointer',
+  padding: '4px',
+  borderRadius: '8px',
+  transition: 'background-color 0.2s ease',
+  '&:hover': {
+    backgroundColor: colors.gray100,
+  },
+});
+
+const AuthorProfile = styled.img({
+  width: '40px',
+  height: '40px',
+  borderRadius: '50%',
+  objectFit: 'cover',
+  backgroundColor: colors.gray200,
+});
+
+const AuthorInfo = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '2px',
+});
+
+const AuthorName = styled.span({
+  ...typography.body,
+  fontWeight: 600,
+  color: colors.black,
 });
 
 const ImageContainer = styled.div({
@@ -303,6 +457,10 @@ const ActionButton = styled.button({
   cursor: 'pointer',
   padding: spacing.spacing3,
   flex: 1,
+  '&:disabled': {
+    opacity: 0.4,
+    cursor: 'not-allowed',
+  },
 });
 
 const EditButtonWrapper = styled.div({
@@ -330,6 +488,13 @@ const EditIcon = styled(FaPencilAlt)({
   color: colors.white,
   width: 20,
   height: 20,
+});
+
+const EmptyMessage = styled.div({
+  ...typography.body,
+  color: colors.gray500,
+  textAlign: 'center',
+  marginTop: '50px',
 });
 
 export default GroupBoard;

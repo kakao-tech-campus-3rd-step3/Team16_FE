@@ -11,17 +11,29 @@ import { format } from 'date-fns';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { isUserMember } from '@/utils/groupMemberShip';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useQuery } from '@tanstack/react-query';
+import { getMemberListApi } from '@/pages/MemberList/api/getMemeberListApi';
+import { MemberItem } from '@/pages/MemberList/components/MemberItem';
+import type { Member } from '@/pages/MemberList/types';
+import { useState } from 'react';
+import UserPageModal from '@/components/common/UserPageModal';
 
 const GroupHome = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
 
   const { data, isLoading: isLoadingGroupHome } = useGroupHome(Number(groupId));
   const { data: reviews, isLoading: isLoadingReviews } = useGroupReviews(Number(groupId));
+  const { data: members, isLoading: isLoadingMembers } = useQuery({
+    queryKey: ['members', groupId],
+    queryFn: () => getMemberListApi(Number(groupId)),
+  });
 
   const userIsMember = isUserMember(Number(groupId));
 
-  if (isLoadingGroupHome || isLoadingReviews) return <LoadingSpinner />;
+  if (isLoadingGroupHome || isLoadingReviews || isLoadingMembers) return <LoadingSpinner />;
   if (!data) return <div>데이터가 없습니다</div>;
 
   return (
@@ -47,11 +59,35 @@ const GroupHome = () => {
           </Desc>
         </GroupInfo>
         <GroupDesc>{data.intro}</GroupDesc>
+
+        <MembersSection>
+          <SectionHeader>모임원</SectionHeader>
+          <MembersGrid>
+            {members?.map((member: Member) => (
+              <MemberItem
+                key={member.id}
+                member={member}
+                onClick={() => {
+                  setSelectedUserId(member.userId);
+                  setIsUserModalOpen(true);
+                }}
+              />
+            ))}
+          </MembersGrid>
+        </MembersSection>
+
         <ReviewHeader>이 모임이 받은 리뷰</ReviewHeader>
         {reviews.map((review: any, idx: any) => (
           <ReviewItem key={idx}> {review.contents} </ReviewItem>
         ))}
       </BodyWrapper>
+
+      <UserPageModal
+        isOpen={isUserModalOpen}
+        onClose={() => setIsUserModalOpen(false)}
+        userId={selectedUserId}
+      />
+
       {!userIsMember && (
         <PrimaryButton
           text={'가입신청'}
@@ -132,6 +168,24 @@ const ReviewItem = styled.div({
   borderRadius: '8px',
   padding: '15px',
   background: colors.gray100,
+});
+
+const MembersSection = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  marginTop: '10px',
+});
+
+const SectionHeader = styled.h2({
+  ...typography.h2,
+  marginBottom: '5px',
+});
+
+const MembersGrid = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
 });
 
 export default GroupHome;

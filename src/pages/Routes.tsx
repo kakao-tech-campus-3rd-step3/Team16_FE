@@ -17,6 +17,7 @@ import LocationPage from './LocationInput/Page';
 import CreateScheduleProvider from './CreateSchedule/CreateScheduleProvider';
 import CreateGroundRule from './CreateGroundRule.tsx/Page';
 import GroupPost from './GroupPost/page';
+import EditGroupPost from './EditGroupPost/page';
 import { PrivateRoute } from '@/components/PrivateRoute';
 import ApplyToJoinGroupPage from './ApplyToJoinGroup/Page'; // import the new page component
 import MemberListPage from './MemberList/Page';
@@ -42,6 +43,7 @@ export const Routes = () => {
         <Route path={'/member-review'} element={<MemberReview />} />
         <Route path={'/group/:groupId/create-ground-rule'} element={<CreateGroundRule />} />
         <Route path={'/create-post/:groupId'} element={<GroupPost />} />
+        <Route path={'/edit-post/:groupId/:postId'} element={<EditGroupPost />} />
         <Route path={'/apply-to-join-group/:groupId'} element={<ApplyToJoinGroupPage />} />
         <Route path={'/group/:groupId/leave'} element={<LeavePage />} />
         <Route path={'/group/:groupId/members'} element={<MemberListPage />} />

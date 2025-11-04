@@ -53,7 +53,8 @@ const ProfileEditPage = () => {
 
     onSuccess: (result) => {
       queryClient.setQueryData(['userProfile'], [result.newProfileImg, result.newNickname]);
-      navigate('/setting');
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
+      navigate('/setting', { replace: true });
     },
     onError: () => {
       alert('업데이트 중 에러가 발생했습니다. 다시 시도해주세요.');

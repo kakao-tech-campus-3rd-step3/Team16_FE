@@ -11,7 +11,6 @@ import { useImageUpload } from '@/hooks/useImageUpload';
 import type { GroupPostFormData } from './type';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import ImagePicker from './components/ImagePicker';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useState } from 'react';
 
 const GroupPostPage = () => {
@@ -25,7 +24,9 @@ const GroupPostPage = () => {
       //뒤로가기시 게시글 컴포넌트 렌더링
       <HiOutlineChevronLeft
         size={20}
-        onClick={() => navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } })}
+        onClick={() =>
+          navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true })
+        }
       />
     ),
   });
@@ -47,10 +48,10 @@ const GroupPostPage = () => {
   const formValues = watch();
   const { title, content } = formValues;
 
-  const { createGroupPost, isPosting } = useCreateGroupPost(Number(groupId));
+  const { createGroupPost } = useCreateGroupPost(Number(groupId));
 
   const requestUrl = `/image/presigned/group/${groupId}/posts`;
-  const { uploadImagesAsync, isUploading } = useImageUpload({
+  const { uploadImagesAsync } = useImageUpload({
     type: 'PROFILE',
     request_url: requestUrl,
   });
@@ -60,19 +61,14 @@ const GroupPostPage = () => {
       if (imageFiles && imageFiles.length > 0) {
         console.log(imageFiles);
         data.imageUrls = await uploadImagesAsync(imageFiles);
-        console.log('data.imageUrls', data.imageUrls);
       }
-      await createGroupPost(data);
+      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
+      await createGroupPost({ ...data, imageFiles });
       alert('게시글 작성이 완료되었습니다!');
-      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } });
     } catch (error) {
       alert('게시글 작성 중 오류가 발생했습니다.');
     }
   };
-
-  if (isUploading || isPosting) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
