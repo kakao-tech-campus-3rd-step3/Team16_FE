@@ -68,7 +68,7 @@ const GroupHome = () => {
                 key={member.id}
                 member={member}
                 onClick={() => {
-                  setSelectedUserId(member.id);
+                  setSelectedUserId(member.userId);
                   setIsUserModalOpen(true);
                 }}
               />
