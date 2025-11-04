@@ -9,8 +9,16 @@ import { usePostComment } from '@/hooks/usePostComment';
 import { useQueryClient } from '@tanstack/react-query';
 import { typography } from '@/styles/typography';
 import { CenteredLoader } from '@/components/common/LoadingSpinner';
+import { format } from 'date-fns';
 
-const CommentModal = ({ isOpen, setIsOpen, postId }: any) => {
+interface CommentModalProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  postId: number;
+  onUserClick: (userId: number) => void;
+}
+
+const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalProps) => {
   const queryClient = useQueryClient();
   const [content, setContent] = useState('');
   const { data: comments, isPending } = useQuery({
@@ -47,18 +55,36 @@ const CommentModal = ({ isOpen, setIsOpen, postId }: any) => {
           {isPending ? (
             <CenteredLoader />
           ) : comments && comments.length > 0 ? (
-            comments.map((comment: any) => (
-              <CommentItem key={comment.commentId}>
-                <Author>{comment.userNickname}</Author>
-                <CommentText>{comment.content}</CommentText>
-              </CommentItem>
-            ))
+            comments.map((comment: any) => {
+              const date = new Date(comment.createdAt);
+              const formattedDate = isNaN(date.getTime())
+                ? '날짜 없음'
+                : format(date, 'yyyy.MM.dd HH:mm');
+
+              return (
+                <CommentItem key={comment.commentId}>
+                  <CommentHeader onClick={() => onUserClick(comment.commentUserId)}>
+                    <ProfileImage src={comment.userProfileImageUrl} alt={comment.userNickname} />
+                    <CommentContent>
+                      <AuthorRow>
+                        <Author>{comment.userNickname}</Author>
+                        <CommentDate>{formattedDate}</CommentDate>
+                      </AuthorRow>
+                      <CommentText>{comment.content}</CommentText>
+                    </CommentContent>
+                  </CommentHeader>
+                </CommentItem>
+              );
+            })
           ) : (
-            <CommentItem>댓글이 없습니다.</CommentItem>
+            <EmptyMessage>댓글이 없습니다.</EmptyMessage>
           )}
         </CommentList>
         <InputWrapper>
-          <InputSection value={content} onChange={(e) => setContent(e.target.value)} />
+          <InputSection
+            value={content}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
+          />
           <SendingButton size={24} onClick={() => handleSubmit(content)} />
         </InputWrapper>
       </Wrapper>
@@ -83,14 +109,86 @@ const Header = styled.div({
 
 const CommentList = styled.div({
   height: '400px',
-  padding: '24px',
+  padding: '12px',
   overflowY: 'auto',
   borderTop: `1px solid ${colors.gray300}`,
   borderBottom: `1px solid ${colors.gray300}`,
 });
 
 const CommentItem = styled.div({
-  padding: '8px 0',
+  padding: '4px',
+  borderBottom: `1px solid ${colors.gray200}`,
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+});
+
+const CommentHeader = styled.div({
+  display: 'flex',
+  //alignItems: 'center',
+  gap: '8px',
+  marginBottom: '4px',
+  cursor: 'pointer',
+  padding: '4px',
+  borderRadius: '8px',
+  transition: 'background-color 0.2s ease',
+  '&:hover': {
+    backgroundColor: colors.gray100,
+  },
+});
+
+const ProfileImage = styled.img({
+  width: '32px',
+  height: '32px',
+  borderRadius: '50%',
+  objectFit: 'cover',
+  backgroundColor: colors.gray200,
+  flexShrink: 0,
+  marginTop: '10px',
+});
+
+const CommentContent = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+});
+
+const AuthorRow = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  height: '32px', // 프로필 이미지와 동일한 높이
+});
+
+const Author = styled.span({
+  ...typography.small,
+  fontWeight: 600,
+  color: colors.black,
+});
+
+const CommentDate = styled.span({
+  ...typography.small,
+  fontSize: '11px',
+  color: colors.gray500,
+});
+
+const CommentText = styled.div({
+  ...typography.body,
+  overflowWrap: 'anywhere',
+  color: colors.black,
+});
+
+const EmptyMessage = styled.div({
+  ...typography.body,
+  color: colors.gray500,
+  textAlign: 'center',
+  padding: '40px 0',
+});
+
+const InputWrapper = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
 });
 
 const InputSection = styled.input({
@@ -102,12 +200,6 @@ const InputSection = styled.input({
   outlineColor: colors.primary,
 });
 
-const InputWrapper = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-});
-
 const SendingButton = styled(VscSend)({
   background: 'none',
   border: 'none',
@@ -115,13 +207,4 @@ const SendingButton = styled(VscSend)({
   cursor: 'pointer',
 });
 
-const Author = styled.h1({
-  ...typography.small,
-  color: colors.gray600,
-});
-
-const CommentText = styled.div({
-  ...typography.body,
-  overflowWrap: 'anywhere',
-});
 export default CommentModal;
