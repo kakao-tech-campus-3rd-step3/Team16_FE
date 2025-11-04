@@ -38,9 +38,6 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
       return Promise.all(uploadPromises);
     },
 
-    onSuccess: () => {
-      alert('모든 파일의 제출이 완료되었습니다!');
-    },
     onError: (error) => {
       handleUploadError(error);
     },
