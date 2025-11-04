@@ -181,69 +181,74 @@ const GroupBoard = () => {
   if (isPending) {
     return <LoadingSpinner />;
   }
+
   return (
     <Wrapper>
-      {posts.map((post: Post) => {
-        const date = new Date(post.createdAt);
-        const formattedDate = isNaN(date.getTime())
-          ? '날짜 없음'
-          : format(date, 'yyyy.MM.dd HH:mm');
+      {posts.length === 0 ? (
+        <EmptyMessage>게시글이 없습니다</EmptyMessage>
+      ) : (
+        posts.map((post: Post) => {
+          const date = new Date(post.createdAt);
+          const formattedDate = isNaN(date.getTime())
+            ? '날짜 없음'
+            : format(date, 'yyyy.MM.dd HH:mm');
 
-        return (
-          <PostContent key={post.postId}>
-            <Header>
-              <AuthorRow>
-                <AuthorSection
+          return (
+            <PostContent key={post.postId}>
+              <Header>
+                <AuthorRow>
+                  <AuthorSection
+                    onClick={() => {
+                      setSelectedUserId(post.authorId);
+                      setIsUserModalOpen(true);
+                    }}
+                  >
+                    <AuthorProfile src={post.authorProfileImageUrl} alt={post.authorNickname} />
+                    <AuthorInfo>
+                      <AuthorName>{post.authorNickname}</AuthorName>
+                      <PostDate>{formattedDate}</PostDate>
+                    </AuthorInfo>
+                  </AuthorSection>
+                  {userId == post.authorId && (
+                    <IoMdMore
+                      size={24}
+                      onClick={() => {
+                        setSelectedPostId(post.postId);
+                        setIsBottomSheetOpen(true);
+                      }}
+                    />
+                  )}
+                </AuthorRow>
+                <PostTitle>{post.title}</PostTitle>
+              </Header>
+              {post.imageUrls.length > 0 && (
+                <ImageCarousel images={post.imageUrls} altText={post.title} />
+              )}
+              {post.content && <PostDescription>{post.content}</PostDescription>}
+              <PostActions>
+                <ActionButton
                   onClick={() => {
-                    setSelectedUserId(post.authorId);
-                    setIsUserModalOpen(true);
+                    console.log('post.postId', post.postId);
+                    toggleLike({ postId: post.postId, isLike: post.isLike });
                   }}
                 >
-                  <AuthorProfile src={post.authorProfileImageUrl} alt={post.authorNickname} />
-                  <AuthorInfo>
-                    <AuthorName>{post.authorNickname}</AuthorName>
-                    <PostDate>{formattedDate}</PostDate>
-                  </AuthorInfo>
-                </AuthorSection>
-                {userId == post.authorId && (
-                  <IoMdMore
-                    size={24}
-                    onClick={() => {
-                      setSelectedPostId(post.postId);
-                      setIsBottomSheetOpen(true);
-                    }}
-                  />
-                )}
-              </AuthorRow>
-              <PostTitle>{post.title}</PostTitle>
-            </Header>
-            {post.imageUrls.length > 0 && (
-              <ImageCarousel images={post.imageUrls} altText={post.title} />
-            )}
-            {post.content && <PostDescription>{post.content}</PostDescription>}
-            <PostActions>
-              <ActionButton
-                onClick={() => {
-                  console.log('post.postId', post.postId);
-                  toggleLike({ postId: post.postId, isLike: post.isLike });
-                }}
-              >
-                {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
-                <span>좋아요 {post.likeCount}</span>
-              </ActionButton>
-              <ActionButton
-                onClick={() => {
-                  setIsOpen(true);
-                  setPostId(post.postId);
-                }}
-              >
-                <FaRegComment />
-                <span>댓글 {post.commentCount}</span>
-              </ActionButton>
-            </PostActions>
-          </PostContent>
-        );
-      })}
+                  {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
+                  <span>좋아요 {post.likeCount}</span>
+                </ActionButton>
+                <ActionButton
+                  onClick={() => {
+                    setIsOpen(true);
+                    setPostId(post.postId);
+                  }}
+                >
+                  <FaRegComment />
+                  <span>댓글 {post.commentCount}</span>
+                </ActionButton>
+              </PostActions>
+            </PostContent>
+          );
+        })
+      )}
 
       <CommentModal
         isOpen={isOpen}
@@ -300,6 +305,7 @@ const Wrapper = styled.div({
   backgroundColor: colors.gray100,
   display: 'flex',
   flexDirection: 'column', // 역순으로 표시
+  minHeight: '100vh',
 });
 
 const Header = styled.div({
@@ -455,6 +461,13 @@ const EditIcon = styled(FaPencilAlt)({
   color: colors.white,
   width: 20,
   height: 20,
+});
+
+const EmptyMessage = styled.div({
+  ...typography.body,
+  color: colors.gray500,
+  textAlign: 'center',
+  marginTop: '50px',
 });
 
 export default GroupBoard;
