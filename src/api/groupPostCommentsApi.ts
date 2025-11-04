@@ -9,3 +9,8 @@ export const postGroupPostComment = async (postId: number, content: string) => {
   const response = await apiClient.post(`/comments`, { content, postId });
   return response.data;
 };
+
+export const deleteGroupPostComment = async (commentId: number) => {
+  const response = await apiClient.delete(`/comments/${commentId}`);
+  return response.data;
+};
