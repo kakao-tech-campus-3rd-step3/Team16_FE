@@ -12,8 +12,10 @@ import { HiOutlineChevronLeft } from 'react-icons/hi';
 import ImagePicker from '../GroupPost/components/ImagePicker';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchGroupPost, updateGroupPost } from '@/api/groupApi';
+import { useQuery } from '@tanstack/react-query';
+import { fetchGroupPost } from '@/api/groupApi';
+import { useUpdateGroupPost } from './hooks/useUpdateGroupPost';
+import { useQueryClient } from '@tanstack/react-query';
 
 const EditGroupPostPage = () => {
   const navigate = useNavigate();
@@ -27,7 +29,9 @@ const EditGroupPostPage = () => {
     leftContent: (
       <HiOutlineChevronLeft
         size={20}
-        onClick={() => navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } })}
+        onClick={() =>
+          navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true })
+        }
       />
     ),
   });
@@ -67,20 +71,13 @@ const EditGroupPostPage = () => {
   const { title, content } = formValues;
 
   const requestUrl = `/image/presigned/group/${groupId}/posts`;
-  const { uploadImagesAsync, isUploading } = useImageUpload({
+  const { uploadImagesAsync } = useImageUpload({
     type: 'PROFILE',
     request_url: requestUrl,
   });
 
-  // 게시글 수정 mutation
-  const { mutateAsync: updatePost, isPending: isUpdating } = useMutation({
-    mutationFn: (data: { title: string; content: string; imageUrls?: string[] }) =>
-      updateGroupPost(Number(postId), data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
-      queryClient.invalidateQueries({ queryKey: ['groupPost', Number(postId)] });
-    },
-  });
+  // 게시글 수정 mutation (낙관적 업데이트 포함)
+  const { updatePost } = useUpdateGroupPost(Number(groupId));
 
   const onSubmit = async (data: GroupPostFormData) => {
     try {
@@ -91,22 +88,24 @@ const EditGroupPostPage = () => {
         const uploadedUrls = await uploadImagesAsync(imageFiles);
         finalImageUrls = [...finalImageUrls, ...uploadedUrls];
       }
+      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
 
       await updatePost({
+        postId: Number(postId),
         title: data.title,
         content: data.content,
-        imageUrls: finalImageUrls.length > 0 ? finalImageUrls : undefined,
+        imageUrls: finalImageUrls.length > 0 ? finalImageUrls : [],
+        imageFiles: imageFiles, // 낙관적 업데이트용 임시 이미지
       });
-
+      queryClient.invalidateQueries({ queryKey: ['groupPost', Number(postId)] });
       alert('게시글 수정이 완료되었습니다!');
-      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' } });
     } catch (error) {
       console.error('게시글 수정 실패:', error);
       alert('게시글 수정 중 오류가 발생했습니다.');
     }
   };
 
-  if (isLoadingPost || isUploading || isUpdating) {
+  if (isLoadingPost) {
     return <LoadingSpinner />;
   }
 
