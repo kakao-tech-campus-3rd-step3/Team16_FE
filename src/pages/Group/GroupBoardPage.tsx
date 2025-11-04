@@ -21,6 +21,7 @@ import UserPageModal from '@/components/common/UserPageModal';
 import useAuthStore from '@/stores/authStore';
 import { IoMdMore } from 'react-icons/io';
 import BottomSheet from '@/components/common/BottomSheet';
+import PostingStatus from '@/components/common/PostingStatus';
 
 interface Post {
   postId: number;
@@ -168,9 +169,23 @@ const GroupBoard = () => {
       queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
       setIsBottomSheetOpen(false);
     },
+    onMutate: async (postId: number) => {
+      await queryClient.cancelQueries({ queryKey: ['groupPosts', Number(groupId)] });
+      const previousPosts = queryClient.getQueryData(['groupPosts', Number(groupId)]);
+
+      queryClient.setQueryData(['groupPosts', Number(groupId)], (oldData: any) => {
+        if (!oldData) return [];
+        return oldData.filter((post: Post) => post.postId !== postId);
+      });
+
+      return { previousPosts };
+    },
     onError: (error) => {
       console.error('게시글 삭제 실패:', error);
       alert('게시글 삭제에 실패했습니다.');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
     },
   });
 
@@ -209,14 +224,18 @@ const GroupBoard = () => {
                       <PostDate>{formattedDate}</PostDate>
                     </AuthorInfo>
                   </AuthorSection>
-                  {userId == post.authorId && (
-                    <IoMdMore
-                      size={24}
-                      onClick={() => {
-                        setSelectedPostId(post.postId);
-                        setIsBottomSheetOpen(true);
-                      }}
-                    />
+                  {post.postId === 0 ? (
+                    <PostingStatus />
+                  ) : (
+                    userId == post.authorId && (
+                      <IoMdMore
+                        size={24}
+                        onClick={() => {
+                          setSelectedPostId(post.postId);
+                          setIsBottomSheetOpen(true);
+                        }}
+                      />
+                    )
                   )}
                 </AuthorRow>
                 <PostTitle>{post.title}</PostTitle>
@@ -228,18 +247,22 @@ const GroupBoard = () => {
               <PostActions>
                 <ActionButton
                   onClick={() => {
+                    if (post.postId === 0) return; // 게시 중일 때는 좋아요 불가
                     console.log('post.postId', post.postId);
                     toggleLike({ postId: post.postId, isLike: post.isLike });
                   }}
+                  disabled={post.postId === 0}
                 >
                   {post.isLike ? <FaThumbsUp color={colors.primary} /> : <FaRegThumbsUp />}
                   <span>좋아요 {post.likeCount}</span>
                 </ActionButton>
                 <ActionButton
                   onClick={() => {
+                    if (post.postId === 0) return; // 게시 중일 때는 댓글 불가
                     setIsOpen(true);
                     setPostId(post.postId);
                   }}
+                  disabled={post.postId === 0}
                 >
                   <FaRegComment />
                   <span>댓글 {post.commentCount}</span>
@@ -434,6 +457,10 @@ const ActionButton = styled.button({
   cursor: 'pointer',
   padding: spacing.spacing3,
   flex: 1,
+  '&:disabled': {
+    opacity: 0.4,
+    cursor: 'not-allowed',
+  },
 });
 
 const EditButtonWrapper = styled.div({
