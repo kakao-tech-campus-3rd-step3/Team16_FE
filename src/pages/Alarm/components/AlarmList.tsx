@@ -15,17 +15,29 @@ const AlarmList = () => {
   if (isLoading) return <LoadingSpinner />;
   if (error) return <div>알림을 불러오는 중 오류가 발생했습니다.</div>;
 
+  const handleAlarmClick = (alarm: Alarm) => {
+    if (alarm.notificationType === 'GROUP_JOIN_LEFT') {
+      return; // 탈퇴 알림은 클릭 동작 없음
+    }
+
+    if (alarm.relatedGroupId) {
+      // 가입 요청 알림인 경우 pending-application으로 이동
+      if (alarm.message.includes('가입을 요청했습니다')) {
+        navigate(`/group/${alarm.relatedGroupId}/pending-application`);
+      } else {
+        // 다른 알림은 그룹 홈으로 이동
+        navigate(`/group/${alarm.relatedGroupId}`);
+      }
+    }
+  };
+
   return (
     <>
       {alarms?.map((alarm: Alarm) => (
         <ItemWrapper
           key={alarm.alarmId}
           isRead={alarm.isRead}
-          onClick={() => {
-            if (alarm.notificationType !== 'GROUP_JOIN_LEFT' && alarm.relatedGroupId) {
-              navigate(`/group/${alarm.relatedGroupId}`);
-            }
-          }}
+          onClick={() => handleAlarmClick(alarm)}
         >
           <AlarmIcon>{getIcon(alarm.notificationType)}</AlarmIcon>
           <AlarmInfo>
