@@ -9,6 +9,20 @@ import type { GroupHistory } from '@/api/userApi';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// safetyTag를 점수로 변환하는 함수
+const safetyTagToScore = (tag: 'SAFE' | 'CAUTION' | 'DANGER'): number => {
+  switch (tag) {
+    case 'SAFE':
+      return 80; // 안전 범위 (75-89)
+    case 'CAUTION':
+      return 68; // 주의 범위 (63-74)
+    case 'DANGER':
+      return 50; // 위험 범위 (63 미만)
+    default:
+      return 75;
+  }
+};
+
 interface UserRecordSectionProps {
   userId: number;
 }
@@ -43,7 +57,7 @@ const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
               <GroupStatus>
                 {record.groupMemberStatus === 'ACTIVE' ? '현재 가입중' : '활동 종료'}
               </GroupStatus>
-              <TagBadge tag={record.safetyTag} />
+              <TagBadge score={safetyTagToScore(record.safetyTag)} />
             </GroupStatusInfo>
             <GroupDate>
               기간: {record.joinAt} ~ {record.leftAt ?? 'ing'}

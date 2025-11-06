@@ -71,7 +71,9 @@ export const DashBoard = () => {
                 <Info>
                   <Text>시작: {formatDateToKorean(sch.startTime)}</Text>
                   <Text>종료: {formatDateToKorean(sch.endTime)}</Text>
-                  <Text>참여인원: {sch.capacity}명</Text>
+                  <Text>
+                    참여인원: {sch.headCount} / {sch.capacity}명
+                  </Text>
                 </Info>
                 <DateDiff date={sch.startTime} />
               </AccordionItem>
@@ -226,6 +228,7 @@ interface ScheduleType {
   capacity: number;
   startTime: string;
   endTime: string;
+  headCount: number;
 }
 
 export default DashBoard;

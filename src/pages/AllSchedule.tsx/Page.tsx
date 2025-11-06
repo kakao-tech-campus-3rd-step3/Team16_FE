@@ -4,8 +4,8 @@ import { typography } from '@/styles/typography';
 import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useHeader } from '@/hooks/useHeader';
-import { IoIosArrowForward } from 'react-icons/io';
-import { MdUpcoming, MdPlayCircle, MdHistory } from 'react-icons/md';
+import { IoIosArrowForward, IoMdPeople } from 'react-icons/io';
+import { MdUpcoming, MdPlayCircle, MdHistory, MdEdit } from 'react-icons/md';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import { isUserLeader } from '@/utils/groupMemberShip';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -67,16 +67,26 @@ const AllSchedulePage = () => {
         <Title>다가오는 일정</Title>
       </TitleWithIcon>
       {upcomingSchedules.map((sch: any) => (
-        //편집 페이지로 이동
-        <ScheduleItem
-          key={sch.id}
-          onClick={() => navigate(`/create-schedule/${groupId}/${sch.id}`)}
-        >
+        <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
           <Header>
-            {sch.startTime.split('T')[0]}
+            <DateText>{sch.startTime.split('T')[0]}</DateText>
             <IoIosArrowForward />
           </Header>
+          {userIsLeader && (
+            <EditIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/create-schedule/${groupId}/${sch.id}`);
+              }}
+            >
+              <MdEdit size={24} />
+            </EditIcon>
+          )}
           <InfoText> {sch.title}</InfoText>
+          <ParticipantText>
+            <IoMdPeople size={16} />
+            {sch.headCount} / {sch.capacity}
+          </ParticipantText>
         </ScheduleItem>
       ))}
       <TitleWithIcon>
@@ -84,13 +94,16 @@ const AllSchedulePage = () => {
         <Title>진행중인 일정</Title>
       </TitleWithIcon>
       {ongoingSchedules.map((sch: any) => (
-        //출석관리 페이지로 이동
         <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
           <Header>
-            {sch.startTime.split('T')[0]}
+            <DateText>{sch.startTime.split('T')[0]}</DateText>
             <IoIosArrowForward />
           </Header>
           <InfoText> {sch.title}</InfoText>
+          <ParticipantText>
+            <IoMdPeople size={16} />
+            {sch.headCount} / {sch.capacity}
+          </ParticipantText>
         </ScheduleItem>
       ))}
       <TitleWithIcon>
@@ -98,13 +111,16 @@ const AllSchedulePage = () => {
         <Title>지난 일정</Title>
       </TitleWithIcon>
       {pastSchedules.map((sch: any) => (
-        //출석관리 페이지로 이동
         <ScheduleItem key={sch.id} onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}>
           <Header>
-            {sch.startTime.split('T')[0]}
+            <DateText>{sch.startTime.split('T')[0]}</DateText>
             <IoIosArrowForward />
           </Header>
           <InfoText> {sch.title}</InfoText>
+          <ParticipantText>
+            <IoMdPeople size={16} />
+            {sch.headCount} / {sch.capacity}
+          </ParticipantText>
         </ScheduleItem>
       ))}
       {userIsLeader && (
@@ -133,6 +149,7 @@ const ScheduleItem = styled.div({
   padding: 20,
   marginBottom: 16,
   boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+  position: 'relative',
 });
 
 const Header = styled.div({
@@ -143,9 +160,45 @@ const Header = styled.div({
   justifyContent: 'space-between',
 });
 
+const DateText = styled.span({
+  flex: 1,
+});
+
+const EditIcon = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  color: colors.primary,
+  padding: '4px',
+  transition: 'all 0.2s',
+  position: 'absolute',
+  top: '45px',
+  right: '20px',
+  '&:hover': {
+    transform: 'scale(1.1)',
+    color: colors.primaryDark,
+  },
+  '&:active': {
+    transform: 'scale(0.95)',
+  },
+  marginTop: '12px',
+});
+
 const InfoText = styled.div({
   ...typography.body,
   marginBottom: 4,
+});
+
+const ParticipantText = styled.div({
+  ...typography.caption,
+  color: colors.gray600,
+  marginTop: 4,
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
 });
 
 const Title = styled.div({
