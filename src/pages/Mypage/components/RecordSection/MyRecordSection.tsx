@@ -7,9 +7,11 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserHistory } from '@/api/userApi';
 import type { GroupHistory } from '@/api/userApi';
 import useAuthStore from '@/stores/authStore';
+import { useNavigate } from 'react-router-dom';
 
 const MyRecordSection = () => {
   const { id: myId } = useAuthStore();
+  const navigate = useNavigate();
 
   const { data } = useSuspenseQuery<GroupHistory[]>({
     queryKey: ['userHistory', myId],
@@ -21,7 +23,12 @@ const MyRecordSection = () => {
       <Title>나의 활동 이력</Title>
       <RecordList>
         {data.map((record) => (
-          <RecordListItem key={record.groupId}>
+          <RecordListItem
+            key={record.groupId}
+            onClick={() => {
+              navigate(`/group/${record.groupId}`);
+            }}
+          >
             <GroupStatusInfo>
               <GroupName>{record.name}</GroupName>
               <GroupStatus>

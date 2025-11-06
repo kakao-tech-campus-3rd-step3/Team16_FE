@@ -37,6 +37,10 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
     navigate(`/group/${groupId}/pending-application`);
   };
 
+  const handleGroupRules = () => {
+    navigate(`/group/${groupId}/create-ground-rule`);
+  };
+
   return (
     <>
       <Overlay onClick={handleClose} />
@@ -46,7 +50,10 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
           <MenuItem onClick={handleLeave}>모임 탈퇴하기</MenuItem>
           <MenuItem onClick={handleReport}>모임 신고하기</MenuItem>
           {isUserLeader(Number(groupId)) && (
-            <MenuItem onClick={handleAttend}>가입신청 리스트</MenuItem>
+            <>
+              <MenuItem onClick={handleAttend}>가입신청 리스트</MenuItem>
+              <MenuItem onClick={handleGroupRules}>그라운드룰 수정</MenuItem>
+            </>
           )}
         </MenuList>
       </Drawer>

@@ -22,6 +22,8 @@ interface ImagePickerProps {
   maxCount?: number;
   setImageFiles: React.Dispatch<React.SetStateAction<File[]>>;
   imageFiles: File[];
+  existingImages?: string[];
+  setExistingImages?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export type { GroupPostFormData, ContentSectionProps, TitleSectionProps, ImagePickerProps };

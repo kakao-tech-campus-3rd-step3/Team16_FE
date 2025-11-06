@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
 import { IoCamera } from 'react-icons/io5';
-import BaseModal from '@/components/common/BaseModal';
+import BottomSheet from '@/components/common/BottomSheet';
 import { useState, useRef } from 'react';
-import { colors } from '@/styles/colors';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -41,24 +40,24 @@ const ImgSection = ({ setSelectedFile, profileImgUrl }: ImgSectionProps) => {
     <Wrapper>
       <Img src={previewUrl ?? defaultUserImg} onClick={() => setIsOpen(true)} />
       <Camera />
-      <BaseModal isOpen={isOpen} onClose={() => setIsOpen(false)} variant="bottom">
-        <OptionWrapper>
-          <OptionList>
-            <OptionItem onClick={handleOptionClick}>앨범에서 선택</OptionItem>
-            <OptionItem
-              onClick={() => {
-                setSelectedFile(null);
-                setPreviewUrl(null);
-              }}
-            >
-              프로필 사진 삭제
-            </OptionItem>
-          </OptionList>
-          <OptionList>
-            <OptionItem onClick={() => setIsOpen(false)}>닫기</OptionItem>
-          </OptionList>
-        </OptionWrapper>
-      </BaseModal>
+      <BottomSheet
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        options={[
+          {
+            label: '앨범에서 선택',
+            onClick: handleOptionClick,
+          },
+          {
+            label: '프로필 사진 삭제',
+            onClick: () => {
+              setSelectedFile(null);
+              setPreviewUrl(null);
+            },
+            variant: 'danger',
+          },
+        ]}
+      />
       <input
         type="file"
         accept="image/*"
@@ -92,24 +91,6 @@ const Camera = styled(IoCamera)({
   right: '0',
   backgroundColor: 'gray',
   padding: '2px',
-});
-
-const OptionList = styled.div({
-  margin: '0 16px',
-  borderRadius: '12px',
-  overflow: 'hidden',
-  background: colors.gray300,
-  marginBottom: '5px',
-});
-
-const OptionItem = styled.div({
-  padding: '15px',
-  textAlign: 'center',
-  borderBottom: `1px solid ${colors.gray100}`,
-});
-
-const OptionWrapper = styled.div({
-  marginBottom: '20px',
 });
 
 export default ImgSection;

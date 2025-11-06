@@ -10,7 +10,7 @@ const initialState: Omit<
   isAuthenticated: false,
   id: null,
   nickname: '익명',
-  profileImage: '/data/profile.png',
+  profileImageUrl: '/data/profile.png',
   groups: { leaderOf: [], memberOf: [] },
   isStudentVerified: 'UNVERIFIED',
 };
@@ -53,7 +53,7 @@ type Groups = {
 
 interface UserInfo {
   nickname: string;
-  profileImage: string;
+  profileImageUrl: string;
   groups: Groups;
   isStudentVerified: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
 }
@@ -63,7 +63,7 @@ interface AuthState {
   isAuthenticated: boolean;
   nickname: string;
   id: number | null;
-  profileImage: string;
+  profileImageUrl: string;
   groups: Groups;
   isStudentVerified: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
   setAccessToken: (accessToken: string) => void;

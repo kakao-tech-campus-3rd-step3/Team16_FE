@@ -61,20 +61,24 @@ export const DashBoard = () => {
           <AccordionArrow size={20} open={open} />
         </Header>
         <Body>
-          {upcomingSchedules.map((sch: ScheduleType) => (
-            <AccordionItem
-              key={sch.id}
-              onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}
-              style={{ cursor: 'pointer' }}
-            >
-              <Info>
-                <Text>시작: {formatDateToKorean(sch.startTime)}</Text>
-                <Text>종료: {formatDateToKorean(sch.endTime)}</Text>
-                <Text>참여인원: {sch.capacity}명</Text>
-              </Info>
-              <DateDiff date={sch.startTime} />
-            </AccordionItem>
-          ))}
+          {upcomingSchedules.length > 0 ? (
+            upcomingSchedules.map((sch: ScheduleType) => (
+              <AccordionItem
+                key={sch.id}
+                onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Info>
+                  <Text>시작: {formatDateToKorean(sch.startTime)}</Text>
+                  <Text>종료: {formatDateToKorean(sch.endTime)}</Text>
+                  <Text>참여인원: {sch.capacity}명</Text>
+                </Info>
+                <DateDiff date={sch.startTime} />
+              </AccordionItem>
+            ))
+          ) : (
+            <Text>등록된 일정이 없습니다.</Text>
+          )}
         </Body>
       </Schedule>
       <GroundRule>

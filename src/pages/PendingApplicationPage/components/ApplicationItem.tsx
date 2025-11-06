@@ -6,6 +6,7 @@ import { HiCheck } from 'react-icons/hi';
 import { HiOutlineX } from 'react-icons/hi';
 import { getUserInfoById } from '@/api/userApi';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface ApplicationItemProps {
   data: {
@@ -23,11 +24,12 @@ const ApplicationItem = ({ data, onAccept, onReject }: ApplicationItemProps) => 
     queryKey: ['userInfo', userId],
     queryFn: () => getUserInfoById(userId),
   });
+  const navigate = useNavigate();
 
   const nickname = userInfo?.nickname;
 
   return (
-    <ItemWrapper>
+    <ItemWrapper onClick={() => navigate(`/user/${userId}`)}>
       <ProfileImage src={profileImageUrl || '/data/profile.png'} alt={`${nickname} 프로필`} />
       <UserInfo>
         <UserName>{nickname}</UserName>
