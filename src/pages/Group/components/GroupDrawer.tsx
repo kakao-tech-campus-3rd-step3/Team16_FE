@@ -35,10 +35,12 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
 
   const handleAttend = () => {
     navigate(`/group/${groupId}/pending-application`);
+    onClose();
   };
 
   const handleGroupRules = () => {
     navigate(`/group/${groupId}/create-ground-rule`);
+    onClose();
   };
 
   return (
