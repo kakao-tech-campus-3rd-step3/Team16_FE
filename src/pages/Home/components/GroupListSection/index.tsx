@@ -12,6 +12,7 @@ interface Group {
   coverImageUrl: string;
   createdAt: string;
   capacity: number;
+  score?: number;
 }
 
 interface GroupListSectionProps {
@@ -45,7 +46,7 @@ const GroupListSection = ({ groups, isLoading, isError }: GroupListSectionProps)
           <GroupInfo>
             <GroupHeader>
               <GroupName>{group.name}</GroupName>
-              <TagBadge tag={group.safetyTag} />
+              <TagBadge score={group.score ?? 75} />
             </GroupHeader>
             <GroupDesc>{group.intro}</GroupDesc>
             <GroupTag />

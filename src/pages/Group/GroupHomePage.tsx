@@ -46,7 +46,7 @@ const GroupHome = () => {
         <GroupInfo>
           <GroupHeader>
             <GroupName>{data.name}</GroupName>
-            <TagBadge tag={data.safetyTag} />
+            <TagBadge score={data.score ?? 75} />
           </GroupHeader>
           <Desc>
             <CiCalendarDate />

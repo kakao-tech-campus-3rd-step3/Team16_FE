@@ -1,6 +1,6 @@
 export interface Attendee {
   userName: string;
-  attendStatus: 'PRESENT' | 'LATE' | 'ABSENT' | 'PENDING';
+  attendStatus: 'PRESENT' | 'LATE' | 'ABSENT' | 'HOLDING';
   attendAt: string;
 }
 
