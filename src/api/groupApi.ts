@@ -77,6 +77,7 @@ interface GroupHomeResponse {
   coverImageUrl: string;
   createdAt: string;
   capacity: number;
+  score?: number;
 }
 
 interface CreateGroupFormData {

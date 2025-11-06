@@ -40,7 +40,7 @@ const Wrapper = styled.main(({ theme }) => ({
   gap: theme.spacing.spacing2,
 }));
 
-const SearchContainer = styled.div(({ theme }) => ({
+const SearchContainer = styled.div(({}) => ({
   position: 'relative',
   width: '100%',
   display: 'flex',

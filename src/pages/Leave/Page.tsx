@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLeave } from '@/hooks/useLeave';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import useAuthStore from '@/stores/authStore';
 
 const LeavePage = () => {
   useHeader({ leftContent: null, centerContent: '탈퇴하기' });
@@ -15,6 +16,7 @@ const LeavePage = () => {
   const [review, setReview] = useState('');
   const { mutate: leaveMutate, isPending } = useLeave();
   const { groupId } = useParams<{ groupId: string }>();
+  const { removeFromMemberOf } = useAuthStore();
 
   const handleSubmit = () => {
     if (!groupId) {
@@ -26,7 +28,9 @@ const LeavePage = () => {
       { content: review, groupId: Number(groupId) },
       {
         onSuccess: () => {
-          navigate('/');
+          // authStore의 memberOf에서 해당 그룹 제거
+          removeFromMemberOf(groupId);
+          navigate(-1);
           alert('모임 탈퇴가 완료되었습니다.');
         },
         onError: (error) => {

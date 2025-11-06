@@ -8,25 +8,33 @@ import { useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserInfo } from '@/api/userApi';
 
+interface MyProfileSectionReturn {
+  profileImageUrl?: string;
+  nickname: string;
+  userScore: number;
+}
+
 const MyProfileSection = () => {
   const navigate = useNavigate();
 
-  const { data: profile } = useSuspenseQuery({
+  const { data: profile } = useSuspenseQuery<MyProfileSectionReturn>({
     queryKey: ['userProfile', 'me'],
     queryFn: getUserInfo,
   });
 
   return (
-    <Wrapper>
-      <ProfileImage src={profile.profileImageUrl ?? defaultUserImg} alt="내 프로필" />
-      <ProfileInfo>
-        <Nickname>{profile.nickname}</Nickname>
-      </ProfileInfo>
-      <SettingButton onClick={() => navigate('/setting')}>
-        <IoSettingsOutline size={20} />
-        설정
-      </SettingButton>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <ProfileImage src={profile.profileImageUrl ?? defaultUserImg} alt="내 프로필" />
+        <ProfileInfo>
+          <Nickname>{profile.nickname}</Nickname>
+        </ProfileInfo>
+        <SettingButton onClick={() => navigate('/setting')}>
+          <IoSettingsOutline size={20} />
+          설정
+        </SettingButton>
+      </Wrapper>
+    </>
   );
 };
 

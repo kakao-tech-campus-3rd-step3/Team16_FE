@@ -15,6 +15,8 @@ import { getRules } from '@/api/rulesApi';
 import type { Rule } from '@/api/rulesApi';
 import { GoPeople } from 'react-icons/go';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import useGroupHome from '@/hooks/useGroupHome';
+import ScoreSection from '@/pages/Mypage/components/ScoreSection/ScoreSection';
 
 export const DashBoard = () => {
   const { groupId } = useParams();
@@ -26,6 +28,8 @@ export const DashBoard = () => {
   const navigate = useNavigate();
 
   const numericGroupId = Number(groupId);
+
+  const { data: groupHomeData } = useGroupHome(numericGroupId);
 
   const { data: groundRules = [], isLoading: isGroundRulesLoading } = useQuery({
     queryKey: ['rules', numericGroupId],
@@ -49,10 +53,7 @@ export const DashBoard = () => {
 
   return (
     <Wrapper>
-      <GroupPromotion>
-        <PromotionHeader>우리 모임의 홍보글 보기</PromotionHeader>
-        <IoIosArrowForward size={20} />
-      </GroupPromotion>
+      <ScoreSection userScore={groupHomeData?.score ?? 0} />
       <Schedule>
         <Header style={{ cursor: 'pointer' }} onClick={() => setOpen((prev) => !prev)}>
           <LuCalendarCheck size={24} strokeWidth={1.5} />
