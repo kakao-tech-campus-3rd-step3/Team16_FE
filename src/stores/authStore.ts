@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 // 초기 상태: 함수 필드를 제외한 AuthState 조각
 const initialState: Omit<
   AuthState,
-  'setAccessToken' | 'setVerificationStatus' | 'clearTokens' | 'setUserInfo'
+  'setAccessToken' | 'setVerificationStatus' | 'clearTokens' | 'setUserInfo' | 'removeFromMemberOf'
 > = {
   accessToken: null,
   isAuthenticated: false,
@@ -13,6 +13,7 @@ const initialState: Omit<
   profileImageUrl: '/data/profile.png',
   groups: { leaderOf: [], memberOf: [] },
   studentVerifiedStatus: 'UNVERIFIED',
+  userScore: 0,
 };
 
 // zustand store with persist middleware (localStorage 자동 연동)
@@ -23,6 +24,15 @@ const useAuthStore = create<AuthState>()(
 
       //유저정보 설정 (부분 병합)
       setUserInfo: (userInfo: UserInfo) => set((state) => ({ ...state, ...userInfo })),
+
+      // 멤버 그룹에서 제거
+      removeFromMemberOf: (groupId: string) =>
+        set((state) => ({
+          groups: {
+            ...state.groups,
+            memberOf: state.groups.memberOf.filter((id) => id !== groupId),
+          },
+        })),
 
       // 액세스 토큰 설정
       setAccessToken: (accessToken: string) =>
@@ -66,10 +76,12 @@ interface AuthState {
   profileImageUrl: string;
   groups: Groups;
   studentVerifiedStatus: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
+  userScore: number;
   setAccessToken: (accessToken: string) => void;
   setVerificationStatus: (status: 'VERIFIED' | 'UNVERIFIED' | 'PENDING') => void;
   clearTokens: () => void;
   setUserInfo: (userInfo: UserInfo) => void; // 전체 사용자 정보 설정 함수
+  removeFromMemberOf: (groupId: string) => void; // 멤버 그룹에서 제거
 }
 
 export default useAuthStore;

@@ -45,6 +45,9 @@ const AttendPage = () => {
   const startTime = format(planData.startTime, 'yyyy년 MM월 dd일 HH:mm');
   const latitude = planData.location.latitude;
   const longitude = planData.location.longitude;
+
+  const isPastMeeting = new Date() > new Date(planData.endTime);
+
   return (
     <Wrapper>
       <InfoSection planTitle={planTitle} location={location} startTime={startTime} />
@@ -54,12 +57,25 @@ const AttendPage = () => {
         latitude={latitude}
         longitude={longitude}
       />
-      <AttendeeSection attendees={attendees} />
+      <AttendeeSection
+        attendees={attendees}
+        startTime={
+          typeof planData.startTime === 'string'
+            ? planData.startTime
+            : planData.startTime.toISOString()
+        }
+      />
       <PrimaryButton
         text={
-          isUserAttended ? '출석완료' : isAttendanceValid ? '출석하기' : '출석 인정 범위 밖입니다'
+          isPastMeeting
+            ? '지난 모임입니다'
+            : isUserAttended
+              ? '출석완료'
+              : isAttendanceValid
+                ? '출석하기'
+                : '출석 인정 범위 밖입니다'
         }
-        disabled={!isAttendanceValid || isUserAttended}
+        disabled={isPastMeeting || !isAttendanceValid || isUserAttended}
       />
     </Wrapper>
   );

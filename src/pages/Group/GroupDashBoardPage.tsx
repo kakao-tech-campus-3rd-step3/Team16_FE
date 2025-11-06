@@ -3,8 +3,6 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { LuCalendarCheck } from 'react-icons/lu';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import { CiShare2 } from 'react-icons/ci';
-import { IoIosArrowForward } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useState } from 'react';
@@ -16,6 +14,8 @@ import { getRules } from '@/api/rulesApi';
 import type { Rule } from '@/api/rulesApi';
 import { GoPeople } from 'react-icons/go';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import useGroupHome from '@/hooks/useGroupHome';
+import ScoreSection from '@/pages/Mypage/components/ScoreSection/ScoreSection';
 
 export const DashBoard = () => {
   const { groupId } = useParams();
@@ -27,6 +27,8 @@ export const DashBoard = () => {
   const navigate = useNavigate();
 
   const numericGroupId = Number(groupId);
+
+  const { data: groupHomeData } = useGroupHome(numericGroupId);
 
   const { data: groundRules = [], isLoading: isGroundRulesLoading } = useQuery({
     queryKey: ['rules', numericGroupId],
@@ -44,25 +46,23 @@ export const DashBoard = () => {
     ? groupSchedule.filter((sch: ScheduleType) => isUpcoming(sch.endTime))
     : [];
 
-  if (!open) {
-    upcomingSchedules.splice(1);
-  }
+  const totalSchedules = upcomingSchedules.length;
+  const displayedSchedules = open ? upcomingSchedules : upcomingSchedules.slice(0, 1);
+  const remainingCount = totalSchedules - displayedSchedules.length;
 
   return (
     <Wrapper>
-      <GroupPromotion>
-        <PromotionHeader>우리 모임의 홍보글 보기</PromotionHeader>
-        <IoIosArrowForward size={20} />
-      </GroupPromotion>
+      <ScoreSection userScore={groupHomeData?.score ?? 0} />
       <Schedule>
         <Header style={{ cursor: 'pointer' }} onClick={() => setOpen((prev) => !prev)}>
           <LuCalendarCheck size={24} strokeWidth={1.5} />
           <Title>우리 모임의 일정</Title>
+          {remainingCount > 0 && !open && <RemainingCount>+{remainingCount}</RemainingCount>}
           <AccordionArrow size={20} open={open} />
         </Header>
         <Body>
-          {upcomingSchedules.length > 0 ? (
-            upcomingSchedules.map((sch: ScheduleType) => (
+          {displayedSchedules.length > 0 ? (
+            displayedSchedules.map((sch: ScheduleType) => (
               <AccordionItem
                 key={sch.id}
                 onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}
@@ -101,10 +101,6 @@ export const DashBoard = () => {
           <FaCalendarAlt size={24} color={colors.primary} />
           <Attend>일정</Attend>
         </Card>
-        <Card>
-          <CiShare2 size={24} color={colors.primary} strokeWidth={1} />
-          <TimePicker>공유 시간 플래너</TimePicker>
-        </Card>
         <Card onClick={() => navigate(`/group/${groupId}/members`)}>
           <GoPeople size={24} color={colors.primary} strokeWidth={1} />
           <TimePicker>멤버</TimePicker>
@@ -133,17 +129,6 @@ const Wrapper = styled.div({
   flexDirection: 'column',
   margin: '20px',
   gap: '30px',
-});
-
-const GroupPromotion = styled.div({
-  ...typography.h2,
-  padding: '15px',
-  background: colors.primary,
-  borderRadius: '12px',
-  color: 'white',
-  alignItems: 'center',
-  display: 'flex',
-  justifyContent: 'space-between',
 });
 
 const Section = styled.div({
@@ -205,18 +190,18 @@ const TimePicker = styled.div({
   ...typography.h3,
 });
 
-const PromotionHeader = styled.div({
-  ...typography.h2,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: '10px',
-});
-
 const AccordionArrow = styled(IoIosArrowDown)<{ open: boolean }>(({ open }) => ({
   transition: 'transform 0.2s',
   transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
 }));
+
+const RemainingCount = styled.span({
+  ...typography.small,
+  color: colors.primary,
+  fontWeight: 600,
+  marginLeft: 'auto',
+  marginRight: '8px',
+});
 
 const AccordionItem = styled.div({
   padding: '8px 0',

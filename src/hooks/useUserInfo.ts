@@ -5,6 +5,8 @@ const useUserInfo = () => {
   return useQuery({
     queryKey: ['userInfo'],
     queryFn: () => getUserInfo(),
+    refetchInterval: 10000, // 10초마다 refetch
+    refetchIntervalInBackground: true, // 백그라운드에서도 refetch
   });
 };
 

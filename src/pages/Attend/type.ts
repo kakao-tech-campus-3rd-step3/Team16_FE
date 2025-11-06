@@ -1,6 +1,6 @@
 export interface Attendee {
   userName: string;
-  attendStatus: 'PRESENT' | 'ABSENT';
+  attendStatus: 'PRESENT' | 'LATE' | 'ABSENT' | 'PENDING';
   attendAt: string;
 }
 
@@ -11,4 +11,5 @@ export interface AttendanceResponse {
 
 export interface AttendeeSectionProps {
   attendees: Attendee[];
+  startTime: string;
 }

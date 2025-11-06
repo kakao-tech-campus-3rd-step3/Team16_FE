@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import { GoBellFill } from 'react-icons/go';
+import { IoSearch } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { colors } from '@/styles/colors';
+import { spacing } from '@/styles/spacing';
 
 interface SearchFieldSectionProps {
   searchQuery: string;
@@ -16,11 +19,14 @@ const SearchFieldSection = ({ searchQuery, setSearchQuery }: SearchFieldSectionP
 
   return (
     <Wrapper>
-      <SearchField
-        placeholder="모임을 검색해보세요"
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
+      <SearchContainer>
+        <SearchIcon />
+        <SearchField
+          placeholder="모임을 검색해보세요"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </SearchContainer>
       <BellIcon onClick={() => navigate('/alarm')} />
     </Wrapper>
   );
@@ -28,28 +34,51 @@ const SearchFieldSection = ({ searchQuery, setSearchQuery }: SearchFieldSectionP
 
 export default SearchFieldSection;
 
-const Wrapper = styled.main(({ theme }) => ({
-  margin: `${theme.spacing.spacing3}px ${theme.spacing.spacing4}px`,
+const Wrapper = styled.main({
+  margin: `${spacing.spacing3}px ${spacing.spacing4}px`,
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-  gap: theme.spacing.spacing2,
-}));
+  gap: spacing.spacing2,
+});
 
-const SearchField = styled.input(({ theme }) => ({
+const SearchContainer = styled.div({
+  position: 'relative',
   width: '100%',
-  height: '36px',
-  borderRadius: '16px',
-  border: `2px solid ${theme.colors.gray300}`,
-  backgroundColor: theme.colors.gray100,
+  display: 'flex',
+  alignItems: 'center',
+});
+
+const SearchIcon = styled(IoSearch)({
+  position: 'absolute',
+  left: '16px',
+  fontSize: '20px',
+  color: colors.gray500,
+  pointerEvents: 'none',
+});
+
+const SearchField = styled.input({
+  width: '100%',
+  height: '44px',
+  borderRadius: '22px',
+  border: 'none',
+  backgroundColor: colors.gray100,
+  paddingLeft: '48px',
+  paddingRight: '16px',
+  fontSize: '16px',
+  transition: 'all 0.2s ease',
   '&:focus': {
     outline: 'none',
+    backgroundColor: 'white',
+    boxShadow: `0 0 0 2px ${colors.primary}`,
   },
-  padding: '0 16px',
-}));
+  '&::placeholder': {
+    color: colors.gray400,
+  },
+});
 
-const BellIcon = styled(GoBellFill)(({ theme }) => ({
-  color: theme.colors.black,
+const BellIcon = styled(GoBellFill)({
+  color: colors.primaryDark,
   cursor: 'pointer',
   fontSize: '32px',
-}));
+});
