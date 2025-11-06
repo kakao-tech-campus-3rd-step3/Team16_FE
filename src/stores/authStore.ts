@@ -12,7 +12,7 @@ const initialState: Omit<
   nickname: '익명',
   profileImageUrl: '/data/profile.png',
   groups: { leaderOf: [], memberOf: [] },
-  isStudentVerified: 'UNVERIFIED',
+  studentVerifiedStatus: 'UNVERIFIED',
 };
 
 // zustand store with persist middleware (localStorage 자동 연동)
@@ -32,7 +32,7 @@ const useAuthStore = create<AuthState>()(
         }),
 
       // verificationStatus 설정
-      setVerificationStatus: (isStudentVerified) => set({ isStudentVerified }),
+      setVerificationStatus: (studentVerifiedStatus) => set({ studentVerifiedStatus }),
 
       // 토큰 삭제 (로그아웃)
       clearTokens: () =>
@@ -55,7 +55,7 @@ interface UserInfo {
   nickname: string;
   profileImageUrl: string;
   groups: Groups;
-  isStudentVerified: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
+  studentVerifiedStatus: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
 }
 
 interface AuthState {
@@ -65,7 +65,7 @@ interface AuthState {
   id: number | null;
   profileImageUrl: string;
   groups: Groups;
-  isStudentVerified: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
+  studentVerifiedStatus: 'VERIFIED' | 'UNVERIFIED' | 'PENDING';
   setAccessToken: (accessToken: string) => void;
   setVerificationStatus: (status: 'VERIFIED' | 'UNVERIFIED' | 'PENDING') => void;
   clearTokens: () => void;

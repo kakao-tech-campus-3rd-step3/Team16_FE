@@ -1,17 +1,21 @@
 import styled from '@emotion/styled';
 import { theme } from '@/styles/theme';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import studentCard from '@/assets/studentCard.svg';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import CircularProgress from './components/CircularProgress';
 import { IoCamera } from 'react-icons/io5';
 import useAuthStore from '@/stores/authStore';
+import useUserInfo from '@/hooks/useUserInfo';
 
 const StudentPage = () => {
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(studentCard);
   const [selectedFile, setSelectedFile] = useState<File[] | null>(null);
-  const { isStudentVerified } = useAuthStore();
+  const { studentVerifiedStatus, setVerificationStatus } = useAuthStore();
+  const { refetch } = useUserInfo();
 
   const { uploadImagesAsync, isUploading, uploadProgress } = useImageUpload({
     type: 'VERIFICATION',
@@ -19,13 +23,44 @@ const StudentPage = () => {
     request_url: '/image/presigned',
   });
 
+  // 주기적으로 userInfo를 refetch하여 studentVerifiedStatus 업데이트
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const result = await refetch();
+        if (result.data?.studentVerifiedStatus) {
+          setVerificationStatus(result.data.studentVerifiedStatus);
+
+          // VERIFIED 상태가 되면 루트 경로로 이동
+          if (result.data.studentVerifiedStatus === 'VERIFIED') {
+            clearInterval(interval);
+            navigate('/');
+          }
+        }
+      } catch (error) {
+        console.error('사용자 정보 업데이트 실패:', error);
+      }
+    }, 3000); // 3초마다 체크
+
+    // 컴포넌트 언마운트 시 인터벌 클리어
+    return () => clearInterval(interval);
+  }, [refetch, setVerificationStatus, navigate]);
+
   async function handleSubmit() {
     if (!selectedFile) {
       alert('사진을 선택해주세요.');
       return;
     }
 
-    await uploadImagesAsync(selectedFile);
+    try {
+      await uploadImagesAsync(selectedFile);
+      // 업로드 완료 후 사용자 정보 갱신
+      await refetch();
+      alert('인증서류가 성공적으로 제출되었습니다!');
+    } catch (error) {
+      console.error('업로드 실패:', error);
+      alert('업로드에 실패했습니다. 다시 시도해주세요.');
+    }
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -74,7 +109,7 @@ const StudentPage = () => {
       />
 
       <Notice>
-        {isStudentVerified === 'PENDING'
+        {studentVerifiedStatus === 'PENDING'
           ? '승인 여부 심사 중입니다.'
           : '24시간 내에 관리자가 승인 여부 심사합니다.'}
       </Notice>
