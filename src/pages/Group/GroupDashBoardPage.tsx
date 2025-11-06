@@ -101,10 +101,6 @@ export const DashBoard = () => {
           <FaCalendarAlt size={24} color={colors.primary} />
           <Attend>일정</Attend>
         </Card>
-        <Card>
-          <CiShare2 size={24} color={colors.primary} strokeWidth={1} />
-          <TimePicker>공유 시간 플래너</TimePicker>
-        </Card>
         <Card onClick={() => navigate(`/group/${groupId}/members`)}>
           <GoPeople size={24} color={colors.primary} strokeWidth={1} />
           <TimePicker>멤버</TimePicker>
