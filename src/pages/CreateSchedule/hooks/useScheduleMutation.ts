@@ -10,7 +10,7 @@ export const useScheduleMutation = (groupId: number, planId?: number) => {
     mutationFn: createSchedule,
     onSuccess: () => {
       alert('일정이 생성되었습니다.');
-      navigate(`/group/${groupId}/schedule`);
+      navigate(-1);
     },
     onError: () => {
       alert('일정 생성 실패');
@@ -21,7 +21,7 @@ export const useScheduleMutation = (groupId: number, planId?: number) => {
     mutationFn: updateSchedule,
     onSuccess: () => {
       alert('일정이 수정되었습니다.');
-      navigate(`/group/${groupId}/schedule`);
+      navigate(-1);
       queryClient.invalidateQueries({ queryKey: ['groupPlan', groupId, planId] });
     },
     onError: () => {

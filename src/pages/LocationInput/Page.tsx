@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useFormContext } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
@@ -18,7 +18,6 @@ const LocationInputPage = () => {
   useHeader({ centerContent: '장소 설정' });
   useKakaoLoader();
   const navigate = useNavigate();
-  const { groupId, planId } = useParams(); // planId가 있으면 수정, 없으면 생성
   const { setValue, getValues } = useFormContext();
 
   const formLoc = getValues('location') as LocationData;
@@ -88,10 +87,7 @@ const LocationInputPage = () => {
   // 완료 버튼 클릭
   const handleComplete = () => {
     if (selectedLocation) setValue('location', selectedLocation);
-    const address = planId
-      ? `/create-schedule/${groupId}/${planId}`
-      : `/create-schedule/${groupId}`;
-    navigate(address);
+    navigate(-1);
   };
 
   return (
