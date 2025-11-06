@@ -21,6 +21,7 @@ import BottomNavigation from '@/components/common/BottomNavigation';
 
 interface Post {
   postId: number;
+  groupId: number;
   authorNickname: string;
   title: string;
   content: string;
@@ -142,6 +143,7 @@ const Feed = () => {
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
+  const [selectedGroupId, setSelectedGroupId] = useState<number>(0);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const navigate = useNavigate();
@@ -195,6 +197,7 @@ const Feed = () => {
                 onClick={() => {
                   setIsOpen(true);
                   setPostId(post.postId);
+                  setSelectedGroupId(post.groupId);
                 }}
               >
                 <FaRegComment />
@@ -209,6 +212,7 @@ const Feed = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         postId={postId}
+        groupId={selectedGroupId}
         onUserClick={(userId) => {
           setSelectedUserId(userId);
           setIsUserModalOpen(true);

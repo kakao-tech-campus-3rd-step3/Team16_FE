@@ -24,21 +24,21 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
   };
 
   const handleLeave = () => {
-    navigate(`/group/${groupId}/leave`);
+    navigate(`/group/${groupId}/leave`, { replace: true });
     onClose();
   };
 
   const handleReport = () => {
-    navigate(`/groups/${groupId}/report`);
+    navigate(`/groups/${groupId}/report`, { replace: true });
     onClose();
   };
 
   const handleAttend = () => {
-    navigate(`/group/${groupId}/pending-application`);
+    navigate(`/group/${groupId}/pending-application`, { replace: true });
   };
 
   const handleGroupRules = () => {
-    navigate(`/group/${groupId}/create-ground-rule`);
+    navigate(`/group/${groupId}/create-ground-rule`, { replace: true });
   };
 
   return (

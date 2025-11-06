@@ -8,21 +8,26 @@ import { getUserHistory } from '@/api/userApi';
 import type { GroupHistory } from '@/api/userApi';
 import useAuthStore from '@/stores/authStore';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const MyRecordSection = () => {
   const { id: myId } = useAuthStore();
   const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { data } = useSuspenseQuery<GroupHistory[]>({
     queryKey: ['userHistory', myId],
     queryFn: () => getUserHistory(Number(myId)),
   });
 
+  const displayedData = isExpanded ? data : data.slice(0, 3);
+  const hasMoreThanThree = data.length > 3;
+
   return (
     <Wrapper>
       <Title>나의 활동 이력</Title>
       <RecordList>
-        {data.map((record) => (
+        {displayedData.map((record) => (
           <RecordListItem
             key={record.groupId}
             onClick={() => {
@@ -42,6 +47,12 @@ const MyRecordSection = () => {
           </RecordListItem>
         ))}
       </RecordList>
+
+      {hasMoreThanThree && (
+        <ToggleButton onClick={() => setIsExpanded(!isExpanded)}>
+          {isExpanded ? '접기' : `더보기 (+${data.length - 3})`}
+        </ToggleButton>
+      )}
     </Wrapper>
   );
 };
@@ -102,4 +113,15 @@ const GroupStatus = styled.div({
   backgroundColor: colors.white,
   border: `1px solid ${colors.primary}`,
   lineHeight: 1,
+});
+
+const ToggleButton = styled.button({
+  ...typography.small,
+  color: colors.gray600,
+  backgroundColor: 'transparent',
+  border: 'none',
+  padding: `${spacing.spacing1}px 0`,
+  cursor: 'pointer',
+  textAlign: 'center',
+  marginTop: spacing.spacing1,
 });
