@@ -257,6 +257,8 @@ const CommentList = styled.div({
   borderBottom: `1px solid ${colors.gray300}`,
   display: 'flex',
   flexDirection: 'column-reverse',
+  WebkitOverflowScrolling: 'touch',
+  willChange: 'scroll-position',
 });
 
 const CommentItem = styled.div({

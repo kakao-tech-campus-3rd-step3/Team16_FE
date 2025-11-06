@@ -100,4 +100,6 @@ const Content = styled.div({
   flex: 1,
   overflowY: 'auto',
   backgroundColor: colors.backgroundGray,
+  WebkitOverflowScrolling: 'touch',
+  willChange: 'scroll-position',
 });
