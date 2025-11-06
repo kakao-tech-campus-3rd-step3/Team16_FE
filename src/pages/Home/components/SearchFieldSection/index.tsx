@@ -40,12 +40,12 @@ const Wrapper = styled.main(({ theme }) => ({
   gap: theme.spacing.spacing2,
 }));
 
-const SearchContainer = styled.div(({}) => ({
+const SearchContainer = styled.div({
   position: 'relative',
   width: '100%',
   display: 'flex',
   alignItems: 'center',
-}));
+});
 
 const SearchIcon = styled(IoSearch)(({ theme }) => ({
   position: 'absolute',
