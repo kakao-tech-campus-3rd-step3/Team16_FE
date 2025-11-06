@@ -106,13 +106,18 @@ const reset = css`
   }
   body {
     line-height: 1;
-    overscroll-behavior: none;
+    overscroll-behavior-x: none; /* 좌우 오버스크롤만 방지 */
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; /* iOS 모멘텀 스크롤 */
   }
 
   html {
-    overscroll-behavior: none;
+    overscroll-behavior-x: none; /* 좌우 오버스크롤만 방지 */
     overflow-x: hidden;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent; /* 탭 하이라이트 제거 */
   }
   ol,
   ul {
