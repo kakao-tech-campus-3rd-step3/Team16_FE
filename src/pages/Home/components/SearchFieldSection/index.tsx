@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { GoBellFill } from 'react-icons/go';
 import { IoSearch } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { colors } from '@/styles/colors';
+import { spacing } from '@/styles/spacing';
 
 interface SearchFieldSectionProps {
   searchQuery: string;
@@ -32,13 +34,13 @@ const SearchFieldSection = ({ searchQuery, setSearchQuery }: SearchFieldSectionP
 
 export default SearchFieldSection;
 
-const Wrapper = styled.main(({ theme }) => ({
-  margin: `${theme.spacing.spacing3}px ${theme.spacing.spacing4}px`,
+const Wrapper = styled.main({
+  margin: `${spacing.spacing3}px ${spacing.spacing4}px`,
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-  gap: theme.spacing.spacing2,
-}));
+  gap: spacing.spacing2,
+});
 
 const SearchContainer = styled.div({
   position: 'relative',
@@ -47,20 +49,20 @@ const SearchContainer = styled.div({
   alignItems: 'center',
 });
 
-const SearchIcon = styled(IoSearch)(({ theme }) => ({
+const SearchIcon = styled(IoSearch)({
   position: 'absolute',
   left: '16px',
   fontSize: '20px',
-  color: theme.colors.gray500,
+  color: colors.gray500,
   pointerEvents: 'none',
-}));
+});
 
-const SearchField = styled.input(({ theme }) => ({
+const SearchField = styled.input({
   width: '100%',
   height: '44px',
   borderRadius: '22px',
   border: 'none',
-  backgroundColor: theme.colors.gray100,
+  backgroundColor: colors.gray100,
   paddingLeft: '48px',
   paddingRight: '16px',
   fontSize: '16px',
@@ -68,15 +70,15 @@ const SearchField = styled.input(({ theme }) => ({
   '&:focus': {
     outline: 'none',
     backgroundColor: 'white',
-    boxShadow: `0 0 0 2px ${theme.colors.primary}`,
+    boxShadow: `0 0 0 2px ${colors.primary}`,
   },
   '&::placeholder': {
-    color: theme.colors.gray400,
+    color: colors.gray400,
   },
-}));
+});
 
-const BellIcon = styled(GoBellFill)(({ theme }) => ({
-  color: theme.colors.primaryDark,
+const BellIcon = styled(GoBellFill)({
+  color: colors.primaryDark,
   cursor: 'pointer',
   fontSize: '32px',
-}));
+});
