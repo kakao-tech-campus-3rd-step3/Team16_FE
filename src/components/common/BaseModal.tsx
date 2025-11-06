@@ -24,12 +24,28 @@ const BaseModal = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    // 스크롤 잠금
+    // 스크롤 잠금 및 배경 이벤트 차단
+    const originalOverflow = document.body.style.overflow;
+    const originalPointerEvents = document.body.style.pointerEvents;
+
     document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'auto';
+    document.body.style.pointerEvents = 'none';
+
+    // ESC 키로 모달 닫기
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
     };
-  }, [isOpen]);
+
+    document.addEventListener('keydown', handleEscKey);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.pointerEvents = originalPointerEvents;
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -63,8 +79,9 @@ const Overlay = styled.div({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  zIndex: 2000,
+  zIndex: 9999,
   transition: 'background 0.1s ease',
+  pointerEvents: 'auto', // 모달 오버레이는 클릭 가능하게
 });
 
 const Content = styled.div<{ variant: ModalVariant; maxWidth: number }>(
@@ -74,6 +91,7 @@ const Content = styled.div<{ variant: ModalVariant; maxWidth: number }>(
     width: '100%',
     maxWidth: variant === 'bottom' ? '720px' : `${maxWidth}px`,
     animation: variant === 'bottom' ? `${slideUp} 0.3s ease` : `${fadeIn} 0.2s ease`,
+    pointerEvents: 'auto', // 모달 내용도 클릭 가능하게
     ...(variant === 'bottom'
       ? {
           position: 'fixed',
