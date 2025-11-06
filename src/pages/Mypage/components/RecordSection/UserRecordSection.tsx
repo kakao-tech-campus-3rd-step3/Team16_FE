@@ -6,12 +6,15 @@ import { spacing } from '@/styles/spacing';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserHistory } from '@/api/userApi';
 import type { GroupHistory } from '@/api/userApi';
+import { useState } from 'react';
 
 interface UserRecordSectionProps {
   userId: number;
 }
 
 const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const { data } = useSuspenseQuery<GroupHistory[]>({
     queryKey: ['userHistory', userId],
     queryFn: () => getUserHistory(userId),
@@ -19,11 +22,14 @@ const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
 
   if (!data || data.length === 0) return <Wrapper>활동 이력이 없습니다.</Wrapper>;
 
+  const displayedData = isExpanded ? data : data.slice(0, 3);
+  const hasMoreThanThree = data.length > 3;
+
   return (
     <Wrapper>
       <Title>활동 이력</Title>
       <RecordList>
-        {data.map((record) => (
+        {displayedData.map((record) => (
           <RecordListItem key={record.groupId}>
             <GroupStatusInfo>
               <GroupName>{record.name}</GroupName>
@@ -38,6 +44,12 @@ const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
           </RecordListItem>
         ))}
       </RecordList>
+      
+      {hasMoreThanThree && (
+        <ToggleButton onClick={() => setIsExpanded(!isExpanded)}>
+          {isExpanded ? '접기' : `더보기 (+${data.length - 3})`}
+        </ToggleButton>
+      )}
     </Wrapper>
   );
 };
@@ -98,4 +110,19 @@ const GroupStatus = styled.div({
   backgroundColor: colors.white,
   border: `1px solid ${colors.primary}`,
   lineHeight: 1,
+});
+
+const ToggleButton = styled.button({
+  ...typography.small,
+  color: colors.gray600,
+  backgroundColor: 'transparent',
+  border: 'none',
+  padding: `${spacing.spacing2}px 0`,
+  cursor: 'pointer',
+  textAlign: 'center',
+  marginTop: spacing.spacing2,
+  
+  '&:hover': {
+    color: colors.primary,
+  },
 });
