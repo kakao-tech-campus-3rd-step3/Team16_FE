@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { GoBellFill } from 'react-icons/go';
+import { IoSearch } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 
 interface SearchFieldSectionProps {
@@ -16,11 +17,14 @@ const SearchFieldSection = ({ searchQuery, setSearchQuery }: SearchFieldSectionP
 
   return (
     <Wrapper>
-      <SearchField
-        placeholder="모임을 검색해보세요"
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
+      <SearchContainer>
+        <SearchIcon />
+        <SearchField
+          placeholder="모임을 검색해보세요"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </SearchContainer>
       <BellIcon onClick={() => navigate('/alarm')} />
     </Wrapper>
   );
@@ -36,20 +40,43 @@ const Wrapper = styled.main(({ theme }) => ({
   gap: theme.spacing.spacing2,
 }));
 
+const SearchContainer = styled.div(({ theme }) => ({
+  position: 'relative',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+}));
+
+const SearchIcon = styled(IoSearch)(({ theme }) => ({
+  position: 'absolute',
+  left: '16px',
+  fontSize: '20px',
+  color: theme.colors.gray500,
+  pointerEvents: 'none',
+}));
+
 const SearchField = styled.input(({ theme }) => ({
   width: '100%',
-  height: '36px',
-  borderRadius: '16px',
-  border: `2px solid ${theme.colors.gray300}`,
+  height: '44px',
+  borderRadius: '22px',
+  border: 'none',
   backgroundColor: theme.colors.gray100,
+  paddingLeft: '48px',
+  paddingRight: '16px',
+  fontSize: '16px',
+  transition: 'all 0.2s ease',
   '&:focus': {
     outline: 'none',
+    backgroundColor: 'white',
+    boxShadow: `0 0 0 2px ${theme.colors.primary}`,
   },
-  padding: '0 16px',
+  '&::placeholder': {
+    color: theme.colors.gray400,
+  },
 }));
 
 const BellIcon = styled(GoBellFill)(({ theme }) => ({
-  color: theme.colors.black,
+  color: theme.colors.primaryDark,
   cursor: 'pointer',
   fontSize: '32px',
 }));

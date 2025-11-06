@@ -49,8 +49,10 @@ const Input = styled.input({
   padding: '12px 16px',
   border: '1px solid #ccc',
   borderRadius: '4px',
-  width: '100%',
+  width: '80%',
   boxSizing: 'border-box',
+  fontSize: '16px',
+  textAlign: 'center',
 });
 
 export default Nickname;

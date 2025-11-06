@@ -367,6 +367,7 @@ const InputSection = styled.input({
   margin: '16px',
   border: `1px solid ${colors.gray300}`,
   outlineColor: colors.primary,
+  fontSize: '16px',
 });
 
 const SendingButton = styled(VscSend)({
