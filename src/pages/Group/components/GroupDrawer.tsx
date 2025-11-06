@@ -26,11 +26,12 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
   };
 
   const handleLeave = () => {
-    navigate(`/group/${groupId}/leave`);
+    navigate(`/group/${groupId}/leave`, { replace: true });
     onClose();
   };
 
   const handleReport = () => {
+
     setIsReportModalOpen(true);
   };
 

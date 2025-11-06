@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '@/stores/authStore';
 import { getUserInfo } from '@/api/userApi';
-import applogo from '@/assets/applogo.svg';
+import applogo from '@/assets/applogopng.png';
 
 const kakaoLoginURI = import.meta.env.VITE_KAKAO_LOGIN_URI;
 
@@ -31,7 +31,9 @@ const LoginPage = () => {
   return (
     <>
       <Wrapper>
-        <AppLogo src={applogo} />
+        <AppLogoContainer>
+          <AppLogo src={applogo} />
+        </AppLogoContainer>
         <Button onClick={handleLogin}>
           <KakaoImg src={kakaoLoginBtn} alt="카카오 로그인" />
         </Button>
@@ -40,9 +42,13 @@ const LoginPage = () => {
   );
 };
 
-const AppLogo = styled.img`
-  width: 200px;
+const AppLogoContainer = styled.div`
   flex: 1;
+`;
+const AppLogo = styled.img`
+  width: 300px;
+  height: auto;
+  margin-top: 150px;
 `;
 
 const Button = styled.button`
@@ -65,7 +71,7 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #5d9a3b;
+  background-color: rgb(92, 154, 59, 0.994);
 `;
 
 export default LoginPage;

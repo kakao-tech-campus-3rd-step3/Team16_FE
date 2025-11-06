@@ -277,6 +277,7 @@ const GroupBoard = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         postId={postId}
+        groupId={Number(groupId)}
         onUserClick={(userId) => {
           setSelectedUserId(userId);
           setIsUserModalOpen(true);
@@ -292,7 +293,7 @@ const GroupBoard = () => {
         <EditButtonWrapper>
           <EditButton
             onClick={() => {
-              navigate(`/create-post/${groupId}`);
+              navigate(`/create-post/${groupId}`, { replace: true });
             }}
           >
             <EditIcon />
@@ -306,7 +307,7 @@ const GroupBoard = () => {
           {
             label: '수정',
             onClick: () => {
-              navigate(`/edit-post/${groupId}/${selectedPostId}`);
+              navigate(`/edit-post/${groupId}/${selectedPostId}`, { replace: true });
             },
           },
           {
