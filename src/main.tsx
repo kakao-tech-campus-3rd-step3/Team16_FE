@@ -5,6 +5,7 @@ import { ThemeProvider } from '@emotion/react';
 import { theme } from './styles/theme.ts';
 import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { registerSW } from 'virtual:pwa-register';
 
 const queryClient = new QueryClient();
 
@@ -19,3 +20,8 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>
 );
+
+registerSW({
+  onNeedRefresh() {},
+  onOfflineReady() {},
+});

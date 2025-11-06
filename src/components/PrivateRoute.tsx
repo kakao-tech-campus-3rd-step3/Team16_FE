@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router';
 import useAuthStore from '@/stores/authStore';
 
 export const PrivateRoute = () => {
-  const { isAuthenticated, isStudentVerified } = useAuthStore();
+  const { isAuthenticated, studentVerifiedStatus } = useAuthStore();
 
   //로그인이 되어있지 않은경우
   if (!isAuthenticated) {
@@ -10,7 +10,7 @@ export const PrivateRoute = () => {
   }
 
   //학생인증이 되어있지 않은 경우
-  if (isStudentVerified === 'UNVERIFIED' || isStudentVerified === 'PENDING') {
+  if (studentVerifiedStatus === 'UNVERIFIED' || studentVerifiedStatus === 'PENDING') {
     return <Navigate to="/student" replace />;
   }
 
