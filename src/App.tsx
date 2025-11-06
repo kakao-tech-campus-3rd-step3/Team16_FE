@@ -3,6 +3,7 @@ import { Routes } from './pages/Routes';
 import { BaseLayout } from './Layout/BaseLayout';
 import useUserInfo from '@/hooks/useUserInfo';
 import useAuthStore from '@/stores/authStore';
+import PWAUpdatePrompt from '@/components/common/PWAUpdatePrompt';
 import { useEffect } from 'react';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   return (
     <>
       <GlobalStyle />
+      <PWAUpdatePrompt />
       <BaseLayout>
         <Routes />
       </BaseLayout>
