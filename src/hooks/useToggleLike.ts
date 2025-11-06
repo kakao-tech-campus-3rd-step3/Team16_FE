@@ -8,27 +8,57 @@ export const useToggleLike = (groupId: number) => {
     mutationFn: ({ postId, isLike }: { postId: number; isLike: boolean }) =>
       isLike ? unlikeGroupPost(postId) : likeGroupPost(postId),
     onMutate: async ({ postId }) => {
+      // 진행 중인 쿼리들 취소
       await queryClient.cancelQueries({ queryKey: ['groupPosts', groupId] });
-      const previousPosts = queryClient.getQueryData<any[]>(['groupPosts', groupId]);
-      // 낙관적으로 isLike 반전, likeCount 증감
+      await queryClient.cancelQueries({ queryKey: ['feed'] });
 
+      // 이전 데이터 백업
+      const previousPosts = queryClient.getQueryData<any[]>(['groupPosts', groupId]);
+      const previousFeed = queryClient.getQueryData<any[]>(['feed']);
+
+      // groupPosts 쿼리에 대한 낙관적 업데이트
       if (previousPosts) {
         const updatedPosts = previousPosts.map((post: any) =>
-          post.postId === postId // mutate 함수에서 넘어온 postId
+          post.postId === postId
             ? {
                 ...post,
-                isLike: !post.isLike, // isLike 상태를 반전
-                likeCount: post.isLike ? post.likeCount - 1 : post.likeCount + 1, // 상태에 따라 증감
+                isLike: !post.isLike,
+                likeCount: post.isLike ? post.likeCount - 1 : post.likeCount + 1,
               }
             : post
         );
-        // setQueryData를 사용해 캐시를 새로운 배열로 덮어쓰기
         queryClient.setQueryData(['groupPosts', groupId], updatedPosts);
       }
-      return { previousPosts };
+
+      // feed 쿼리에 대한 낙관적 업데이트
+      if (previousFeed) {
+        const updatedFeed = previousFeed.map((post: any) =>
+          post.postId === postId
+            ? {
+                ...post,
+                isLike: !post.isLike,
+                likeCount: post.isLike ? post.likeCount - 1 : post.likeCount + 1,
+              }
+            : post
+        );
+        queryClient.setQueryData(['feed'], updatedFeed);
+      }
+
+      return { previousPosts, previousFeed };
     },
     onError: (_err, _, context) => {
-      queryClient.setQueryData(['groupPosts', groupId], context?.previousPosts);
+      // 에러 시 이전 데이터로 롤백
+      if (context?.previousPosts) {
+        queryClient.setQueryData(['groupPosts', groupId], context.previousPosts);
+      }
+      if (context?.previousFeed) {
+        queryClient.setQueryData(['feed'], context.previousFeed);
+      }
+    },
+    onSettled: () => {
+      // 성공/실패와 관계없이 최종적으로 데이터 재조회
+      queryClient.invalidateQueries({ queryKey: ['groupPosts', groupId] });
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
     },
   });
 };
