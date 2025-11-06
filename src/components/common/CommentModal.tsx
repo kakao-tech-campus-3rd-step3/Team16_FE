@@ -257,6 +257,10 @@ const CommentList = styled.div({
   borderBottom: `1px solid ${colors.gray300}`,
   display: 'flex',
   flexDirection: 'column-reverse',
+  WebkitOverflowScrolling: 'touch',
+  willChange: 'scroll-position',
+  touchAction: 'pan-y',
+  transform: 'translateZ(0)',
 });
 
 const CommentItem = styled.div({

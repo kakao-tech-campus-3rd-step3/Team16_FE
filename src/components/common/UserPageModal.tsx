@@ -100,4 +100,8 @@ const Content = styled.div({
   flex: 1,
   overflowY: 'auto',
   backgroundColor: colors.backgroundGray,
+  WebkitOverflowScrolling: 'touch',
+  willChange: 'scroll-position',
+  touchAction: 'pan-y',
+  transform: 'translateZ(0)', // GPU 가속 활성화
 });
