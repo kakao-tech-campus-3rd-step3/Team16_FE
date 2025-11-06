@@ -66,4 +66,6 @@ const GroupListWrapper = styled.div`
   padding-bottom: 60px;
   -webkit-overflow-scrolling: touch;
   will-change: scroll-position;
+  touch-action: pan-y;
+  transform: translateZ(0);
 `;

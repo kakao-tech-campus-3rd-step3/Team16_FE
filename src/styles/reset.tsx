@@ -109,6 +109,7 @@ const reset = css`
     overscroll-behavior-x: none; /* 좌우 오버스크롤만 방지 */
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch; /* iOS 모멘텀 스크롤 */
+    touch-action: pan-y; /* 상하 스크롤만 허용 */
   }
 
   html {
@@ -118,6 +119,17 @@ const reset = css`
 
   * {
     -webkit-tap-highlight-color: transparent; /* 탭 하이라이트 제거 */
+  }
+  
+  /* 스크롤 가능한 모든 요소에 부드러운 스크롤 적용 */
+  *::-webkit-scrollbar {
+    display: none; /* 스크롤바 숨김 (선택사항) */
+  }
+  
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
   }
   ol,
   ul {
