@@ -7,6 +7,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserHistory } from '@/api/userApi';
 import type { GroupHistory } from '@/api/userApi';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface UserRecordSectionProps {
   userId: number;
@@ -14,6 +15,7 @@ interface UserRecordSectionProps {
 
 const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const { data } = useSuspenseQuery<GroupHistory[]>({
     queryKey: ['userHistory', userId],
@@ -30,7 +32,12 @@ const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
       <Title>활동 이력</Title>
       <RecordList>
         {displayedData.map((record) => (
-          <RecordListItem key={record.groupId}>
+          <RecordListItem
+            key={record.groupId}
+            onClick={() => {
+              navigate(`/group/${record.groupId}`);
+            }}
+          >
             <GroupStatusInfo>
               <GroupName>{record.name}</GroupName>
               <GroupStatus>
@@ -44,7 +51,7 @@ const UserRecordSection = ({ userId }: UserRecordSectionProps) => {
           </RecordListItem>
         ))}
       </RecordList>
-      
+
       {hasMoreThanThree && (
         <ToggleButton onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? '접기' : `더보기 (+${data.length - 3})`}
@@ -121,7 +128,7 @@ const ToggleButton = styled.button({
   cursor: 'pointer',
   textAlign: 'center',
   marginTop: spacing.spacing2,
-  
+
   '&:hover': {
     color: colors.primary,
   },
