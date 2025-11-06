@@ -12,7 +12,7 @@ const getStatusColor = (status: Attendee['attendStatus']) => {
       return '#f97316'; // 주황색
     case 'ABSENT':
       return '#ef4444'; // 빨간색
-    case 'PENDING':
+    case 'HOLDING':
       return colors.gray400; // 회색
     default:
       return colors.gray600;
@@ -52,7 +52,7 @@ const AttendeeSection = ({ attendees, startTime }: AttendeeSectionProps) => {
     <Wrapper>
       {attendees.map((attendee, index) => (
         <AttendeeList key={index}>
-          {attendee.attendStatus !== 'PENDING' && attendee.attendStatus !== 'ABSENT' && (
+          {attendee.attendStatus !== 'HOLDING' && attendee.attendStatus !== 'ABSENT' && (
             <Time status={attendee.attendStatus}>
               {formatAttendanceTime(attendee.attendAt, startTime)}
             </Time>

@@ -106,6 +106,13 @@ const reset = css`
   }
   body {
     line-height: 1;
+    overscroll-behavior: none;
+    overflow-x: hidden;
+  }
+
+  html {
+    overscroll-behavior: none;
+    overflow-x: hidden;
   }
   ol,
   ul {
