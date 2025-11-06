@@ -259,6 +259,8 @@ const CommentList = styled.div({
   flexDirection: 'column-reverse',
   WebkitOverflowScrolling: 'touch',
   willChange: 'scroll-position',
+  touchAction: 'pan-y',
+  transform: 'translateZ(0)',
 });
 
 const CommentItem = styled.div({

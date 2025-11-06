@@ -102,4 +102,6 @@ const Content = styled.div({
   backgroundColor: colors.backgroundGray,
   WebkitOverflowScrolling: 'touch',
   willChange: 'scroll-position',
+  touchAction: 'pan-y',
+  transform: 'translateZ(0)', // GPU 가속 활성화
 });

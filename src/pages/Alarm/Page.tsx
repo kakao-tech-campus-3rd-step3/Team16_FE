@@ -28,4 +28,6 @@ const ListContainer = styled.div`
   background-color: white;
   -webkit-overflow-scrolling: touch;
   will-change: scroll-position;
+  touch-action: pan-y;
+  transform: translateZ(0);
 `;
