@@ -3,7 +3,6 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { LuCalendarCheck } from 'react-icons/lu';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import { IoIosArrowForward } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useGroupSchedule } from '@/hooks/useGroupSchedule';
 import { useState } from 'react';
@@ -132,17 +131,6 @@ const Wrapper = styled.div({
   gap: '30px',
 });
 
-const GroupPromotion = styled.div({
-  ...typography.h2,
-  padding: '15px',
-  background: colors.primary,
-  borderRadius: '12px',
-  color: 'white',
-  alignItems: 'center',
-  display: 'flex',
-  justifyContent: 'space-between',
-});
-
 const Section = styled.div({
   background: colors.gray100,
   borderRadius: '12px',
@@ -200,14 +188,6 @@ const Attend = styled.div({
 
 const TimePicker = styled.div({
   ...typography.h3,
-});
-
-const PromotionHeader = styled.div({
-  ...typography.h2,
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: '10px',
 });
 
 const AccordionArrow = styled(IoIosArrowDown)<{ open: boolean }>(({ open }) => ({
