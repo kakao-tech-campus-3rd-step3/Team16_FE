@@ -5,6 +5,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { isUserLeader } from '@/utils/groupMemberShip';
 import ReportModal from '@/components/ReportModal';
+import {
+  IoPersonAddOutline,
+  IoDocumentTextOutline,
+  IoWarningOutline,
+  IoExitOutline,
+} from 'react-icons/io5';
 
 interface DrawerProps {
   onClose: () => void;
@@ -31,7 +37,6 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
   };
 
   const handleReport = () => {
-
     setIsReportModalOpen(true);
   };
 
@@ -51,14 +56,26 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
       <Drawer isVisible={isVisible}>
         <Header>그룹 메뉴</Header>
         <MenuList>
-          <MenuItem onClick={handleLeave}>모임 탈퇴하기</MenuItem>
-          <MenuItem onClick={handleReport}>모임 신고하기</MenuItem>
           {isUserLeader(Number(groupId)) && (
             <>
-              <MenuItem onClick={handleAttend}>가입신청 리스트</MenuItem>
-              <MenuItem onClick={handleGroupRules}>그라운드룰 수정</MenuItem>
+              <MenuItem onClick={handleAttend}>
+                <MenuText>가입신청 리스트</MenuText>
+                <IoPersonAddOutline size={20} />
+              </MenuItem>
+              <MenuItem onClick={handleGroupRules}>
+                <MenuText>그라운드룰 수정</MenuText>
+                <IoDocumentTextOutline size={20} />
+              </MenuItem>
             </>
           )}
+          <MenuItem onClick={handleReport} isWarning>
+            <MenuText>모임 신고하기</MenuText>
+            <IoWarningOutline size={20} />
+          </MenuItem>
+          <MenuItem onClick={handleLeave} isDanger>
+            <MenuText>모임 탈퇴하기</MenuText>
+            <IoExitOutline size={20} />
+          </MenuItem>
         </MenuList>
       </Drawer>
 
@@ -85,7 +102,7 @@ const Drawer = styled.div<{ isVisible: boolean }>(({ isVisible }) => ({
   position: 'fixed',
   top: 0,
   right: 0,
-  width: '260px',
+  width: '150px',
   height: '100vh',
   backgroundColor: colors.white,
   boxShadow: '-2px 0 8px rgba(0, 0, 0, 0.1)',
@@ -110,13 +127,25 @@ const MenuList = styled.div({
   gap: '12px',
 });
 
-const MenuItem = styled.button({
-  ...typography.body,
-  background: 'none',
-  border: 'none',
+const MenuItem = styled.button<{ isWarning?: boolean; isDanger?: boolean }>(
+  ({ isWarning, isDanger }) => ({
+    ...typography.body,
+    background: 'none',
+    border: 'none',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '12px 0',
+    cursor: 'pointer',
+    color: isDanger ? '#FF4444' : isWarning ? '#FF8C00' : colors.black,
+    width: '100%',
+    '&:hover': {
+      color: isDanger ? '#CC0000' : isWarning ? '#FF6600' : colors.primary,
+    },
+  })
+);
+
+const MenuText = styled.span({
+  flex: 1,
   textAlign: 'left',
-  padding: '12px 0',
-  cursor: 'pointer',
-  color: colors.black,
-  '&:hover': { color: colors.primary },
 });

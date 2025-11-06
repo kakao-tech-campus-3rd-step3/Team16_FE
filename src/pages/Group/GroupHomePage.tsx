@@ -17,6 +17,7 @@ import { MemberItem } from '@/pages/MemberList/components/MemberItem';
 import type { Member } from '@/pages/MemberList/types';
 import { useState } from 'react';
 import UserPageModal from '@/components/common/UserPageModal';
+import ScoreSection from '@/pages/Mypage/components/ScoreSection/ScoreSection';
 
 const GroupHome = () => {
   const { groupId } = useParams();
@@ -58,6 +59,10 @@ const GroupHome = () => {
             <MemberCount>{data.capacity}</MemberCount>
           </Desc>
         </GroupInfo>
+        <div style={{ height: '10px' }} />
+        <ScoreSection userScore={data.score ?? 0} />
+        <div style={{ height: '10px' }} />
+        <SectionHeader>모임 소개</SectionHeader>
         <GroupDesc>{data.intro}</GroupDesc>
 
         <MembersSection>
@@ -118,6 +123,7 @@ const BodyWrapper = styled.div({
   gap: '10px',
   display: 'flex',
   flexDirection: 'column',
+  marginBottom: '80px',
 });
 
 const GroupHeader = styled.div({

@@ -4,14 +4,24 @@ import { colors } from '@/styles/colors';
 import { spacing } from '@/styles/spacing';
 import type { Member } from '../types';
 import { FaCrown } from 'react-icons/fa';
+import { IoPersonRemoveOutline } from 'react-icons/io5';
 
 interface MemberItemProps {
   member: Member;
   onClick?: () => void;
+  onBan?: (userId: number) => void;
+  showBanButton?: boolean;
 }
 
-export const MemberItem = ({ member, onClick }: MemberItemProps) => {
-  const { nickname, profileImageUrl, groupRole } = member;
+export const MemberItem = ({ member, onClick, onBan, showBanButton = false }: MemberItemProps) => {
+  const { nickname, profileImageUrl, groupRole, userId } = member;
+
+  const handleBanClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 프로필 클릭 이벤트 방지
+    if (window.confirm(`${nickname}님을 강퇴하시겠습니까?`)) {
+      onBan?.(userId);
+    }
+  };
 
   return (
     <ItemWrapper onClick={onClick}>
@@ -20,6 +30,11 @@ export const MemberItem = ({ member, onClick }: MemberItemProps) => {
         <UserName>{nickname}</UserName>
       </UserInfo>
       {groupRole === 'LEADER' && <CrownIcon />}
+      {showBanButton && groupRole !== 'LEADER' && (
+        <BanButton onClick={handleBanClick}>
+          <IoPersonRemoveOutline size={20} />
+        </BanButton>
+      )}
     </ItemWrapper>
   );
 };
@@ -60,4 +75,16 @@ const CrownIcon = styled(FaCrown)({
   color: colors.primary,
   fontSize: '20px',
   flexShrink: 0,
+});
+
+const BanButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '8px',
+  backgroundColor: 'transparent',
+  border: `1px solid ${colors.gray300}`,
+  borderRadius: '8px',
+  cursor: 'pointer',
+  color: colors.error,
 });

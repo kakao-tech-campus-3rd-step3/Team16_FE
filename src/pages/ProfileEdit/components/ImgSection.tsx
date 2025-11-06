@@ -9,9 +9,10 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 interface ImgSectionProps {
   setSelectedFile: React.Dispatch<React.SetStateAction<File | null>>;
   profileImgUrl: string | null;
+  setImageChanged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ImgSection = ({ setSelectedFile, profileImgUrl }: ImgSectionProps) => {
+const ImgSection = ({ setSelectedFile, profileImgUrl, setImageChanged }: ImgSectionProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(profileImgUrl || defaultUserImg);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +34,7 @@ const ImgSection = ({ setSelectedFile, profileImgUrl }: ImgSectionProps) => {
     setPreviewUrl(url);
     console.log(previewUrl);
     setSelectedFile(file);
+    setImageChanged(true); // 이미지가 변경됨을 표시
     setIsOpen(false);
   };
 
@@ -53,6 +55,7 @@ const ImgSection = ({ setSelectedFile, profileImgUrl }: ImgSectionProps) => {
             onClick: () => {
               setSelectedFile(null);
               setPreviewUrl(null);
+              setImageChanged(true); // 이미지가 삭제됨을 표시
             },
             variant: 'danger',
           },

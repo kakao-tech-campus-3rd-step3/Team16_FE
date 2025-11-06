@@ -28,18 +28,28 @@ const ApplicationItem = ({ data, onAccept, onReject }: ApplicationItemProps) => 
 
   const nickname = userInfo?.nickname;
 
+  const handleAccept = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    onAccept?.(userId);
+  };
+
+  const handleReject = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    onReject?.(userId);
+  };
+
   return (
-    <ItemWrapper onClick={() => navigate(`/user/${userId}`)}>
+    <ItemWrapper onClick={() => navigate(`/mypage/${userId}`)}>
       <ProfileImage src={profileImageUrl || '/data/profile.png'} alt={`${nickname} 프로필`} />
       <UserInfo>
         <UserName>{nickname}</UserName>
         <Message>{intro}</Message>
       </UserInfo>
       <ButtonWrapper>
-        <RejectButton onClick={() => onReject?.(userId)}>
+        <RejectButton onClick={handleReject}>
           <HiOutlineX />
         </RejectButton>
-        <AcceptButton onClick={() => onAccept?.(userId)}>
+        <AcceptButton onClick={handleAccept}>
           <HiCheck />
         </AcceptButton>
       </ButtonWrapper>

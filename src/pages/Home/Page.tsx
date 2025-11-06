@@ -2,7 +2,7 @@ import BottomNavigation from '@/components/common/BottomNavigation';
 import SearchFieldSection from './components/SearchFieldSection';
 import GroupListSection from './components/GroupListSection';
 import styled from '@emotion/styled';
-import CreateGroupButton from './components/CreateGroupButton';
+import OptionButton from './components/OptionButton';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGroups } from '@/api/groupApi';
 import { useSearch } from './hooks/useSearch';
@@ -46,7 +46,7 @@ const HomePage = () => {
         <GroupListSection groups={filteredGroups} isLoading={isLoading} isError={isError} />
       </GroupListWrapper>
       <BottomNavigation />
-      <CreateGroupButton />
+      <OptionButton />
     </PageContainer>
   );
 };

@@ -24,10 +24,12 @@ export const useCreateComment = (
       // 진행 중인 쿼리 취소
       await queryClient.cancelQueries({ queryKey: ['groupPostComments', postId] });
       await queryClient.cancelQueries({ queryKey: ['groupPosts', groupId] });
+      await queryClient.cancelQueries({ queryKey: ['feed'] });
 
       // 이전 데이터 백업
       const previousComments = queryClient.getQueryData(['groupPostComments', postId]);
       const previousPosts = queryClient.getQueryData(['groupPosts', groupId]);
+      const previousFeed = queryClient.getQueryData(['feed']);
 
       // 낙관적 업데이트 - 댓글 추가
       const newComment = {
@@ -44,7 +46,7 @@ export const useCreateComment = (
         return [...oldData, newComment];
       });
 
-      // 낙관적 업데이트 - commentCount 증가
+      // 낙관적 업데이트 - groupPosts의 commentCount 증가
       queryClient.setQueryData(['groupPosts', groupId], (oldData: any) => {
         if (!oldData) return oldData;
         return oldData.map((post: any) =>
@@ -52,7 +54,15 @@ export const useCreateComment = (
         );
       });
 
-      return { previousComments, previousPosts };
+      // 낙관적 업데이트 - feed의 commentCount 증가
+      queryClient.setQueryData(['feed'], (oldData: any) => {
+        if (!oldData) return oldData;
+        return oldData.map((post: any) =>
+          post.postId === postId ? { ...post, commentCount: post.commentCount + 1 } : post
+        );
+      });
+
+      return { previousComments, previousPosts, previousFeed };
     },
     onError: (error, _content, context) => {
       // 에러 시 이전 데이터로 롤백
@@ -62,6 +72,9 @@ export const useCreateComment = (
       if (context?.previousPosts) {
         queryClient.setQueryData(['groupPosts', groupId], context.previousPosts);
       }
+      if (context?.previousFeed) {
+        queryClient.setQueryData(['feed'], context.previousFeed);
+      }
       console.error('댓글 등록 실패:', error);
       alert('댓글 등록에 실패했습니다. 다시 시도해주세요.');
     },
@@ -69,6 +82,7 @@ export const useCreateComment = (
       // 성공 시 실제 데이터로 갱신
       queryClient.invalidateQueries({ queryKey: ['groupPostComments', postId] });
       queryClient.invalidateQueries({ queryKey: ['groupPosts', groupId] });
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
     },
   });
 };

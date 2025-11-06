@@ -95,6 +95,7 @@ const EditingInput = styled.input({
   '::placeholder': {
     color: colors.gray400,
   },
+  fontSize: '16px',
 });
 
 const IconGroup = styled.div({

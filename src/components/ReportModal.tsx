@@ -163,6 +163,7 @@ const CustomCheckbox = styled.input({
     backgroundColor: colors.primary,
     borderColor: colors.primary,
   },
+  fontSize: '16px',
 });
 
 const DetailTextarea = styled.textarea({

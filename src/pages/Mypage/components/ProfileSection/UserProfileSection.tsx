@@ -10,12 +10,18 @@ interface UserProfileSectionProps {
   userId: number;
 }
 
+interface UserProfileData {
+  profileImageUrl?: string;
+  nickname: string;
+  userScore: number;
+}
+
 const UserProfileSection = ({ userId }: UserProfileSectionProps) => {
   const {
     data: profile,
     isLoading,
     isError,
-  } = useSuspenseQuery({
+  } = useSuspenseQuery<UserProfileData>({
     queryKey: ['userProfile', userId],
     queryFn: () => getUserInfoById(userId),
   });
