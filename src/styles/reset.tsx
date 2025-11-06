@@ -115,7 +115,7 @@ const reset = css`
     overscroll-behavior-x: none; /* 좌우 오버스크롤만 방지 */
     overflow-x: hidden;
   }
-  
+
   * {
     -webkit-tap-highlight-color: transparent; /* 탭 하이라이트 제거 */
   }
