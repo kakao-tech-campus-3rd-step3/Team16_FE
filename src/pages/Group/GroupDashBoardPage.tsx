@@ -3,7 +3,6 @@ import { colors } from '@/styles/colors';
 import { typography } from '@/styles/typography';
 import { LuCalendarCheck } from 'react-icons/lu';
 import { IoDocumentTextOutline } from 'react-icons/io5';
-import { CiShare2 } from 'react-icons/ci';
 import { IoIosArrowForward } from 'react-icons/io';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useGroupSchedule } from '@/hooks/useGroupSchedule';
@@ -44,9 +43,9 @@ export const DashBoard = () => {
     ? groupSchedule.filter((sch: ScheduleType) => isUpcoming(sch.endTime))
     : [];
 
-  if (!open) {
-    upcomingSchedules.splice(1);
-  }
+  const totalSchedules = upcomingSchedules.length;
+  const displayedSchedules = open ? upcomingSchedules : upcomingSchedules.slice(0, 1);
+  const remainingCount = totalSchedules - displayedSchedules.length;
 
   return (
     <Wrapper>
@@ -58,11 +57,12 @@ export const DashBoard = () => {
         <Header style={{ cursor: 'pointer' }} onClick={() => setOpen((prev) => !prev)}>
           <LuCalendarCheck size={24} strokeWidth={1.5} />
           <Title>우리 모임의 일정</Title>
+          {remainingCount > 0 && !open && <RemainingCount>+{remainingCount}</RemainingCount>}
           <AccordionArrow size={20} open={open} />
         </Header>
         <Body>
-          {upcomingSchedules.length > 0 ? (
-            upcomingSchedules.map((sch: ScheduleType) => (
+          {displayedSchedules.length > 0 ? (
+            displayedSchedules.map((sch: ScheduleType) => (
               <AccordionItem
                 key={sch.id}
                 onClick={() => navigate(`/group/${groupId}/attend/${sch.id}`)}
@@ -213,6 +213,14 @@ const AccordionArrow = styled(IoIosArrowDown)<{ open: boolean }>(({ open }) => (
   transition: 'transform 0.2s',
   transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
 }));
+
+const RemainingCount = styled.span({
+  ...typography.small,
+  color: colors.primary,
+  fontWeight: 600,
+  marginLeft: 'auto',
+  marginRight: '8px',
+});
 
 const AccordionItem = styled.div({
   padding: '8px 0',
