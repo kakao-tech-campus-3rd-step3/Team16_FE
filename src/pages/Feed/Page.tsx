@@ -4,6 +4,7 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import { FaRegThumbsUp, FaThumbsUp } from 'react-icons/fa';
 import { FaRegComment } from 'react-icons/fa';
+import { IoArrowForwardCircleOutline } from 'react-icons/io5';
 import { useQuery } from '@tanstack/react-query';
 import { fetchFeedPosts } from '@/api/feedApi';
 import { useParams } from 'react-router-dom';
@@ -176,7 +177,15 @@ const Feed = () => {
         return (
           <PostContent key={post.postId}>
             <Header>
-              <PostTitle>{post.title}</PostTitle>
+              <TitleRow>
+                <PostTitle>{post.title}</PostTitle>
+                <GroupLinkButton
+                  onClick={() => navigate(`/group/${post.groupId}`)}
+                  title="그룹으로 이동"
+                >
+                  <IoArrowForwardCircleOutline size={24} />
+                </GroupLinkButton>
+              </TitleRow>
               <PostDate>{formattedDate}</PostDate>
             </Header>
             {post.imageUrls.length > 0 && (
@@ -250,6 +259,39 @@ const Header = styled.div({
   padding: spacing.spacing2,
 });
 
+const TitleRow = styled.div({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
+  gap: spacing.spacing2,
+  marginBottom: spacing.spacing1,
+});
+
+const PostTitle = styled.h2({
+  ...typography.h2,
+  color: colors.black,
+  flex: 1,
+});
+
+const GroupLinkButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  color: colors.primary,
+  padding: 0,
+  transition: 'all 0.2s',
+  '&:hover': {
+    transform: 'scale(1.1)',
+    color: colors.primaryDark,
+  },
+  '&:active': {
+    transform: 'scale(0.95)',
+  },
+});
+
 const ImageContainer = styled.div({
   position: 'relative',
   width: '100%',
@@ -296,10 +338,6 @@ const PostContent = styled.div({
   marginBottom: spacing.spacing2,
   backgroundColor: colors.white,
   alignItems: 'center',
-});
-
-const PostTitle = styled.h3({
-  ...typography.h2,
 });
 
 const PostDate = styled.p({
