@@ -46,7 +46,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, groupId, onUserClick }: Comme
   });
 
   // 댓글 삭제
-  const { mutate: deleteComment } = useDeleteComment(postId);
+  const { mutate: deleteComment } = useDeleteComment(postId, groupId);
 
   const handleSubmit = (content: string) => {
     if (content.trim() === '') {
