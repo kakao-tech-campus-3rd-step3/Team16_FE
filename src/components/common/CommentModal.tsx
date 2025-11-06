@@ -18,10 +18,11 @@ interface CommentModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   postId: number;
+  groupId: number;
   onUserClick: (userId: number) => void;
 }
 
-const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalProps) => {
+const CommentModal = ({ isOpen, setIsOpen, postId, groupId, onUserClick }: CommentModalProps) => {
   const [content, setContent] = useState('');
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<number>(0);
@@ -38,7 +39,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, onUserClick }: CommentModalPr
   const { data: comments, isPending } = useComments(postId, isOpen);
 
   // 댓글 작성
-  const { mutate: postComment } = useCreateComment(postId, {
+  const { mutate: postComment } = useCreateComment(postId, groupId, {
     userId: userId ?? 0,
     nickname: nickname ?? '',
     profileImageUrl: profileImageUrl ?? '',

@@ -277,6 +277,7 @@ const GroupBoard = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         postId={postId}
+        groupId={Number(groupId)}
         onUserClick={(userId) => {
           setSelectedUserId(userId);
           setIsUserModalOpen(true);
