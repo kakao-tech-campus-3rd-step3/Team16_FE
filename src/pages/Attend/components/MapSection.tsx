@@ -83,8 +83,8 @@ const MapSection = ({
 
       <Circle
         center={{
-          lat: 35.17898169622223,
-          lng: 126.90961034009142,
+          lat: MeetingLocation.lat,
+          lng: MeetingLocation.lng,
         }}
         radius={50}
         strokeWeight={1}
