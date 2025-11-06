@@ -4,6 +4,7 @@ import { typography } from '@/styles/typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { isUserLeader } from '@/utils/groupMemberShip';
+import ReportModal from '@/components/ReportModal';
 
 interface DrawerProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
   const navigate = useNavigate();
   const { groupId } = useParams();
   const [isVisible, setIsVisible] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 10);
@@ -29,8 +31,7 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
   };
 
   const handleReport = () => {
-    navigate(`/groups/${groupId}/report`);
-    onClose();
+    setIsReportModalOpen(true);
   };
 
   const handleAttend = () => {
@@ -59,6 +60,13 @@ const GroupDrawer = ({ onClose }: DrawerProps) => {
           )}
         </MenuList>
       </Drawer>
+
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        targetType="GROUP"
+        targetId={Number(groupId)}
+      />
     </>
   );
 };

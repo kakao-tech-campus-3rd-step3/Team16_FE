@@ -30,7 +30,7 @@ const PendingApplicationPage = () => {
           key={member.id}
           member={member}
           onClick={() => {
-            navigate(`/user/${member.userId}`);
+            navigate(`/mypage/${member.userId}`);
           }}
         />
       ))}
