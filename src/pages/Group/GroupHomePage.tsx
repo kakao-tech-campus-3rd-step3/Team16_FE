@@ -92,7 +92,7 @@ const GroupHome = () => {
         <PrimaryButton
           text={'가입신청'}
           onClick={() => {
-            navigate(`/apply-to-join-group/${groupId}`);
+            navigate(`/apply-to-join-group/${groupId}`, { replace: true });
           }}
         />
       )}

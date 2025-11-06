@@ -20,7 +20,7 @@ const HomePage = () => {
   });
 
   const { searchQuery, setSearchQuery, filteredGroups } = useSearch(groups);
-  
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const homeScrollPosition = useScrollStore((state) => state.homeScrollPosition);
   const setHomeScrollPosition = useScrollStore((state) => state.setHomeScrollPosition);

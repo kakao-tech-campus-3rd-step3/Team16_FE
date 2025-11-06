@@ -24,12 +24,9 @@ const BaseModal = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    // 스크롤 잠금 및 배경 이벤트 차단
+    // 스크롤 잠금
     const originalOverflow = document.body.style.overflow;
-    const originalPointerEvents = document.body.style.pointerEvents;
-
     document.body.style.overflow = 'hidden';
-    document.body.style.pointerEvents = 'none';
 
     // ESC 키로 모달 닫기
     const handleEscKey = (event: KeyboardEvent) => {
@@ -42,7 +39,6 @@ const BaseModal = ({
 
     return () => {
       document.body.style.overflow = originalOverflow;
-      document.body.style.pointerEvents = originalPointerEvents;
       document.removeEventListener('keydown', handleEscKey);
     };
   }, [isOpen, onClose]);
