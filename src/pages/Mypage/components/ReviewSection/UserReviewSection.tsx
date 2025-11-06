@@ -4,6 +4,7 @@ import { typography } from '@/styles/typography';
 import { spacing } from '@/styles/spacing';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUsersReview } from '@/api/userApi';
+import { useState } from 'react';
 
 interface Review {
   groupId: number;
@@ -17,6 +18,8 @@ interface UserReviewSectionProps {
 }
 
 const UserReviewSection = ({ userId }: UserReviewSectionProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const { data: reviews, isError } = useSuspenseQuery<Review[]>({
     queryKey: ['userReviews', userId],
     queryFn: () => getUsersReview(userId),
@@ -24,17 +27,28 @@ const UserReviewSection = ({ userId }: UserReviewSectionProps) => {
 
   if (isError) return <Wrapper>리뷰를 불러오는 중 오류가 발생했습니다.</Wrapper>;
 
+  const displayedReviews = isExpanded ? reviews : reviews.slice(0, 3);
+  const hasMoreThanThree = reviews && reviews.length > 3;
+
   return (
     <Wrapper>
       <Title>받은 리뷰</Title>
       <ReviewList>
         {reviews && reviews.length > 0 ? (
-          reviews.map((r) => (
-            <ReviewListItem key={r.groupId} evaluation={r.evaluation}>
-              <GroupName>💬 {r.groupName}</GroupName>
-              <ReviewContent>{r.content}</ReviewContent>
-            </ReviewListItem>
-          ))
+          <>
+            {displayedReviews.map((r) => (
+              <ReviewListItem key={r.groupId} evaluation={r.evaluation}>
+                <GroupName>💬 {r.groupName}</GroupName>
+                <ReviewContent>{r.content}</ReviewContent>
+              </ReviewListItem>
+            ))}
+
+            {hasMoreThanThree && (
+              <ToggleButton onClick={() => setIsExpanded(!isExpanded)}>
+                {isExpanded ? '접기' : `더보기 (+${reviews.length - 3})`}
+              </ToggleButton>
+            )}
+          </>
         ) : (
           <div>아직 받은 리뷰가 없습니다.</div>
         )}
@@ -85,4 +99,19 @@ const GroupName = styled.span({
 const ReviewContent = styled.div({
   ...typography.body,
   color: colors.black,
+});
+
+const ToggleButton = styled.button({
+  ...typography.small,
+  color: colors.gray600,
+  backgroundColor: 'transparent',
+  border: 'none',
+  padding: `${spacing.spacing2}px 0`,
+  cursor: 'pointer',
+  textAlign: 'center',
+  marginTop: spacing.spacing2,
+
+  '&:hover': {
+    color: colors.primary,
+  },
 });

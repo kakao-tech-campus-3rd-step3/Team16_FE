@@ -43,7 +43,7 @@ const BottomNavigationContainer = styled.nav`
   flex-direction: row;
   display: flex;
   background-color: ${({ theme }) => theme.colors.white};
-  z-index: 9999;
+  z-index: 9000;
 `;
 
 const NavItem = styled.div<{ isActive: boolean }>`
