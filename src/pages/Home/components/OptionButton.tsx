@@ -73,7 +73,7 @@ export default OptionButton;
 
 const Button = styled.button<{ isOpen: boolean }>(({ isOpen }) => ({
   position: 'fixed',
-  bottom: '70px',
+  bottom: '80px',
   right: '20px',
   width: isOpen ? '50px' : '50px',
   height: isOpen ? '50px' : '50px',
@@ -102,7 +102,7 @@ const Overlay = styled.div({
 
 const MenuContainer = styled.div({
   position: 'fixed',
-  bottom: '130px',
+  bottom: '140px',
   right: '20px',
   width: '280px',
   maxHeight: '400px',
