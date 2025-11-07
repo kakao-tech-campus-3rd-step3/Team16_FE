@@ -112,6 +112,11 @@ const GroupName = styled.span(({ theme }) => ({
 const GroupDesc = styled.p(({ theme }) => ({
   ...theme.typography.body,
   color: colors.black,
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 }));
 
 const GroupTag = styled.div(({ theme }) => ({
