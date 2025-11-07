@@ -340,7 +340,7 @@ const GroupButton = styled.button({
   display: 'flex',
   alignItems: 'center',
   gap: '4px',
-  padding: `${spacing.spacing3} ${spacing.spacing4}`,
+  padding: `${spacing.spacing1}px ${spacing.spacing2}px`,
   backgroundColor: colors.primary,
   color: colors.white,
   border: 'none',
