@@ -31,7 +31,7 @@ const AlarmList = () => {
 
   return (
     <>
-      {alarms?.map((alarm: Alarm) => (
+      {alarms?.slice(0, 10).map((alarm: Alarm) => (
         <ItemWrapper
           key={alarm.alarmId}
           isRead={alarm.isRead}
