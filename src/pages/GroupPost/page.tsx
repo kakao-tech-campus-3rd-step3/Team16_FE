@@ -17,6 +17,7 @@ const GroupPostPage = () => {
   const navigate = useNavigate();
   const { groupId } = useParams();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useHeader({
     centerContent: '게시글 작성',
@@ -51,12 +52,17 @@ const GroupPostPage = () => {
   const { createGroupPost } = useCreateGroupPost(Number(groupId));
 
   const requestUrl = `/image/presigned/group/${groupId}/posts`;
-  const { uploadImagesAsync } = useImageUpload({
+  const { uploadImagesAsync, isUploading } = useImageUpload({
     type: 'PROFILE',
     request_url: requestUrl,
   });
 
   const onSubmit = async (data: GroupPostFormData) => {
+    // 이미 제출 중이면 리턴
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
       if (imageFiles && imageFiles.length > 0) {
         console.log(imageFiles);
@@ -67,8 +73,12 @@ const GroupPostPage = () => {
       alert('게시글 작성이 완료되었습니다!');
     } catch (error) {
       alert('게시글 작성 중 오류가 발생했습니다.');
+      setIsSubmitting(false);
     }
   };
+
+  const isLoading = isSubmitting || isUploading;
+  const isFormValid = title?.trim().length > 0 && content?.trim().length > 0;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -76,7 +86,11 @@ const GroupPostPage = () => {
         <TitleSection register={register} errors={errors} title={title} />
         <ContentSection register={register} errors={errors} content={content} />
         <ImagePicker setImageFiles={setImageFiles} imageFiles={imageFiles} />
-        <PrimaryButton text="게시글 작성" onClick={handleSubmit(onSubmit)} />
+        <PrimaryButton
+          text={isLoading ? '게시글 작성 중...' : '게시글 작성'}
+          onClick={handleSubmit(onSubmit)}
+          disabled={!isFormValid || isLoading}
+        />
       </Wrapper>
     </form>
   );

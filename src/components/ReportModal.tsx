@@ -72,7 +72,7 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} variant="center" maxWidth={320}>
-      <Wrapper>
+      <Wrapper onClick={(e) => e.stopPropagation()}>
         <Title>신고하기</Title>
 
         <form onSubmit={handleSubmit(submitHandler)}>

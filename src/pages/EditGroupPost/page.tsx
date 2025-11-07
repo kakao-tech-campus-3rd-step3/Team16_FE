@@ -22,6 +22,7 @@ const EditGroupPostPage = () => {
   const { groupId, postId } = useParams();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
   useHeader({
@@ -71,7 +72,7 @@ const EditGroupPostPage = () => {
   const { title, content } = formValues;
 
   const requestUrl = `/image/presigned/group/${groupId}/posts`;
-  const { uploadImagesAsync } = useImageUpload({
+  const { uploadImagesAsync, isUploading } = useImageUpload({
     type: 'PROFILE',
     request_url: requestUrl,
   });
@@ -80,6 +81,11 @@ const EditGroupPostPage = () => {
   const { updatePost } = useUpdateGroupPost(Number(groupId));
 
   const onSubmit = async (data: GroupPostFormData) => {
+    // 이미 제출 중이면 리턴
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
       let finalImageUrls = [...existingImages];
 
@@ -102,8 +108,12 @@ const EditGroupPostPage = () => {
     } catch (error) {
       console.error('게시글 수정 실패:', error);
       alert('게시글 수정 중 오류가 발생했습니다.');
+      setIsSubmitting(false);
     }
   };
+
+  const isLoading = isSubmitting || isUploading;
+  const isFormValid = title?.trim().length > 0 && content?.trim().length > 0;
 
   if (isLoadingPost) {
     return <LoadingSpinner />;
@@ -120,7 +130,11 @@ const EditGroupPostPage = () => {
           existingImages={existingImages}
           setExistingImages={setExistingImages}
         />
-        <PrimaryButton text="게시글 수정" onClick={handleSubmit(onSubmit)} />
+        <PrimaryButton
+          text={isLoading ? '게시글 수정 중...' : '게시글 수정'}
+          onClick={handleSubmit(onSubmit)}
+          disabled={!isFormValid || isLoading}
+        />
       </Wrapper>
     </form>
   );

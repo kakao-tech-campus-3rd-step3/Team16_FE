@@ -19,22 +19,28 @@ const ImageViewerModal = ({
   if (!isOpen) return null;
 
   const handleOverlayClick = (e: React.MouseEvent) => {
+    // 오버레이만 클릭했을 때만 닫기
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
+  const handleCloseClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  };
+
   return (
     <Overlay onClick={handleOverlayClick}>
-      <CloseButton onClick={onClose}>×</CloseButton>
-      <ImageContainer>
+      <CloseButton onClick={handleCloseClick}>×</CloseButton>
+      <ImageContainer onClick={(e) => e.stopPropagation()}>
         <FullImage
           src={images[currentIndex]}
           alt={`${altText} - ${currentIndex + 1}`}
           onClick={(e) => e.stopPropagation()}
         />
         {images.length > 1 && (
-          <ImageCounter>
+          <ImageCounter onClick={(e) => e.stopPropagation()}>
             {currentIndex + 1} / {images.length}
           </ImageCounter>
         )}

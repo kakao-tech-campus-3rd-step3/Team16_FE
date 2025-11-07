@@ -131,6 +131,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, groupId, onUserClick }: Comme
     >
       <Wrapper
         ref={wrapperRef}
+        onClick={(e) => e.stopPropagation()}
         style={{
           transform: `translateY(${translateY}px)`,
           transition: touchStartY === null || isClosing ? 'transform 0.3s ease' : 'none',
