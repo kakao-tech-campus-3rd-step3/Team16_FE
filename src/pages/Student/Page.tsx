@@ -82,6 +82,13 @@ const StudentPage = () => {
     fileInputRef.current?.click();
   };
 
+  const skipVerification = () => {
+    setVerificationStatus('VERIFIED');
+    alert('학생 인증을 건너뛰었습니다.');
+    console.log(studentVerifiedStatus);
+    navigate('/');
+  };
+
   return (
     <Wrapper>
       <Description>학생증, 재학증명서, 입학증명서를 아래 예시처럼 제출해주세요.</Description>
@@ -116,6 +123,7 @@ const StudentPage = () => {
       <SubmitButton onClick={handleSubmit} disabled={isUploading}>
         {isUploading ? '업로드 중...' : '증명서류 제출하기'}
       </SubmitButton>
+      <SkipButton onClick={skipVerification}>테스트를 위한 인증 건너뛰기</SkipButton>
     </Wrapper>
   );
 };
@@ -185,6 +193,18 @@ const SubmitButton = styled.button`
   border-radius: 10px;
   padding: 14px 0;
   margin-top: 12vh;
+`;
+
+const SkipButton = styled.button`
+  width: 90%;
+  background: ${theme.colors.primary};
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 0;
+  margin-top: 1vh;
 `;
 
 const ProgressOverlay = styled.div`
