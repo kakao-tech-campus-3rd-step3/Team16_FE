@@ -12,9 +12,7 @@ import CommentModal from '@/components/common/CommentModal';
 import { format } from 'date-fns';
 import { useToggleLike } from '@/hooks/useToggleLike';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
-import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { isUserMember } from '@/utils/groupMemberShip';
 import ImageViewerModal from '@/components/common/ImageViewerModal';
 import UserPageModal from '@/components/common/UserPageModal';
 import BottomNavigation from '@/components/common/BottomNavigation';
@@ -156,8 +154,6 @@ const Feed = () => {
   const { mutate: toggleLike } = useToggleLike(Number(groupId));
 
   const posts = data || [];
-
-  const isUserMemberOfGroup = isUserMember(Number(groupId));
 
   if (isPending) {
     return (
@@ -338,33 +334,6 @@ const ActionButton = styled.button({
   cursor: 'pointer',
   padding: spacing.spacing3,
   flex: 1,
-});
-
-const EditButtonWrapper = styled.div({
-  position: 'fixed',
-  left: '50%',
-  width: '100%',
-  transform: 'translateX(-10%)',
-  maxWidth: '720px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  bottom: 30,
-});
-
-const EditButton = styled.button({
-  backgroundColor: colors.primary,
-  width: 56,
-  height: 56,
-  borderRadius: '50%',
-  border: 'none',
-  zIndex: 1000,
-});
-
-const EditIcon = styled(FaPencilAlt)({
-  color: colors.white,
-  width: 20,
-  height: 20,
 });
 
 const GroupButton = styled.button({
