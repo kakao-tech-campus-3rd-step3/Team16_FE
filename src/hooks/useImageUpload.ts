@@ -2,9 +2,11 @@ import { useMutation } from '@tanstack/react-query';
 import { uploadImageApi } from '@/api/imageUploader';
 import { useState } from 'react';
 import { useMemo } from 'react';
+import { compressImages } from '@/utils/imageCompression';
+import type { CompressionOptions } from '@/utils/imageCompression';
 
 export const useImageUpload = (options: UseImageUploadOptions) => {
-  const { type, completionUrl, request_url } = options;
+  const { type, completionUrl, request_url, compressionOptions } = options;
 
   // 각 파일의 진행률을 { fileIndex: progress } 형태로 저장
   const [progresses, setProgresses] = useState<Record<number, number>>({});
@@ -13,13 +15,16 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
 
   const { mutate, mutateAsync, isPending } = useMutation<string[], Error, File[]>({
     // mutationFn이 단일 File 대신 File[] 배열을 받음
-    mutationFn: (files: File[]) => {
+    mutationFn: async (files: File[]) => {
       // 업로드 시작 시 진행률 상태 초기화
       setProgresses({});
       setTotalFiles(files.length);
 
+      // 이미지 압축 (기본값 또는 사용자 지정 옵션 사용)
+      const compressedFiles = await compressImages(files, compressionOptions);
+
       // 각 파일을 업로드하는 Promise 배열 생성
-      const uploadPromises = files.map((file, index) =>
+      const uploadPromises = compressedFiles.map((file, index) =>
         uploadImageApi(file, {
           type,
           completionUrl,
@@ -82,4 +87,6 @@ interface UseImageUploadOptions {
   type: string;
   completionUrl?: string;
   request_url: string;
+  /** 이미지 압축 옵션 (선택사항) */
+  compressionOptions?: CompressionOptions;
 }

@@ -17,6 +17,7 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 const CreateGroupPage = () => {
   const navigate = useNavigate();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useHeader({ centerContent: '모임 만들기' });
   const queryClient = useQueryClient();
 
@@ -47,6 +48,11 @@ const CreateGroupPage = () => {
   });
 
   const onSubmit = async (data: CreateGroupFormData) => {
+    // 이미 제출 중이면 리턴
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
+    
     try {
       // 이미지가 있으면 업로드
       if (imageFiles.length > 0) {
@@ -61,12 +67,11 @@ const CreateGroupPage = () => {
     } catch (error) {
       console.error('이미지 업로드 실패:', error);
       alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      setIsSubmitting(false);
     }
   };
 
-  if (isPending) {
-    return <LoadingSpinner />;
-  }
+  const isLoading = isPending || isSubmitting;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -74,7 +79,12 @@ const CreateGroupPage = () => {
         <NameSection register={register} errors={errors} name={name} />
         <IntroSection register={register} errors={errors} intro={intro} />
         <ImagePicker setImageFiles={setImageFiles} imageFiles={imageFiles} />
-        <PrimaryButton text="모임 만들기" onClick={handleSubmit(onSubmit)} />
+        <PrimaryButton 
+          text={isLoading ? "모임 만드는 중..." : "모임 만들기"}
+          onClick={handleSubmit(onSubmit)} 
+          disabled={isLoading}
+        />
+        {isLoading && <LoadingSpinner />}
       </Wrapper>
     </form>
   );

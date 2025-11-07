@@ -16,12 +16,19 @@ interface UserPageModalProps {
 }
 
 const UserPageModal = ({ isOpen, onClose, userId }: UserPageModalProps) => {
+  const handleClose = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    onClose();
+  };
+
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} variant="center">
-      <Wrapper>
+      <Wrapper onClick={(e) => e.stopPropagation()}>
         <Header>
           <LeftSection>
-            <BackButton onClick={onClose}>
+            <BackButton onClick={handleClose}>
               <HiOutlineChevronLeft size={20} />
             </BackButton>
           </LeftSection>
