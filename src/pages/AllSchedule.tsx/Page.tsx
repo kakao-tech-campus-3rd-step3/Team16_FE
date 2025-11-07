@@ -55,7 +55,12 @@ const AllSchedulePage = () => {
     return (
       <Wrapper>
         <EmptyText>일정이 없습니다.</EmptyText>
-        <PrimaryButton text={'일정 추가'} onClick={() => navigate(`/create-schedule/${groupId}`)} />
+        {userIsLeader && (
+          <PrimaryButton
+            text={'일정 추가'}
+            onClick={() => navigate(`/create-schedule/${groupId}`)}
+          />
+        )}
       </Wrapper>
     );
   }

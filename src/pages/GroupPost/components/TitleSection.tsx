@@ -6,7 +6,7 @@ import TextLength from '@/components/common/TextLength';
 import type { TitleSectionProps } from '../type';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 
-const MAX_LENGTH = 10;
+const MAX_LENGTH = 50;
 const MIN_LENGTH = 2;
 
 const TitleSection = ({ register, errors, title }: TitleSectionProps) => {
