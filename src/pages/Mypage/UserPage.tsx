@@ -80,5 +80,4 @@ const Wrapper = styled.div({
 
 const ScoreWrapper = styled.div({
   padding: `16px`,
-  
 });
