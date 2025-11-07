@@ -17,15 +17,13 @@ const AlarmList = () => {
 
   const handleAlarmClick = (alarm: Alarm) => {
     if (alarm.notificationType === 'GROUP_JOIN_LEFT') {
-      return; // 탈퇴 알림은 클릭 동작 없음
+      return;
     }
 
     if (alarm.relatedGroupId) {
-      // 가입 요청 알림인 경우 pending-application으로 이동
       if (alarm.message.includes('가입을 요청했습니다')) {
         navigate(`/group/${alarm.relatedGroupId}/pending-application`);
       } else {
-        // 다른 알림은 그룹 홈으로 이동
         navigate(`/group/${alarm.relatedGroupId}`);
       }
     }
@@ -33,7 +31,7 @@ const AlarmList = () => {
 
   return (
     <>
-      {alarms?.map((alarm: Alarm) => (
+      {alarms?.slice(0, 10).map((alarm: Alarm) => (
         <ItemWrapper
           key={alarm.alarmId}
           isRead={alarm.isRead}
@@ -44,9 +42,8 @@ const AlarmList = () => {
             <AlarmContent>{alarm.message}</AlarmContent>
             <AlarmMeta>
               <AlarmType>{convertTypeLabel(alarm.notificationType)}</AlarmType>
-              {/* <AlarmStatus isRead={alarm.isRead}>{alarm.isRead ? '읽음' : '새 알림'}</AlarmStatus> */}
             </AlarmMeta>
-            {alarm.notificationType === 'GROUP_JOIN_LEFT' && (
+            {alarm.isReviewed === false && alarm.notificationType === 'GROUP_JOIN_LEFT' && (
               <ActionButton
                 onClick={() =>
                   navigate('/member-review', {
@@ -140,11 +137,6 @@ const AlarmType = styled.div({
   ...typography.small,
   color: colors.gray600,
 });
-
-// const AlarmStatus = styled.div<{ isRead: boolean }>(({ isRead }) => ({
-//   ...typography.small,
-//   color: isRead ? colors.gray500 : colors.primary,
-// }));
 
 const ActionButton = styled.button({
   marginTop: spacing.spacing2,

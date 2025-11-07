@@ -24,9 +24,6 @@ const Navigator = ({ activeTab, onTabChange }: NavigatorProps) => {
         <Item isActive={activeTab === '게시판'} onClick={() => handleItemClick('게시판')}>
           게시판
         </Item>
-        <Item isActive={activeTab === '채팅'} onClick={() => handleItemClick('채팅')}>
-          채팅
-        </Item>
       </Nav>
     );
   }

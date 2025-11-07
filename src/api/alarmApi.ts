@@ -9,6 +9,7 @@ export interface Alarm {
   message: string;
   isRead: boolean;
   nickname: string;
+  isReviewed: boolean;
 }
 
 export const getAlarms = async (): Promise<Alarm[]> => {

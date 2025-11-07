@@ -52,8 +52,6 @@ const GroupPage = () => {
         return <GroupHome />;
       case '게시판':
         return <GroupBoard />;
-      case '채팅':
-        return <div>채팅 컴포넌트 (구현 예정)</div>;
     }
   };
 

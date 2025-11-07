@@ -44,6 +44,7 @@ const BottomNavigationContainer = styled.nav`
   display: flex;
   background-color: ${({ theme }) => theme.colors.white};
   z-index: 9000;
+  padding-bottom: 8px;
 `;
 
 const NavItem = styled.div<{ isActive: boolean }>`

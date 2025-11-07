@@ -82,9 +82,13 @@ const GroupHome = () => {
         </MembersSection>
 
         <ReviewHeader>이 모임이 받은 리뷰</ReviewHeader>
-        {reviews.map((review: any, idx: any) => (
-          <ReviewItem key={idx}> {review.contents} </ReviewItem>
-        ))}
+        {reviews.length === 0 ? (
+          <NoReviewMessage>아직 받은 리뷰가 없습니다.</NoReviewMessage>
+        ) : (
+          reviews.map((review: any, idx: any) => (
+            <ReviewItem key={idx}>{review.contents}</ReviewItem>
+          ))
+        )}
       </BodyWrapper>
 
       <UserPageModal
@@ -192,6 +196,15 @@ const MembersGrid = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
+});
+
+const NoReviewMessage = styled.div({
+  ...typography.body,
+  color: colors.gray600,
+  textAlign: 'center',
+  background: colors.gray100,
+  borderRadius: '8px',
+  padding: '15px',
 });
 
 export default GroupHome;
