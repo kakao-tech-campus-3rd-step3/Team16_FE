@@ -18,6 +18,8 @@ import { isUserMember } from '@/utils/groupMemberShip';
 import ImageViewerModal from '@/components/common/ImageViewerModal';
 import UserPageModal from '@/components/common/UserPageModal';
 import BottomNavigation from '@/components/common/BottomNavigation';
+import { FaChevronRight } from 'react-icons/fa';
+import { FaUserGroup } from 'react-icons/fa6';
 
 interface Post {
   postId: number;
@@ -176,8 +178,14 @@ const Feed = () => {
         return (
           <PostContent key={post.postId}>
             <Header>
-              <PostTitle>{post.title}</PostTitle>
-              <PostDate>{formattedDate}</PostDate>
+              <TitleWrapper>
+                <PostTitle>{post.title}</PostTitle>
+                <PostDate>{formattedDate}</PostDate>
+              </TitleWrapper>
+              <GroupButton onClick={() => navigate(`/group/${post.groupId}`)}>
+                <FaUserGroup size={16} />
+                <FaChevronRight size={16} />
+              </GroupButton>
             </Header>
             {post.imageUrls.length > 0 && (
               <ImageCarousel images={post.imageUrls} altText={post.title} />
@@ -248,6 +256,13 @@ const Wrapper = styled.div({
 
 const Header = styled.div({
   padding: spacing.spacing2,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+const TitleWrapper = styled.div({
+  flex: 1,
 });
 
 const ImageContainer = styled.div({
@@ -356,6 +371,23 @@ const EditIcon = styled(FaPencilAlt)({
   color: colors.white,
   width: 20,
   height: 20,
+});
+
+const GroupButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
+  padding: `${spacing.spacing3} ${spacing.spacing4}`,
+  backgroundColor: colors.primary,
+  color: colors.white,
+  border: 'none',
+  borderRadius: '20px',
+  ...typography.small,
+  cursor: 'pointer',
+  whiteSpace: 'nowrap',
+  '&:hover': {
+    opacity: 0.9,
+  },
 });
 
 export default Feed;
