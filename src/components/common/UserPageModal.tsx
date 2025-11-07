@@ -8,6 +8,9 @@ import styled from '@emotion/styled';
 import { colors } from '@/styles/colors';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import { typography } from '@/styles/typography';
+import ScoreSection from '@/pages/Mypage/components/ScoreSection/ScoreSection';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { getUserInfoById } from '@/api/userApi';
 
 interface UserPageModalProps {
   isOpen: boolean;
@@ -37,13 +40,30 @@ const UserPageModal = ({ isOpen, onClose, userId }: UserPageModalProps) => {
         </Header>
         <Content>
           <Suspense fallback={<LoadingSpinner />}>
-            <UserProfileSection userId={userId} />
-            <UserRecordSection userId={userId} />
-            <UserReviewSection userId={userId} />
+            <UserPageContent userId={userId} />
           </Suspense>
         </Content>
       </Wrapper>
     </BaseModal>
+  );
+};
+
+// 내부 컴포넌트로 분리하여 Suspense 내부에서 데이터 조회
+const UserPageContent = ({ userId }: { userId: number }) => {
+  const { data: profile } = useSuspenseQuery({
+    queryKey: ['userProfile', userId],
+    queryFn: () => getUserInfoById(userId),
+  });
+
+  return (
+    <>
+      <UserProfileSection userId={userId} />
+      <ScoreWrapper>
+        <ScoreSection userScore={profile?.userScore ?? 0} />
+      </ScoreWrapper>
+      <UserRecordSection userId={userId} />
+      <UserReviewSection userId={userId} />
+    </>
   );
 };
 
@@ -111,4 +131,8 @@ const Content = styled.div({
   willChange: 'scroll-position',
   touchAction: 'pan-y',
   transform: 'translateZ(0)', // GPU 가속 활성화
+});
+
+const ScoreWrapper = styled.div({
+  padding: `20px`,
 });
