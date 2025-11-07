@@ -19,7 +19,7 @@ interface BottomSheetProps {
 const BottomSheet = ({ isOpen, onClose, options, customContent }: BottomSheetProps) => {
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} variant="bottom">
-      <Wrapper>
+      <Wrapper onClick={(e) => e.stopPropagation()}>
         {customContent ? (
           customContent
         ) : (
@@ -27,7 +27,8 @@ const BottomSheet = ({ isOpen, onClose, options, customContent }: BottomSheetPro
             {options.map((option, index) => (
               <OptionItem
                 key={index}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   option.onClick();
                   onClose();
                 }}
@@ -39,7 +40,13 @@ const BottomSheet = ({ isOpen, onClose, options, customContent }: BottomSheetPro
           </OptionList>
         )}
         <CloseButton>
-          <OptionItem onClick={onClose} variant="default">
+          <OptionItem 
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }} 
+            variant="default"
+          >
             닫기
           </OptionItem>
         </CloseButton>
