@@ -224,18 +224,8 @@ const Feed = () => {
         userId={selectedUserId}
       />
 
-      {isUserMemberOfGroup && (
-        <EditButtonWrapper>
-          <EditButton
-            onClick={() => {
-              navigate(`/create-post/${groupId}`);
-            }}
-          >
-            <EditIcon />
-          </EditButton>
-        </EditButtonWrapper>
-      )}
       <BottomNavigation />
+      <Spacer />
     </Wrapper>
   );
 };
@@ -244,6 +234,10 @@ const Wrapper = styled.div({
   backgroundColor: colors.gray100,
   display: 'flex',
   flexDirection: 'column',
+});
+
+const Spacer = styled.div({
+  height: '60px',
 });
 
 const Header = styled.div({
