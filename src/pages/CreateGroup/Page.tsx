@@ -53,9 +53,9 @@ const CreateGroupPage = () => {
   const onSubmit = async (data: CreateGroupFormData) => {
     // 이미 제출 중이면 리턴
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       // 이미지가 있으면 업로드
       if (imageFiles.length > 0) {
@@ -82,9 +82,9 @@ const CreateGroupPage = () => {
         <NameSection register={register} errors={errors} name={name} />
         <IntroSection register={register} errors={errors} intro={intro} />
         <ImagePicker setImageFiles={setImageFiles} imageFiles={imageFiles} />
-        <PrimaryButton 
-          text={isLoading ? "모임 만드는 중..." : "모임 만들기"}
-          onClick={handleSubmit(onSubmit)} 
+        <PrimaryButton
+          text={isLoading ? '모임 만드는 중...' : '모임 만들기'}
+          onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
         />
         {isLoading && <LoadingSpinner />}

@@ -2,7 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { applyToJoinGroup } from '../api/applyToJoinGroupApi';
 import { useNavigate } from 'react-router-dom';
 
-const useApplyToJoinGroup = (showAlert: (options: { message: string; type: 'success' | 'error' }) => void) => {
+const useApplyToJoinGroup = (
+  showAlert: (options: { message: string; type: 'success' | 'error' }) => void
+) => {
   const navigate = useNavigate();
 
   return useMutation({

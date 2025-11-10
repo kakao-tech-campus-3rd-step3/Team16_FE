@@ -36,7 +36,10 @@ const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerPro
     if (validFiles.length === 0) return;
 
     if (files.length > remaining) {
-      showAlert({ message: `최대 ${maxCount}장까지 선택할 수 있습니다. 먼저 ${remaining}장만 추가됩니다.`, type: 'info' });
+      showAlert({
+        message: `최대 ${maxCount}장까지 선택할 수 있습니다. 먼저 ${remaining}장만 추가됩니다.`,
+        type: 'info',
+      });
     }
 
     const newUrls = validFiles.map((file) => URL.createObjectURL(file));

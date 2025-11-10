@@ -27,7 +27,11 @@ const CreateEventPage = () => {
   const pagePurpose = isEdit ? '일정 수정' : '일정 생성';
   useHeader({ centerContent: pagePurpose });
 
-  const { createMutation, updateMutation } = useScheduleMutation(Number(groupId), Number(planId), showAlert);
+  const { createMutation, updateMutation } = useScheduleMutation(
+    Number(groupId),
+    Number(planId),
+    showAlert
+  );
 
   const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId));
 
