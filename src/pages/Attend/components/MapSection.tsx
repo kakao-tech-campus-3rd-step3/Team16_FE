@@ -7,7 +7,7 @@ import mapMarker from '@/assets/mapMarker.svg';
 import { useState, useEffect } from 'react';
 import haversine from 'haversine-distance';
 
-const ATTENDANCE_RADIUS = 10000000000; // 출석인정 거리
+const ATTENDANCE_RADIUS = 50; // 출석인정 거리
 
 interface MapSectionProps {
   isAttendanceValid: boolean;

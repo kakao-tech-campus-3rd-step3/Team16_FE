@@ -13,6 +13,8 @@ import { useComments } from '@/hooks/useComments';
 import { useCreateComment } from '@/hooks/useCreateComment';
 import { useDeleteComment } from '@/hooks/useDeleteComment';
 import PostingStatus from '@/components/common/PostingStatus';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 interface CommentModalProps {
   isOpen: boolean;
@@ -27,6 +29,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, groupId, onUserClick }: Comme
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<number>(0);
   const { id: userId, profileImageUrl, nickname } = useAuthStore();
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
 
   // 스와이프 제스처를 위한 상태
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
@@ -50,7 +53,7 @@ const CommentModal = ({ isOpen, setIsOpen, postId, groupId, onUserClick }: Comme
 
   const handleSubmit = (content: string) => {
     if (content.trim() === '') {
-      alert('댓글 내용을 입력해주세요.');
+      showAlert({ message: '댓글 내용을 입력해주세요.', type: 'warning' });
       return;
     }
     postComment(content);
@@ -212,6 +215,13 @@ const CommentModal = ({ isOpen, setIsOpen, postId, groupId, onUserClick }: Comme
             variant: 'danger',
           },
         ]}
+      />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
       />
     </BaseModal>
   );

@@ -14,8 +14,11 @@ import { getGroupPlan, getPlanParticipants, joinPlan } from '@/api/groupSchedule
 import { format } from 'date-fns';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import useUserInfo from '@/hooks/useUserInfo';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const AttendPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   useHeader({ centerContent: '출석' });
   const { groupId, planId } = useParams();
   const queryClient = useQueryClient();
@@ -39,14 +42,14 @@ const AttendPage = () => {
       queryClient.invalidateQueries({ queryKey: ['planParticipants', planId] });
       queryClient.invalidateQueries({ queryKey: ['attendees', planId] });
       queryClient.invalidateQueries({ queryKey: ['groupPlan', groupId, planId] });
-      alert('일정 참여가 완료되었습니다.');
+      showAlert({ message: '일정 참여가 완료되었습니다.', type: 'success' });
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || '일정 참여에 실패했습니다.';
       if (errorMessage.includes('정원이 초과')) {
-        alert('해당 일정의 정원이 초과되어 참여할 수 없습니다.');
+        showAlert({ message: '해당 일정의 정원이 초과되어 참여할 수 없습니다.', type: 'error' });
       } else {
-        alert(errorMessage);
+        showAlert({ message: errorMessage, type: 'error' });
       }
     },
   });
@@ -84,6 +87,19 @@ const AttendPage = () => {
 
   const isPastMeeting = new Date() > new Date(planData.endTime);
 
+  // 출석 가능 시간 체크 (endTime 이후인지 확인)
+  const isAfterEndTime = new Date() > new Date(planData.endTime);
+
+  // 일정 시작 1시간 전 시간 계산
+  const oneHourBeforeStart = new Date(new Date(planData.startTime).getTime() - 60 * 60 * 1000);
+  const now = new Date();
+  const isBeforeAttendanceTime = now < oneHourBeforeStart;
+
+  // 출석 가능 시간까지 남은 시간 계산
+  const timeUntilAttendance = oneHourBeforeStart.getTime() - now.getTime();
+  const hoursUntil = Math.floor(timeUntilAttendance / (1000 * 60 * 60));
+  const minutesUntil = Math.floor((timeUntilAttendance % (1000 * 60 * 60)) / (1000 * 60));
+
   // 현재 사용자가 참여자 목록에 있는지 확인
   const isUserParticipant = participants.some((participant) => participant.user.id == userInfo?.id);
 
@@ -93,6 +109,34 @@ const AttendPage = () => {
 
   const handleAttend = () => {
     attendMutation.mutate();
+  };
+
+  // 버튼 텍스트 결정
+  const getButtonText = () => {
+    if (!isUserParticipant) {
+      return '일정 참여';
+    }
+    if (isPastMeeting) {
+      return '지난 모임입니다';
+    }
+    if (isUserAttended) {
+      return '출석완료';
+    }
+    if (isAfterEndTime) {
+      return '출석 가능 시간이 지났습니다';
+    }
+    if (isBeforeAttendanceTime) {
+      // 1시간 전보다 일찍인 경우
+      if (hoursUntil > 0) {
+        return `${hoursUntil}시간 ${minutesUntil}분 후 출석 가능`;
+      } else {
+        return `${minutesUntil}분 후 출석 가능`;
+      }
+    }
+    if (isAttendanceValid) {
+      return '출석하기';
+    }
+    return '출석 인정 범위 밖입니다';
   };
 
   return (
@@ -118,27 +162,34 @@ const AttendPage = () => {
         }
       />
       <PrimaryButton
-        text={
-          !isUserParticipant
-            ? '일정 참여'
-            : isPastMeeting
-              ? '지난 모임입니다'
-              : isUserAttended
-                ? '출석완료'
-                : isAttendanceValid
-                  ? '출석하기'
-                  : '출석 인정 범위 밖입니다'
-        }
+        text={getButtonText()}
         disabled={
-          !isUserParticipant ? false : isPastMeeting || !isAttendanceValid || isUserAttended
+          !isUserParticipant
+            ? false
+            : isPastMeeting ||
+              isAfterEndTime ||
+              isBeforeAttendanceTime ||
+              !isAttendanceValid ||
+              isUserAttended
         }
         onClick={
           !isUserParticipant
             ? handleJoinPlan
-            : isAttendanceValid && !isUserAttended && !isPastMeeting
+            : isAttendanceValid &&
+                !isUserAttended &&
+                !isPastMeeting &&
+                !isAfterEndTime &&
+                !isBeforeAttendanceTime
               ? handleAttend
               : undefined
         }
+      />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
       />
     </Wrapper>
   );

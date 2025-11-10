@@ -3,6 +3,8 @@ import { IoCamera } from 'react-icons/io5';
 import BottomSheet from '@/components/common/BottomSheet';
 import { useState, useRef } from 'react';
 import defaultUserImg from '@/assets/defaultUserImg.svg';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -13,6 +15,7 @@ interface ImgSectionProps {
 }
 
 const ImgSection = ({ setSelectedFile, profileImgUrl, setImageChanged }: ImgSectionProps) => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(profileImgUrl || defaultUserImg);
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +30,7 @@ const ImgSection = ({ setSelectedFile, profileImgUrl, setImageChanged }: ImgSect
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      alert('파일 크기는 5MB를 초과할 수 없습니다.');
+      showAlert({ message: '파일 크기는 5MB를 초과할 수 없습니다.', type: 'error' });
       return;
     }
     const url = URL.createObjectURL(file);
@@ -67,6 +70,13 @@ const ImgSection = ({ setSelectedFile, profileImgUrl, setImageChanged }: ImgSect
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleFileChange}
+      />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
       />
     </Wrapper>
   );

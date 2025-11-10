@@ -9,8 +9,11 @@ import { useParams } from 'react-router-dom';
 import { useLeave } from '@/hooks/useLeave';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import useAuthStore from '@/stores/authStore';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const LeavePage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   useHeader({ leftContent: null, centerContent: '탈퇴하기' });
   const navigate = useNavigate();
   const [review, setReview] = useState('');
@@ -20,7 +23,7 @@ const LeavePage = () => {
 
   const handleSubmit = () => {
     if (!groupId) {
-      alert('잘못된 접근입니다.');
+      showAlert({ message: '잘못된 접근입니다.', type: 'error' });
       return;
     }
 
@@ -30,12 +33,15 @@ const LeavePage = () => {
         onSuccess: () => {
           // authStore의 memberOf에서 해당 그룹 제거
           removeFromMemberOf(groupId);
-          navigate(-1);
-          alert('모임 탈퇴가 완료되었습니다.');
+          showAlert({ message: '모임 탈퇴가 완료되었습니다.', type: 'success' });
+          setTimeout(() => navigate(-1), 1500);
         },
         onError: (error) => {
           console.error(error);
-          alert('모임 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.');
+          showAlert({
+            message: '모임 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.',
+            type: 'error',
+          });
         },
       }
     );
@@ -58,6 +64,13 @@ const LeavePage = () => {
         <SubmitButton onClick={handleSubmit}>제출하기</SubmitButton>
       </ButtonWrapper>
       <ExplainText>*제출하기 버튼을 누르면 모임에서 탈퇴됩니다.</ExplainText>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </Wrapper>
   );
 };

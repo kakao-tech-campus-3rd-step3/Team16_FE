@@ -12,8 +12,11 @@ import type { GroupPostFormData } from './type';
 import { HiOutlineChevronLeft } from 'react-icons/hi';
 import ImagePicker from './components/ImagePicker';
 import { useState } from 'react';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const GroupPostPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const navigate = useNavigate();
   const { groupId } = useParams();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -70,9 +73,9 @@ const GroupPostPage = () => {
       }
       navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
       await createGroupPost({ ...data, imageFiles });
-      alert('게시글 작성이 완료되었습니다!');
+      showAlert({ message: '게시글 작성이 완료되었습니다!', type: 'success' });
     } catch (error) {
-      alert('게시글 작성 중 오류가 발생했습니다.');
+      showAlert({ message: '게시글 작성 중 오류가 발생했습니다.', type: 'error' });
       setIsSubmitting(false);
     }
   };
@@ -90,6 +93,13 @@ const GroupPostPage = () => {
           text={isLoading ? '게시글 작성 중...' : '게시글 작성'}
           onClick={handleSubmit(onSubmit)}
           disabled={!isFormValid || isLoading}
+        />
+        <CustomAlert
+          isOpen={isAlertOpen}
+          onClose={closeAlert}
+          message={alertOptions.message}
+          type={alertOptions.type}
+          confirmText={alertOptions.confirmText}
         />
       </Wrapper>
     </form>

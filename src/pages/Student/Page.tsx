@@ -8,6 +8,8 @@ import CircularProgress from './components/CircularProgress';
 import { IoCamera } from 'react-icons/io5';
 import useAuthStore from '@/stores/authStore';
 import useUserInfo from '@/hooks/useUserInfo';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const StudentPage = () => {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ const StudentPage = () => {
   const [selectedFile, setSelectedFile] = useState<File[] | null>(null);
   const { studentVerifiedStatus, setVerificationStatus } = useAuthStore();
   const { refetch } = useUserInfo();
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
 
   const { uploadImagesAsync, isUploading, uploadProgress } = useImageUpload({
     type: 'VERIFICATION',
@@ -48,7 +51,7 @@ const StudentPage = () => {
 
   async function handleSubmit() {
     if (!selectedFile) {
-      alert('사진을 선택해주세요.');
+      showAlert({ message: '사진을 선택해주세요.', type: 'warning' });
       return;
     }
 
@@ -56,10 +59,10 @@ const StudentPage = () => {
       await uploadImagesAsync(selectedFile);
       // 업로드 완료 후 사용자 정보 갱신
       await refetch();
-      alert('인증서류가 성공적으로 제출되었습니다!');
+      showAlert({ message: '인증서류가 성공적으로 제출되었습니다!', type: 'success' });
     } catch (error) {
       console.error('업로드 실패:', error);
-      alert('업로드에 실패했습니다. 다시 시도해주세요.');
+      showAlert({ message: '업로드에 실패했습니다. 다시 시도해주세요.', type: 'error' });
     }
   }
 
@@ -69,7 +72,7 @@ const StudentPage = () => {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      alert('파일 크기는 5MB를 초과할 수 없습니다.');
+      showAlert({ message: '파일 크기는 5MB를 초과할 수 없습니다.', type: 'error' });
       return;
     }
 
@@ -84,7 +87,7 @@ const StudentPage = () => {
 
   const skipVerification = () => {
     setVerificationStatus('VERIFIED');
-    alert('학생 인증을 건너뛰었습니다.');
+    showAlert({ message: '학생 인증을 건너뛰었습니다.', type: 'info' });
     console.log(studentVerifiedStatus);
     navigate('/');
   };
@@ -124,6 +127,13 @@ const StudentPage = () => {
         {isUploading ? '업로드 중...' : '증명서류 제출하기'}
       </SubmitButton>
       <SkipButton onClick={skipVerification}>테스트를 위한 인증 건너뛰기</SkipButton>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </Wrapper>
   );
 };
