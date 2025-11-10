@@ -16,15 +16,18 @@ import DurationPicker from './components/DurationPicker';
 import { ConvertTimeString } from './components/DurationPicker';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useScheduleMutation } from './hooks/useScheduleMutation';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const CreateEventPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const navigate = useNavigate();
   const { groupId, planId } = useParams(); // planId가 있으면 수정, 없으면 생성
   const isEdit = !!planId;
   const pagePurpose = isEdit ? '일정 수정' : '일정 생성';
   useHeader({ centerContent: pagePurpose });
 
-  const { createMutation, updateMutation } = useScheduleMutation(Number(groupId), Number(planId));
+  const { createMutation, updateMutation } = useScheduleMutation(Number(groupId), Number(planId), showAlert);
 
   const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId));
 
@@ -130,6 +133,13 @@ const CreateEventPage = () => {
       </SummaryList>
 
       <PrimaryButton text={pagePurpose} onClick={handleSubmit(onSubmit)} disabled={!isFormValid} />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </PageContainer>
   );
 };

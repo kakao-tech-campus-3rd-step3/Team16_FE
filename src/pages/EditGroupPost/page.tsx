@@ -16,8 +16,11 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchGroupPost } from '@/api/groupApi';
 import { useUpdateGroupPost } from './hooks/useUpdateGroupPost';
 import { useQueryClient } from '@tanstack/react-query';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const EditGroupPostPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const navigate = useNavigate();
   const { groupId, postId } = useParams();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -104,10 +107,10 @@ const EditGroupPostPage = () => {
         imageFiles: imageFiles, // 낙관적 업데이트용 임시 이미지
       });
       queryClient.invalidateQueries({ queryKey: ['groupPost', Number(postId)] });
-      alert('게시글 수정이 완료되었습니다!');
+      showAlert({ message: '게시글 수정이 완료되었습니다!', type: 'success' });
     } catch (error) {
       console.error('게시글 수정 실패:', error);
-      alert('게시글 수정 중 오류가 발생했습니다.');
+      showAlert({ message: '게시글 수정 중 오류가 발생했습니다.', type: 'error' });
       setIsSubmitting(false);
     }
   };
@@ -136,6 +139,13 @@ const EditGroupPostPage = () => {
           disabled={!isFormValid || isLoading}
         />
       </Wrapper>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </form>
   );
 };

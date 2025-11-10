@@ -13,8 +13,11 @@ import ImagePicker from './components/ImagePicker';
 import { useState } from 'react';
 import { uploadImageApi } from '@/api/imageUploader';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const CreateGroupPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const navigate = useNavigate();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,12 +41,12 @@ const CreateGroupPage = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateGroupFormData) => createGroupApi(data),
     onSuccess: (response) => {
-      alert('모임이 성공적으로 생성되었습니다!');
+      showAlert({ message: '모임이 성공적으로 생성되었습니다!', type: 'success' });
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
       navigate(`/group/${response.groupId}`, { replace: true });
     },
     onError: () => {
-      alert('모임 생성에 실패했습니다. 다시 시도해주세요.');
+      showAlert({ message: '모임 생성에 실패했습니다. 다시 시도해주세요.', type: 'error' });
     },
   });
 
@@ -66,7 +69,7 @@ const CreateGroupPage = () => {
       mutate(data);
     } catch (error) {
       console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      showAlert({ message: '이미지 업로드에 실패했습니다. 다시 시도해주세요.', type: 'error' });
       setIsSubmitting(false);
     }
   };
@@ -86,6 +89,13 @@ const CreateGroupPage = () => {
         />
         {isLoading && <LoadingSpinner />}
       </Wrapper>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </form>
   );
 };
