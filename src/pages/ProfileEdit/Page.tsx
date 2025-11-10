@@ -66,7 +66,10 @@ const ProfileEditPage = () => {
     onSuccess: (result) => {
       queryClient.setQueryData(['userProfile'], [result.newProfileImg, result.newNickname]);
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
-      navigate(-1);
+      showAlert({ message: '프로필이 성공적으로 수정되었습니다.', type: 'success' });
+      setTimeout(() => {
+        navigate(-1);
+      }, 1500);
     },
     onError: () => {
       showAlert({ message: '업데이트 중 에러가 발생했습니다. 다시 시도해주세요.', type: 'error' });

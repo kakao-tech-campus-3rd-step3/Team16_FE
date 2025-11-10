@@ -63,8 +63,10 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
       { reasonCode: data.reason, reason: data.detail },
       {
         onSuccess: () => {
-          showAlert({ message: '신고가 접수되었습니다.', type: 'success' });
           onClose();
+          setTimeout(() => {
+            showAlert({ message: '신고가 접수되었습니다.', type: 'success' });
+          }, 100);
         },
         onError: () => {
           showAlert({ message: '신고 처리 중 오류가 발생했습니다.', type: 'error' });

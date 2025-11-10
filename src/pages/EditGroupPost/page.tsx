@@ -97,7 +97,6 @@ const EditGroupPostPage = () => {
         const uploadedUrls = await uploadImagesAsync(imageFiles);
         finalImageUrls = [...finalImageUrls, ...uploadedUrls];
       }
-      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
 
       await updatePost({
         postId: Number(postId),
@@ -108,6 +107,9 @@ const EditGroupPostPage = () => {
       });
       queryClient.invalidateQueries({ queryKey: ['groupPost', Number(postId)] });
       showAlert({ message: '게시글 수정이 완료되었습니다!', type: 'success' });
+      setTimeout(() => {
+        navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
+      }, 1500);
     } catch (error) {
       console.error('게시글 수정 실패:', error);
       showAlert({ message: '게시글 수정 중 오류가 발생했습니다.', type: 'error' });

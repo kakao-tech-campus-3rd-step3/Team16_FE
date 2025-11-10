@@ -43,7 +43,9 @@ const CreateGroupPage = () => {
     onSuccess: (response) => {
       showAlert({ message: '모임이 성공적으로 생성되었습니다!', type: 'success' });
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
-      navigate(`/group/${response.groupId}`, { replace: true });
+      setTimeout(() => {
+        navigate(`/group/${response.groupId}`, { replace: true });
+      }, 1500);
     },
     onError: () => {
       showAlert({ message: '모임 생성에 실패했습니다. 다시 시도해주세요.', type: 'error' });
