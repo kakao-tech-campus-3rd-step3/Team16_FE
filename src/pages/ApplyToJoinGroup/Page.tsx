@@ -9,11 +9,14 @@ import { useParams } from 'react-router-dom';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import useApplyToJoinGroup from './hooks/useApplyToJoinGroup';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const MAX_LENGTH = 200;
 const MIN_LENGTH = 8;
 
 const ApplyToJoinGroupPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const {
     handleSubmit,
     register,
@@ -27,7 +30,7 @@ const ApplyToJoinGroupPage = () => {
 
   useHeader({ centerContent: '모임 가입 신청' });
 
-  const { mutate } = useApplyToJoinGroup();
+  const { mutate } = useApplyToJoinGroup(showAlert);
 
   const onSubmit = (data: { intro: string }) => {
     mutate({ groupId: Number(groupId), intro: data.intro });
@@ -55,6 +58,13 @@ const ApplyToJoinGroupPage = () => {
         <TextLengthValidator currentLength={intro.length} maxLength={MAX_LENGTH} />
       </Bottom>
       <PrimaryButton text="신청하기" onClick={handleSubmit(onSubmit)} />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </Wrapper>
   );
 };

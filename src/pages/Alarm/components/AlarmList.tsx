@@ -85,7 +85,7 @@ function convertTypeLabel(type: string) {
     case 'GROUP_JOIN_LEFT':
       return '모임 탈퇴 알림';
     case 'GROUP_JOIN_REQUEST':
-      return '모임 가입 알림';
+      return '모임  알림';
     case 'CHANGE_GROUP_PLAN':
       return '일정 변경 알림';
     default:

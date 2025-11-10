@@ -55,7 +55,6 @@ export const useDeleteComment = (postId: number, groupId?: number) => {
     },
     onError: (error, _commentId, context) => {
       console.error('댓글 삭제 실패:', error);
-      alert('댓글 삭제에 실패했습니다.');
 
       // 에러 시 이전 데이터로 롤백
       if (context?.previousComments) {

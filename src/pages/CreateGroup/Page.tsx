@@ -13,8 +13,11 @@ import ImagePicker from './components/ImagePicker';
 import { useState } from 'react';
 import { uploadImageApi } from '@/api/imageUploader';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const CreateGroupPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const navigate = useNavigate();
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,21 +41,23 @@ const CreateGroupPage = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateGroupFormData) => createGroupApi(data),
     onSuccess: (response) => {
-      alert('모임이 성공적으로 생성되었습니다!');
+      showAlert({ message: '모임이 성공적으로 생성되었습니다!', type: 'success' });
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
-      navigate(`/group/${response.groupId}`, { replace: true });
+      setTimeout(() => {
+        navigate(`/group/${response.groupId}`, { replace: true });
+      }, 1500);
     },
     onError: () => {
-      alert('모임 생성에 실패했습니다. 다시 시도해주세요.');
+      showAlert({ message: '모임 생성에 실패했습니다. 다시 시도해주세요.', type: 'error' });
     },
   });
 
   const onSubmit = async (data: CreateGroupFormData) => {
     // 이미 제출 중이면 리턴
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       // 이미지가 있으면 업로드
       if (imageFiles.length > 0) {
@@ -66,7 +71,7 @@ const CreateGroupPage = () => {
       mutate(data);
     } catch (error) {
       console.error('이미지 업로드 실패:', error);
-      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      showAlert({ message: '이미지 업로드에 실패했습니다. 다시 시도해주세요.', type: 'error' });
       setIsSubmitting(false);
     }
   };
@@ -79,13 +84,20 @@ const CreateGroupPage = () => {
         <NameSection register={register} errors={errors} name={name} />
         <IntroSection register={register} errors={errors} intro={intro} />
         <ImagePicker setImageFiles={setImageFiles} imageFiles={imageFiles} />
-        <PrimaryButton 
-          text={isLoading ? "모임 만드는 중..." : "모임 만들기"}
-          onClick={handleSubmit(onSubmit)} 
+        <PrimaryButton
+          text={isLoading ? '모임 만드는 중...' : '모임 만들기'}
+          onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
         />
         {isLoading && <LoadingSpinner />}
       </Wrapper>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </form>
   );
 };

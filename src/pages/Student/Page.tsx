@@ -89,7 +89,9 @@ const StudentPage = () => {
     setVerificationStatus('VERIFIED');
     showAlert({ message: '학생 인증을 건너뛰었습니다.', type: 'info' });
     console.log(studentVerifiedStatus);
-    navigate('/');
+    setTimeout(() => {
+      navigate('/');
+    }, 1500);
   };
 
   return (

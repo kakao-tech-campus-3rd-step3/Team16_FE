@@ -71,9 +71,11 @@ const GroupPostPage = () => {
         console.log(imageFiles);
         data.imageUrls = await uploadImagesAsync(imageFiles);
       }
-      navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
       await createGroupPost({ ...data, imageFiles });
       showAlert({ message: '게시글 작성이 완료되었습니다!', type: 'success' });
+      setTimeout(() => {
+        navigate(`/group/${groupId}`, { state: { activeTab: '게시판' }, replace: true });
+      }, 1500);
     } catch (error) {
       showAlert({ message: '게시글 작성 중 오류가 발생했습니다.', type: 'error' });
       setIsSubmitting(false);

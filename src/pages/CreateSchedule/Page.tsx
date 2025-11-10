@@ -16,8 +16,11 @@ import DurationPicker from './components/DurationPicker';
 import { ConvertTimeString } from './components/DurationPicker';
 import { formatInTimeZone } from 'date-fns-tz';
 import { useScheduleMutation } from './hooks/useScheduleMutation';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const CreateEventPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const navigate = useNavigate();
   const { groupId, planId } = useParams(); // planId가 있으면 수정, 없으면 생성
   const isEdit = !!planId;
@@ -54,9 +57,34 @@ const CreateEventPage = () => {
       ),
       duration, //분 단위
     };
-    if (isEdit)
-      updateMutation.mutate({ payload, groupId: Number(groupId), planId: Number(planId) });
-    else createMutation.mutate({ payload, groupId: Number(groupId) });
+
+    if (isEdit) {
+      updateMutation.mutate(
+        { payload, groupId: Number(groupId), planId: Number(planId) },
+        {
+          onSuccess: () => {
+            showAlert({ message: '일정이 수정되었습니다.', type: 'success' });
+            setTimeout(() => navigate(-1), 1500);
+          },
+          onError: () => {
+            showAlert({ message: '일정 수정에 실패했습니다.', type: 'error' });
+          },
+        }
+      );
+    } else {
+      createMutation.mutate(
+        { payload, groupId: Number(groupId) },
+        {
+          onSuccess: () => {
+            showAlert({ message: '일정이 생성되었습니다.', type: 'success' });
+            setTimeout(() => navigate(-1), 1500);
+          },
+          onError: () => {
+            showAlert({ message: '일정 생성에 실패했습니다.', type: 'error' });
+          },
+        }
+      );
+    }
   };
 
   const openEditor = (editorName: any) => {
@@ -130,6 +158,13 @@ const CreateEventPage = () => {
       </SummaryList>
 
       <PrimaryButton text={pagePurpose} onClick={handleSubmit(onSubmit)} disabled={!isFormValid} />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </PageContainer>
   );
 };

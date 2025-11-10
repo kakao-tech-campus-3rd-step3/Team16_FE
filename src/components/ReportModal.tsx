@@ -8,6 +8,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { useReport } from '@/hooks/useReport';
 import { useEffect } from 'react';
 import { ErrorMessage } from './common/ErrorMessage';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -32,6 +34,7 @@ const REPORT_REASONS = [
 const MAX_LENGTH = 500;
 
 const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps) => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const { mutate } = useReport(targetType, targetId);
 
   const {
@@ -60,11 +63,13 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
       { reasonCode: data.reason, reason: data.detail },
       {
         onSuccess: () => {
-          alert('신고가 접수되었습니다.');
           onClose();
+          setTimeout(() => {
+            showAlert({ message: '신고가 접수되었습니다.', type: 'success' });
+          }, 100);
         },
         onError: () => {
-          alert('신고 처리 중 오류가 발생했습니다.');
+          showAlert({ message: '신고 처리 중 오류가 발생했습니다.', type: 'error' });
         },
       }
     );
@@ -118,6 +123,13 @@ const ReportModal = ({ isOpen, onClose, targetId, targetType }: ReportModalProps
           </ButtonGroup>
         </form>
       </Wrapper>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </BaseModal>
   );
 };

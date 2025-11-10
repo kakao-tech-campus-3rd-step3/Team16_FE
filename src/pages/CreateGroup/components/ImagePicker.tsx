@@ -3,10 +3,13 @@ import styled from '@emotion/styled';
 import { spacing } from '@/styles/spacing';
 import { colors } from '@/styles/colors';
 import type { ImagePickerProps } from '../type';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerProps) => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>(
     imageFiles.map((file) => URL.createObjectURL(file))
@@ -23,7 +26,7 @@ const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerPro
     const validFiles = files
       .filter((f) => {
         if (f.size > MAX_FILE_SIZE) {
-          alert(`${f.name} 은(는) 5MB를 초과하여 제외됩니다.`);
+          showAlert({ message: `${f.name} 은(는) 5MB를 초과하여 제외됩니다.`, type: 'warning' });
           return false;
         }
         return true;
@@ -33,7 +36,10 @@ const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerPro
     if (validFiles.length === 0) return;
 
     if (files.length > remaining) {
-      alert(`최대 ${maxCount}장까지 선택할 수 있습니다. 먼저 ${remaining}장만 추가됩니다.`);
+      showAlert({
+        message: `최대 ${maxCount}장까지 선택할 수 있습니다. 먼저 ${remaining}장만 추가됩니다.`,
+        type: 'info',
+      });
     }
 
     const newUrls = validFiles.map((file) => URL.createObjectURL(file));
@@ -48,7 +54,7 @@ const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerPro
 
   const handlePickClick = () => {
     if (imageUrls.length >= maxCount) {
-      alert(`최대 ${maxCount}장의 사진만 선택할 수 있습니다.`);
+      showAlert({ message: `최대 ${maxCount}장의 사진만 선택할 수 있습니다.`, type: 'info' });
       return;
     }
     inputRef.current?.click();
@@ -102,6 +108,13 @@ const ImagePicker = ({ maxCount = 1, setImageFiles, imageFiles }: ImagePickerPro
       <CountText>
         {maxCount - remaining}/{maxCount}
       </CountText>
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </Wrapper>
   );
 };

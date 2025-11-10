@@ -76,7 +76,6 @@ export const useCreateComment = (
         queryClient.setQueryData(['feed'], context.previousFeed);
       }
       console.error('댓글 등록 실패:', error);
-      alert('댓글 등록에 실패했습니다. 다시 시도해주세요.');
     },
     onSuccess: () => {
       // 성공 시 실제 데이터로 갱신

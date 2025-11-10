@@ -62,7 +62,7 @@ const ImagePicker = ({
 
   const handlePickClick = () => {
     if (totalImageCount >= maxCount) {
-      alert(`최대 ${maxCount}장의 사진만 선택할 수 있습니다.`);
+      showAlert({ message: `최대 ${maxCount}장의 사진만 선택할 수 있습니다.`, type: 'info' });
       return;
     }
     inputRef.current?.click();
