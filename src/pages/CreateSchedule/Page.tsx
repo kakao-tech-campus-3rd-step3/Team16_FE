@@ -27,11 +27,7 @@ const CreateEventPage = () => {
   const pagePurpose = isEdit ? '일정 수정' : '일정 생성';
   useHeader({ centerContent: pagePurpose });
 
-  const { createMutation, updateMutation } = useScheduleMutation(
-    Number(groupId),
-    Number(planId),
-    showAlert
-  );
+  const { createMutation, updateMutation } = useScheduleMutation(Number(groupId), Number(planId));
 
   const { data: scheduleData, isLoading } = useGroupPlan(Number(groupId), Number(planId));
 
@@ -61,9 +57,34 @@ const CreateEventPage = () => {
       ),
       duration, //분 단위
     };
-    if (isEdit)
-      updateMutation.mutate({ payload, groupId: Number(groupId), planId: Number(planId) });
-    else createMutation.mutate({ payload, groupId: Number(groupId) });
+
+    if (isEdit) {
+      updateMutation.mutate(
+        { payload, groupId: Number(groupId), planId: Number(planId) },
+        {
+          onSuccess: () => {
+            showAlert({ message: '일정이 수정되었습니다.', type: 'success' });
+            setTimeout(() => navigate(-1), 1500);
+          },
+          onError: () => {
+            showAlert({ message: '일정 수정에 실패했습니다.', type: 'error' });
+          },
+        }
+      );
+    } else {
+      createMutation.mutate(
+        { payload, groupId: Number(groupId) },
+        {
+          onSuccess: () => {
+            showAlert({ message: '일정이 생성되었습니다.', type: 'success' });
+            setTimeout(() => navigate(-1), 1500);
+          },
+          onError: () => {
+            showAlert({ message: '일정 생성에 실패했습니다.', type: 'error' });
+          },
+        }
+      );
+    }
   };
 
   const openEditor = (editorName: any) => {
