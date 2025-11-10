@@ -11,6 +11,8 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const completionUrl = '/users/profile-image';
 
@@ -19,6 +21,7 @@ interface ProfileData {
 }
 
 const ProfileEditPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const {
     register,
     handleSubmit,
@@ -66,7 +69,7 @@ const ProfileEditPage = () => {
       navigate(-1);
     },
     onError: () => {
-      alert('업데이트 중 에러가 발생했습니다. 다시 시도해주세요.');
+      showAlert({ message: '업데이트 중 에러가 발생했습니다. 다시 시도해주세요.', type: 'error' });
     },
   });
 
@@ -90,6 +93,13 @@ const ProfileEditPage = () => {
         setImageChanged={setImageChanged}
       />
       <Nickname register={register} errors={errors} nickname={nickname} />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
+      />
     </Wrapper>
   );
 };

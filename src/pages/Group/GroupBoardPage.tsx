@@ -22,6 +22,8 @@ import useAuthStore from '@/stores/authStore';
 import { IoMdMore } from 'react-icons/io';
 import BottomSheet from '@/components/common/BottomSheet';
 import PostingStatus from '@/components/common/PostingStatus';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 interface Post {
   postId: number;
@@ -145,6 +147,7 @@ const ImageCarousel = ({ images, altText }: ImageCarouselProps) => {
 };
 
 const GroupBoard = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   const { groupId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [postId, setPostId] = useState<number>(0);
@@ -182,7 +185,7 @@ const GroupBoard = () => {
     },
     onError: (error) => {
       console.error('게시글 삭제 실패:', error);
-      alert('게시글 삭제에 실패했습니다.');
+      showAlert({ message: '게시글 삭제에 실패했습니다.', type: 'error' });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['groupPosts', Number(groupId)] });
@@ -320,6 +323,13 @@ const GroupBoard = () => {
             variant: 'danger',
           },
         ]}
+      />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
       />
     </Wrapper>
   );

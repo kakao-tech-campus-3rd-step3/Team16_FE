@@ -7,6 +7,7 @@ import { colors } from '@/styles/colors';
 import { useHeader } from '@/hooks/useHeader';
 import PrimaryButton from '@/components/common/PrimaryButton';
 import useKakaoLoader from '@/hooks/useKakaoLoader';
+import { useAlert } from '@/hooks/useAlert';
 
 interface LocationData {
   name: string;
@@ -15,6 +16,7 @@ interface LocationData {
 }
 
 const LocationInputPage = () => {
+  const { showAlert } = useAlert();
   useHeader({ centerContent: '장소 설정' });
   useKakaoLoader();
   const navigate = useNavigate();
@@ -68,7 +70,7 @@ const LocationInputPage = () => {
         setSelectedLocation(locationData);
         setMapCenter({ lat, lng });
       } else {
-        alert('검색 결과를 찾을 수 없습니다.');
+        showAlert({ message: '검색 결과를 찾을 수 없습니다.', type: 'warning' });
       }
     });
   };

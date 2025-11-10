@@ -14,8 +14,11 @@ import { getGroupPlan, getPlanParticipants, joinPlan } from '@/api/groupSchedule
 import { format } from 'date-fns';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import useUserInfo from '@/hooks/useUserInfo';
+import CustomAlert from '@/components/common/CustomAlert';
+import { useAlert } from '@/hooks/useAlert';
 
 const AttendPage = () => {
+  const { isOpen: isAlertOpen, alertOptions, showAlert, closeAlert } = useAlert();
   useHeader({ centerContent: '출석' });
   const { groupId, planId } = useParams();
   const queryClient = useQueryClient();
@@ -39,14 +42,14 @@ const AttendPage = () => {
       queryClient.invalidateQueries({ queryKey: ['planParticipants', planId] });
       queryClient.invalidateQueries({ queryKey: ['attendees', planId] });
       queryClient.invalidateQueries({ queryKey: ['groupPlan', groupId, planId] });
-      alert('일정 참여가 완료되었습니다.');
+      showAlert({ message: '일정 참여가 완료되었습니다.', type: 'success' });
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.message || '일정 참여에 실패했습니다.';
       if (errorMessage.includes('정원이 초과')) {
-        alert('해당 일정의 정원이 초과되어 참여할 수 없습니다.');
+        showAlert({ message: '해당 일정의 정원이 초과되어 참여할 수 없습니다.', type: 'error' });
       } else {
-        alert(errorMessage);
+        showAlert({ message: errorMessage, type: 'error' });
       }
     },
   });
@@ -139,6 +142,13 @@ const AttendPage = () => {
               ? handleAttend
               : undefined
         }
+      />
+      <CustomAlert
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        message={alertOptions.message}
+        type={alertOptions.type}
+        confirmText={alertOptions.confirmText}
       />
     </Wrapper>
   );

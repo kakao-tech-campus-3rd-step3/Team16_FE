@@ -10,8 +10,10 @@ import { useReview } from '@/hooks/useReveiw';
 import FullScreenLoader from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAlert } from '@/hooks/useAlert';
 
 const MemberReview = () => {
+  const { showAlert } = useAlert();
   const [choice, setChoice] = useState<'positive' | 'negative' | null>(null);
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -44,8 +46,8 @@ const MemberReview = () => {
       },
       {
         onSuccess: () => {
-          alert('리뷰가 성공적으로 등록되었습니다.');
-          navigate('/');
+          showAlert({ message: '리뷰가 성공적으로 등록되었습니다.', type: 'success' });
+          setTimeout(() => navigate('/'), 1500);
         },
       }
     );
