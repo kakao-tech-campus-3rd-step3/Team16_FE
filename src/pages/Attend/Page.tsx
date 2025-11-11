@@ -161,6 +161,7 @@ const AttendPage = () => {
             : planData.startTime.toISOString()
         }
       />
+      <div style={{ height: '60px' }} />
       <PrimaryButton
         text={getButtonText()}
         disabled={
